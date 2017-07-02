@@ -1,0 +1,3 @@
+# String Theory
+
+regex and related, factors

@@ -1,0 +1,34 @@
+# Introduction
+
+This work is in progress. Until this sentence is deleted you should probably ignore everything in it.
+
+## Overview
+
+Dealing with text is typically not even considered in the applied statistical training of most disciplines.  This is in direct conflict with how often it has to be dealt with prior to analysis, or how interesting it might be to have text be the focus of analysis.  This document and corresponding workshop will aim to provide a sense of the things one can do with text, and the sorts of analyses that might be useful.  It must be stressed that this is only a starting point.
+
+### Goals
+
+The goal of this workshop is primarily to provide a sense of common tasks related to dealing with text as part of the data or the focus of analysis.  Additionally, we'll have exercises to practice.  
+
+
+### Prerequisites
+
+The document is for the most part very applied in nature, and doesn't assume much beyond familiarity with the R statistical computing environment.
+
+Note the following color coding used in this document:
+
+- <span class="emph">emphasis</span>
+- <span class="pack">package</span>
+- <span class="func">function</span>
+- <span class="objclass">object/class</span>
+- [link]()
+
+
+## Initial Steps
+
+0. Download the zip file at . Be mindful of where you put it.
+1. Unzip it. Be mindful of where you put the resulting folder.
+2. Open RStudio.
+3. File/Open Project and click on the blue icon in the folder you just created.
+4. File/Open Click on the ReadMe file and do what it says.
+

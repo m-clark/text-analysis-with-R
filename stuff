@@ -1,0 +1,12 @@
+
+- dealing with character strings
+    - regex, factor labels, standard modeling
+- sentiment analysis
+    - https://github.com/mjockers/syuzhet; https://cran.r-project.org/web/packages/syuzhet/vignettes/syuzhet-vignette.html
+    - https://cran.r-project.org/web/packages/tidytext/vignettes/tidytext.html
+    - https://uc-r.github.io/sentiment_analysis
+- pos tagging
+    - http://martinschweinberger.de/docs/articles/PosTagR.pdf
+- topic modeling
+    - your stuff
+    - https://cran.r-project.org/web/packages/tidytext/vignettes/topic_modeling.html

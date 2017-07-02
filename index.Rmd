@@ -1,0 +1,59 @@
+---
+title: "An Introduction to  Text Analysis with R"
+author:  |
+  <div class="title"><span style="font-size:125%; font-variant:small-caps; ">Michael Clark</span><br><br>
+  <span class="" style="font-size:75%">http://m-clark.github.io/workshops/</span><br><br>
+  <img src="img/signature-acronym.png" style="width:30%; padding:10px 0;"> <br>
+  <img src="img/ARC-acronym-signature.png" style="width:21%; padding:10px 0;"> </div>
+date: "`r Sys.Date()`"
+site: bookdown::bookdown_site
+output:
+  bookdown::gitbook:
+    css: [css/standard_html.css, css/book.css]
+    hightlight: pygments
+    number_sections: false
+    # split_by: section
+    config:
+      toc:
+        collapse: subsection
+        scroll_highlight: yes
+        before: null
+        after: null
+      toolbar:
+        position: fixed
+      edit : null
+      download: null
+      search: yes
+      # fontsettings:
+      #   theme: white
+      #   family: sans
+      #   size: 2
+      sharing:
+        facebook: yes
+        twitter: yes
+        google: no
+        weibo: no
+        instapper: no
+        vk: no
+        all: ['facebook', 'google', 'twitter', 'weibo', 'instapaper']
+always_allow_html: yes
+font-import: http://fonts.googleapis.com/css?family=Roboto|Open+Sans
+font-family: 'Roboto'
+documentclass: book
+# bibliography: refs.bib
+biblio-style: apalike
+link-citations: yes
+description: "An Introduction to  Text Analysis with R"
+cover-image: img/nineteeneightyR.png
+url: 'https\://m-clark.github.io/Workshops/'  # evidently the \: is required or you'll get text in the title/toc area
+github-repo:  m-clark/
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE, message=F, error=F, comment=NA, R.options=list(width=120),   # code 
+                      dev.args=list(bg = 'transparent'), dev='svg',                             # viz
+                      cache.rebuild=T, cache=T)                                                 # cache
+```
+
+
+# 
