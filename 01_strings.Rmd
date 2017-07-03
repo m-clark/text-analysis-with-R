@@ -1,3 +1,153 @@
 # String Theory
 
-regex and related, factors
+
+## Basic data types
+
+### Character strings
+
+### Factors
+
+Although not exactly precise, one can think of factors as integers with labels.  So the underlying representation of a variable for <span class="objclass">sex</span> is 1:2 with labels 'Male' and 'Female'.  Because of the integer representation, factors are actually smaller than character strings, often notably so.
+
+```{r size_comparison}
+x = sample(state.name, 10000, replace=T)
+format(object.size(x), units='Kb')
+format(object.size(factor(x)), units='Kb')
+format(object.size(as.integer(factor(x))), units='Kb')
+```
+
+The main thing to note is that factors are generally a statistical phenomenon,  which will be demonstrated in the  next section. For other things, such as text analysis, you'll almost certainly want character strings instead.  If memory is really a concern, it's probably not the factors that will help, but rather better hardware.
+
+For more on this stuff see the following:
+
+- http://forcats.tidyverse.org/
+- http://r4ds.had.co.nz/factors.html
+- https://simplystatistics.org/2015/07/24/stringsasfactors-an-unauthorized-biography/
+- http://notstatschat.tumblr.com/post/124987394001/stringsasfactors-sigh
+
+
+### Analysis
+
+It is important to know that raw text cannot be analyzed quantitatively. There is no magic that takes a categorical variable with text labels and estimates correlations among words and numeric data. *Everything* that can be analyzed must be numeric first. For example, here is a data frame with two categorical predictors (`factor*`), a numeric predictor (`x`), and a numeric target (`y`).  What follows is what it looks like if you wanted to run a regression model.
+
+```{r dummy}
+df = 
+  crossing(factor_1 = c('A', 'B'),
+           factor_2 = c('Q', 'X', 'J')) %>% 
+  mutate(x=rnorm(6),
+         y=rnorm(6))
+df
+model.matrix(lm(y ~ x + factor_1 + factor_2, data=df)) %>% 
+  pander()
+```
+
+Even the intercept must be represented in some fashion. For categorical data, the default coding scheme is <span class="emph">dummy coding</span>. A reference category is arbitrarily chosen (it doesn't matter which), while the other categories are represented by indicator variables, where a 1 represents the corresponding label and everything else is zero.  For details on this coding scheme or others, consult any basic statistical modeling book.
+
+
+
+### Base R
+
+paste, grep, strsplit
+
+paste and the `collapse` argument
+
+### Packages
+
+Base R grep, gsub, strsplit, paste (collapse) etc.
+
+stringr/stringi, glue, tidyr (unite, separate, replace_na)
+
+Being familiar with commonly used string functionality in base R and packages like <span class="pack">stringr</span> can save a ridiculous amount of time in your data processing.
+
+
+
+## Regular Expressions
+
+
+## dplyr helper functions
+
+The <span class="pack">dplyr</span> package comes with some poorly documented[^poordoc] helper functions that essentially serve as human-readable regex, which is a good thing.  These functions allow you to select variables based on their names.  They are just calling <span class="func">grep</span> in the end.
+
+- <span class="func">starts_with</span>: starts with a prefix (same as regex '^blah')
+- <span class="func">ends_with</span>: ends with a prefix     (same as regex 'blah$')
+- <span class="func">contains</span>: contains a literal string  (same as regex 'blah')
+- <span class="func">matches</span>: matches a regular expression (put your regex here)
+- <span class="func">num_range</span>: a numerical range like x01, x02, x03.  (same as regex 'x[0-9][0-9]')
+- <span class="func">one_of</span>: variables in character vector. (if you need to quote variable names, e.g. within a function)
+- <span class="func">everything</span>: all variables.  (a good way to spend time doing something only to accomplish what you would have by doing nothing, or a way to reorder variables)
+
+## Examples
+
+### Example 1
+
+Let's say you're dealing with some data that has been handled typically, that is to say, poorly. For example, you have a variable in your data representing whether something if from the north or south.
+
+```{r label_problem, echo=FALSE}
+df = data_frame(
+  id = 1:500,
+  x = round(rnorm(500), 2), 
+  region = sample(c('north', 'north ', 'south', 'South', ' South', 'North ', 'North'), 500, replace=T)
+)
+DT::datatable(df)
+```
+
+
+It might seem okay until...
+
+```{r label_problem2}
+table(df$region)
+```
+
+Even if you spotted the casing issue, there is still a white space problem[^excel]. Let's say you want this to be capitalized 'North' and 'South'. How might you do it? It's actually quite easy with the <span class="pack">stringr</span> tools.
+
+```{r label_problem3}
+library(stringr)
+df %>% 
+  mutate(region = str_trim(region),
+         region = str_to_title(region))
+```
+
+The <span class="func">str_trim</span> function trims white space from either side, while <span class="func">str_to_title</span> converts everything to first letter capitalized.  
+
+### Example 2
+
+Suppose you import a data frame, and the data was originally in wide format, where each column represented a year of data collection for the individual. Since it is bad form for data columns to have numbers for names, when you import it, the result looks like the following
+
+```{r rename_chunk}
+df = data.frame(id=1:20, round(matrix(rnorm(100), ncol=5), 2))
+DT::datatable(df, options=list(dom='pt'), rownames=F)
+```
+
+<br>
+
+So the problem now is to change the names to be Year_1, Year_2, etc. You might think you might have to use colnames and manually create a string of names to replace the current ones.
+
+
+```{r rename_chunk2, eval=FALSE}
+colnames(df)[-1] = c('Year_1', 'Year_2', 'Year_3', 'Year_4', 'Year_5')
+```
+
+Or perhaps you're thinking of the paste0 function, which works fine and saves some typing.
+
+```{r rename_chunk3, eval=FALSE}
+colnames(df)[-1] = paste0('Year_', 1:5)
+```
+
+However, data sets may be hundreds of columns, and the columns of data may have the same pattern but not be next to one another.  For example, the first few dozen columns are all data that belongs to the first wave, etc. It is tedious to figure out which columns you don't want, but even then you're resulting to using magic numbers with the above approach, and one column change to data will mean that redoing the name change will fail.
+
+However, the following accomplishes what we want, and is reproducible regardless of where the columns are in the data set.
+
+
+```{r rename_chunk4}
+df %>% 
+  rename_at(vars(num_range('X', 1:5)), 
+            str_replace, pattern='X', replacement='Year_') %>% 
+  head
+```
+
+We just have to use the <span class="func">num_range</span> helper function within and let <span class="func">str_replace</span> do the rest. 
+
+
+[^poordoc]: At least they're exposed now.
+
+[^excel]: This is a very common issue among Excel users, and just one of the many reasons not to use it.

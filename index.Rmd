@@ -55,5 +55,9 @@ knitr::opts_chunk$set(echo = TRUE, message=F, error=F, comment=NA, R.options=lis
                       cache.rebuild=T, cache=T)                                                 # cache
 ```
 
+```{r packages, include=FALSE}
+library(tidyverse); library(stringr); library(pander)
+```
+
 
 # 
