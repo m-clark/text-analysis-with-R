@@ -1,6 +1,89 @@
-# Sentiment Analysis
+# Sentiment Analysis is Sick Yo
 
 
 ## Basic idea
 
-## Example
+A common and intuitive approach to text is <span class="emph">sentiment analysis</span>.  In a grand sense we are interested in the emotional content of some text, e.g. posts on Facebook, tweets, or movie reviews.  Most of the time, this is obvious when one reads it, but if you have hundreds of thousands or millions of strings to analyze, we'd like to be able to do so efficiently.
+
+We will use the <span class="pack">tidytext</span> package for our demonstration.  It comes with a lexicon of positive and negative words that is actually a combination of multiple sources, one of which provides numeric ratings.
+
+
+```{r lexicon, echo=-1}
+set.seed(1234)
+library(tidytext)
+sentiments %>% slice(sample(1:nrow(sentiments)))
+```
+
+The gist is that we are dealing with a specific, pre-defined vocabulary.  Of course, any analysis will only be as good as the lexicon. The goal is usually to assign a sentiment score to a text, possibly an overall score or specifically positive or negative. Given that, other analyses may be implemented to predict sentiment via standard regression or machine learning.
+
+## Issues
+
+### Context, sarcasm, etc.
+
+Now consider the following.
+
+```{r sent_is_sick}
+sentiments %>% filter(word=='sick') 
+```
+
+The word *sick* has been used at least since 1960s surfing culture to be slang for positive.  A basic approach to sentiment analysis as described here will not be able to detect slang or other context like sarcasm.  
+
+### Lexicons
+
+In addition, the lexicons are going to maybe be applicable to *general* usage of English in the western world.  Some might wonder where exactly these came from or who decided that the word *abacus* should be affiliated with 'trust'. You may start your path by typing `?sentiments` at teh console if you have the <span class="pack">tidytext</span> package loaded.
+
+## Examples
+
+### 
+
+### The first thing the baby did wrong.
+
+```{r baby_sentiment_importraw, echo=FALSE}
+library(tidytext)
+barth0 = 
+  data_frame(file = dir('data/texts_raw/barthelme/', full.names = TRUE)) %>%
+  mutate(text = map(file, read_lines)) %>%
+  transmute(id = basename(file), text) %>%
+  unnest(text) 
+
+# Fix encoding, convert to sentences
+barth = barth0 %>% 
+  mutate(text = sapply(text, stringi::stri_enc_toutf8, is_unknown_8bit=TRUE, validate=T)) %>% 
+  unnest_tokens(sentence, text, token='sentences')
+
+# get baby doc, convert to words
+baby = barth %>% 
+  filter(id=='baby.txt') %>% 
+  mutate(sentence_id = 1:n()) %>% 
+  unnest_tokens(word, sentence, drop=F) %>% 
+  ungroup 
+
+# get sentiment via inner join
+baby_sentiment = baby %>% 
+  inner_join(get_sentiments("afinn")) %>% 
+  group_by( sentence_id, sentence) %>% 
+  summarise(score=sum(score)) %>% 
+  ungroup
+
+# plot sentiment over
+baby_sentiment %>%
+  plot_ly() %>% 
+  add_paths(x=~sentence_id, y=~score,
+            color=I('#00aaff')) %>%
+  add_markers(x=~sentence_id, y=~score, 
+              color=I('#ff5500'),
+              size=I(10),
+              hoverinfo=~ 'text', 
+              text=~str_wrap(sentence),
+              showlegend=F) %>% 
+  theme_plotly()
+```
+
+inner join
+
+return all rows from x where there are matching values in y, and all columns from x and y. If there are multiple matches between x and y, all combination of the matches are returned.
+
+
+### Exercises
+
+### Romeo & Juliet
