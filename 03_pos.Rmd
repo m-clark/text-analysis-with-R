@@ -1,6 +1,20 @@
 # POS tagging
 
+As an initial review of parts of speech, as well as other useful information, I suggest you watch the following Schoolhouse Rocks videos:
+
+- [A noun is a person, place, or thing.](https://youtu.be/h0m89e9oZko)
+- [Interjections](https://youtu.be/YkAX7Vk3JEw)
+- [Pronouns](https://youtu.be/Eu1ciVFbecw)
+- [Verbs](https://youtu.be/US8mGU1MzYw)
+- [Unpack your adjectives](https://youtu.be/NkuuZEey_bs)
+- [Lolly Lolly Lolly Get Your Adverbs Here](https://youtu.be/14fXm4FOMPM)
+- [Conjunction Junction](https://youtu.be/RPoBE-E8VOc) (personal fave)
+
+You can also learn how bills get passed, being a victim of gravity, the decimal system and a host of other useful facts.
 
 ## Basic idea
+
+<span class="emph">Part-of-speech</span> tagging is in some sense very similar to sentiment analysis as depicted previously. We identify a word with its corresponding part of speech.  Common analysis may then be used to predict POS given the current state of text, or comparing grammar of texts.
+
 
 ## Example
