@@ -16,7 +16,7 @@ output:
     # split_by: section
     config:
       toc:
-        collapse: subsection
+        collapse: chapter
         scroll_highlight: yes
         before: null
         after: null
@@ -54,10 +54,10 @@ github-repo:  m-clark/
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE, message=F, warning=F, error=F, comment=NA, R.options=list(width=120),   # code 
                       dev.args=list(bg = 'transparent'), dev='svg',                             # viz
-                      cache.rebuild=T, cache=T)                                                 # cache
+                      cache.rebuild=F, cache=T)                                                 # cache
 ```
 
-```{r packages, include=FALSE}
+```{r packages, include=FALSE, cache=FALSE}
 library(tidyverse); library(stringr); library(pander); library(plotly); library(lazerhawk)
 ```
 
