@@ -1,3 +1,107 @@
+---
+title: "In the beginning was the word.."
+subtitle: 'An Introduction to Text Processing and Analysis with R'
+author:  |
+  <div class="title"><span style="font-size:125%; font-variant:small-caps; ">Michael Clark</span><br><br>
+  <span class="" style="font-size:75%">http://m-clark.github.io/workshops/</span><br><br>
+  <img src="img/signature-acronym.png" style="width:30%; padding:10px 0;"> <br>
+  <img src="img/ARC-acronym-signature.png" style="width:21%; padding:10px 0;"> </div>
+date: "`r Sys.Date()`"
+site: bookdown::bookdown_site
+output:
+  bookdown::gitbook:
+    css: [css/standard_html.css, css/book.css]
+    hightlight: pygments
+    number_sections: false
+    # split_by: section
+    config:
+      toc:
+        collapse: subsection
+        scroll_highlight: yes
+        before: null
+        after: null
+      toolbar:
+        position: fixed
+      edit : null
+      download: null
+      search: yes
+      # fontsettings:
+      #   theme: white
+      #   family: sans
+      #   size: 2
+      sharing:
+        facebook: yes
+        twitter: yes
+        google: no
+        weibo: no
+        instapper: no
+        vk: no
+        all: ['facebook', 'google', 'twitter', 'weibo', 'instapaper']
+always_allow_html: yes
+font-import: http://fonts.googleapis.com/css?family=Roboto|Open+Sans
+font-family: 'Roboto'
+documentclass: book
+# bibliography: refs.bib
+biblio-style: apalike
+link-citations: yes
+description: "An Introduction to  Text Analysis with R"
+cover-image: img/nineteeneightyR.png
+url: 'https\://m-clark.github.io/Workshops/'  # evidently the \: is required or you'll get text in the title/toc area
+github-repo:  m-clark/
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE, message=F, warning=F, error=F, comment=NA, R.options=list(width=120),   # code 
+                      dev.args=list(bg = 'transparent'), dev='svg',                             # viz
+                      cache.rebuild=T, cache=T)                                                 # cache
+```
+
+```{r packages, include=FALSE}
+library(tidyverse); library(stringr); library(pander); library(plotly); library(lazerhawk)
+```
+
+
+# 
+
+<!--chapter:end:index.Rmd-->
+
+# Introduction
+
+This work is in progress. Until this sentence is deleted you should probably ignore everything in it.
+
+## Overview
+
+Dealing with text is typically not even considered in the applied statistical training of most disciplines.  This is in direct conflict with how often it has to be dealt with prior to analysis, or how interesting it might be to have text be the focus of analysis.  This document and corresponding workshop will aim to provide a sense of the things one can do with text, and the sorts of analyses that might be useful.  It must be stressed that this is only a starting point.
+
+### Goals
+
+The goal of this workshop is primarily to provide a sense of common tasks related to dealing with text as part of the data or the focus of analysis, and provide some relatively easy to use tools.  Additionally, we'll have exercises to practice, but those comfortable enough to do so should follow along with the in-text examples.  Note that there is more content here than will be covered in a 2 hour workshop.
+
+
+### Prerequisites
+
+The document is for the most part very applied in nature, and doesn't assume much beyond familiarity with the R statistical computing environment.
+
+Note the following color coding used in this document:
+
+- <span class="emph">emphasis</span>
+- <span class="pack">package</span>
+- <span class="func">function</span>
+- <span class="objclass">object/class</span>
+- [link]()
+
+
+## Initial Steps
+
+0. Download the zip file at . Be mindful of where you put it.
+1. Unzip it. Be mindful of where you put the resulting folder.
+2. Open RStudio.
+3. File/Open Project and click on the blue icon in the folder you just created.
+4. File/Open Click on the ReadMe file and do what it says.
+
+
+<!--chapter:end:00_intro.Rmd-->
+
 # String Theory
 
 
@@ -262,3 +366,121 @@ We just have to use the <span class="func">num_range</span> helper function with
 [^excel]: This is a very common issue among Excel users, and just one of the many reasons not to use it.
 
 [^str_all]: I also don't think it necessary to have separate functions for str_* functions in <span class="pack">stringr</span> depending on whether, e.g. I want 'all' matches (practically every situation) or just the first (hasn't come up). It could have just been an additional argument.
+
+<!--chapter:end:01_strings.Rmd-->
+
+# Sentiment Analysis is Sick Yo
+
+
+## Basic idea
+
+A common and intuitive approach to text is <span class="emph">sentiment analysis</span>.  In a grand sense we are interested in the emotional content of some text, e.g. posts on Facebook, tweets, or movie reviews.  Most of the time, this is obvious when one reads it, but if you have hundreds of thousands or millions of strings to analyze, we'd like to be able to do so efficiently.
+
+We will use the <span class="pack">tidytext</span> package for our demonstration.  It comes with a lexicon of positive and negative words that is actually a combination of multiple sources, one of which provides numeric ratings.
+
+
+```{r lexicon, echo=-1}
+set.seed(1234)
+library(tidytext)
+sentiments %>% slice(sample(1:nrow(sentiments)))
+```
+
+The gist is that we are dealing with a specific, pre-defined vocabulary.  Of course, any analysis will only be as good as the lexicon. The goal is usually to assign a sentiment score to a text, possibly an overall score or specifically positive or negative. Given that, other analyses may be implemented to predict sentiment via standard regression or machine learning.
+
+## Issues
+
+### Context, sarcasm, etc.
+
+Now consider the following.
+
+```{r sent_is_sick}
+sentiments %>% filter(word=='sick') 
+```
+
+The word *sick* has been used at least since 1960s surfing culture to be slang for positive.  A basic approach to sentiment analysis as described here will not be able to detect slang or other context like sarcasm.  
+
+### Lexicons
+
+In addition, the lexicons are going to maybe be applicable to *general* usage of English in the western world.  o some might
+
+## Examples
+
+
+
+### The first thing the baby did wrong.
+```{r baby_sentiment_importraw, echo=FALSE}
+library(tidytext)
+barth0 = 
+  data_frame(file = dir('data/texts_raw/barthelme', full.names = TRUE)) %>%
+  mutate(text = map(file, read_lines)) %>%
+  transmute(id = basename(file), text) %>%
+  unnest(text) 
+
+# Fix encoding, convert to sentences
+barth = barth0 %>% 
+  mutate(text = sapply(text, stringi::stri_enc_toutf8, is_unknown_8bit=TRUE, validate=T)) %>% 
+  unnest_tokens(sentence, text, token='sentences')
+
+# get baby doc, convert to words
+baby = barth %>% 
+  filter(id=='baby.txt') %>% 
+  mutate(sentence_id = 1:n()) %>% 
+  unnest_tokens(word, sentence, drop=F) %>% 
+  ungroup 
+
+# get sentiment via inner join
+baby_sentiment = baby %>% 
+  inner_join(get_sentiments("afinn")) %>% 
+  group_by( sentence_id, sentence) %>% 
+  summarise(score=sum(score)) %>% 
+  ungroup
+
+# plot sentiment over
+baby_sentiment %>%
+  plot_ly() %>% 
+  add_paths(x=~sentence_id, y=~score,
+            color=I('#00aaff')) %>%
+  add_markers(x=~sentence_id, y=~score, 
+              color=I('#ff5500'),
+              size=I(10),
+              hoverinfo=~ 'text', 
+              text=~str_wrap(sentence),
+              showlegend=F) %>% 
+  theme_plotly()
+```
+
+return all rows from x where there are matching values in y, and all columns from x and y. If there are multiple matches between x and y, all combination of the matches are returned.
+
+
+
+[^tidytext]: To be perfectly honest, I found the tidytext/purrr approach to be nonintuitive and even not useable for text that was not already in a nice state.  I suggest if you have to do actual processing with messy, i.e. typical, text, stick with <span class="pack">tm</span> and related.
+
+<!--chapter:end:02_sentiment.Rmd-->
+
+# POS tagging
+
+As an initial review of parts of speech, as well as other useful information, I suggest you watch the following Schoolhouse Rocks videos:
+
+[A noun is a person, place, or thing.](https://youtu.be/h0m89e9oZko)
+[Interjections](https://youtu.be/YkAX7Vk3JEw)
+[Pronouns](https://youtu.be/Eu1ciVFbecw)
+[Verbs](https://youtu.be/US8mGU1MzYw)
+[Unpack your adjectives](https://youtu.be/NkuuZEey_bs)
+[Lolly Lolly Lolly Get Your Adverbs Here](https://youtu.be/14fXm4FOMPM)
+[Conjunction Junction](https://youtu.be/RPoBE-E8VOc) (personal fave)
+
+## Basic idea
+
+## Example
+
+<!--chapter:end:03_pos.Rmd-->
+
+# Topic modeling
+
+
+## Basic idea
+
+## Example
+
+<!--chapter:end:04_topic.Rmd-->
+

@@ -1,5 +1,6 @@
 ---
-title: "An Introduction to  Text Analysis with R"
+title: "In the beginning was the word.."
+subtitle: 'An Introduction to Text Processing and Analysis with R'
 author:  |
   <div class="title"><span style="font-size:125%; font-variant:small-caps; ">Michael Clark</span><br><br>
   <span class="" style="font-size:75%">http://m-clark.github.io/workshops/</span><br><br>
@@ -19,6 +20,7 @@ output:
         scroll_highlight: yes
         before: null
         after: null
+      toc_depth: 2
       toolbar:
         position: fixed
       edit : null
@@ -50,13 +52,13 @@ github-repo:  m-clark/
 ---
 
 ```{r setup, include=FALSE}
-knitr::opts_chunk$set(echo = TRUE, message=F, error=F, comment=NA, R.options=list(width=120),   # code 
+knitr::opts_chunk$set(echo = TRUE, message=F, warning=F, error=F, comment=NA, R.options=list(width=120),   # code 
                       dev.args=list(bg = 'transparent'), dev='svg',                             # viz
                       cache.rebuild=T, cache=T)                                                 # cache
 ```
 
 ```{r packages, include=FALSE}
-library(tidyverse); library(stringr); library(pander)
+library(tidyverse); library(stringr); library(pander); library(plotly); library(lazerhawk)
 ```
 
 

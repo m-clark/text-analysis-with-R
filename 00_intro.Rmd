@@ -8,7 +8,7 @@ Dealing with text is typically not even considered in the applied statistical tr
 
 ### Goals
 
-The goal of this workshop is primarily to provide a sense of common tasks related to dealing with text as part of the data or the focus of analysis.  Additionally, we'll have exercises to practice.  
+The goal of this workshop is primarily to provide a sense of common tasks related to dealing with text as part of the data or the focus of analysis, and provide some relatively easy to use tools.  Additionally, we'll have exercises to practice, but those comfortable enough to do so should follow along with the in-text examples.  Note that there is more content here than will be covered in a 2 hour workshop.
 
 
 ### Prerequisites
