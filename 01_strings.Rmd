@@ -194,14 +194,15 @@ df = data_frame(
   x = round(rnorm(500), 2), 
   region = sample(c('north', 'north ', 'south', 'South', ' South', 'North ', 'North'), 500, replace=T)
 )
-DT::datatable(df)
+DT::datatable(df, options=list(dom='pt'))
 ```
 
 
 It might seem okay until...
 
-```{r label_problem2}
+```{r label_problem2, echo=1, eval=2}
 table(df$region)
+pander(table(df$region))
 ```
 
 Even if you spotted the casing issue, there is still a white space problem[^excel]. Let's say you want this to be capitalized 'North' and 'South'. How might you do it? It's actually quite easy with the <span class="pack">stringr</span> tools.

@@ -96,6 +96,8 @@ carver_pos %>%
   layout(xaxis = list(title=F))
 ```
 
+<br>
+
 It would appear Barthelme is fairly consistent. It would appear Carver preferred nouns and pronouns. 
 
 ### More taggin
@@ -223,6 +225,7 @@ barthelme_pos %>%
                       gridcolor='#0000000D', 
                       title=F))
 ```
+
 
 For more information, consult the following:
 
