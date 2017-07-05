@@ -1,0 +1,51 @@
+# Appendix
+
+## Texts
+
+
+### Donald Barthelme
+
+#### The First Thing the Baby Did Wrong
+
+This short story is essentially a how-to on parenting.
+
+[link](http://jessamyn.com/barth/baby.html)
+
+
+#### The Balloon
+
+This story is about a balloon that can represent whatever you want it to.
+
+[link](http://www.uni.edu/oloughli/elit11/Balloon.rtf)
+
+
+#### Some of Us Had Been Threatening Our Friend Colby
+
+A brief work about etiquette and how to act in society.
+
+[link](http://jessamyn.com/barth/colby.html)
+
+
+### Raymond Carver
+
+#### What We Talk About When We Talk About Love
+
+The text we use is actually *Beginners*, or the unedited version.
+
+[link](http://www.newyorker.com/magazine/2007/12/24/beginners)
+
+
+
+## R
+
+Up until even a couple years ago, R was *terrible* at text.
+
+[NLP task view](https://www.r-pkg.org/ctv/NaturalLanguageProcessing)
+
+monkeylearn?
+
+## Python
+
+- nltk
+- gensim
+- spacy
