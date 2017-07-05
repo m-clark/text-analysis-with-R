@@ -1,12 +1,12 @@
 
 bookdown::gitbook:
- css: [css/standard_html.css, css/book.css]
+ css: [css/standard_html.css, css/book]
  font-import: http://fonts.googleapis.com/css?family=Roboto|Open+Sans
  font-family: 'Roboto'
  config:
    toc:
      before: |
-       <li><a href="weblink_to_file"><span style="font-size:125%; font-variant:small-caps; font-style:italic; color:#ff5503">Text Analysis in R</span></a></li>
+       <li><a href="https://m-clark.github.io/workshops/"><span style="font-size:125%; font-variant:small-caps; font-style:italic; color:#ff5503">Text Analysis in R</span></a></li>
      after: |
        <li><a href="https://m-clark.github.io" target="blank" style="font-size:150%; font-variant:small-caps; color:#ff5500">Michael Clark</a></li>
    edit:

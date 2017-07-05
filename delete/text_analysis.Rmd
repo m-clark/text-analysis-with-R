@@ -14,13 +14,13 @@ output:
     hightlight: pygments
     number_sections: false
     # split_by: section
+    toc_depth: 0
     config:
-      toc:
-        collapse: chapter
-        scroll_highlight: yes
-        before: null
-        after: null
-      toc_depth: 2
+      # toc:
+      #   # collapse: chapter
+      #   scroll_highlight: yes
+      #   before: null
+      #   after: null
       toolbar:
         position: fixed
       edit : null
@@ -667,6 +667,7 @@ As we can see, we have quite a few more POS to deal with here.  They come from t
 Ploting the differences, we now see a little more distinction between *The Balloon* and the other two texts. It is more likely to use the determiners, adjectives, singular nouns, and less likely to use personal pronouns and base verbs and verbs in past tense.
 
 ```{r barth_pos, eval=T, echo=F, cache=FALSE}
+load('data/POS_results.RData')
 balloon_subset = barthelme_pos %>% 
   group_by(text) %>% 
   count(pos) %>%
@@ -700,6 +701,11 @@ For more natural language processing tools in R, consult the corresponding [task
 
 
 ## Basic idea
+
+Topic modeling as typically done is a tool for much more than text.  The primary technique of <span class="emph">latent dirichlet allocation</span> should be as much a part of your toolbox as principal components and factor analysis.  It can be seen as both a dimension reduction approach but also have a rich interpretative quality as well. The basic idea is that we'll take a whole lot of terms, loosely defined, and boil them down to a few topics.   In this sense LDA is akin to discrete PCA.  Another way to think about this is more from the  perspective of factor analysis, where we are keenly interested in interpretation of the result, and want to know both what terms are associated with which topics, and what documents are more likely to present which topics.  
+
+In the standard setting, to be able to conduct such an analysis from text one needs a <span class="emph">document-term matrix</span>, where rows represent documents, and columns terms.  Terms are typically words but could be any <span class="emph">n-gram</span> of interest. 
+
 
 ## Example
 

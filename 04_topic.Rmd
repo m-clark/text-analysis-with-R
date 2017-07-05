@@ -3,4 +3,9 @@
 
 ## Basic idea
 
-## Example
+<span class="emph">Topic modeling</span> as typically done is a tool for much more than text.  The primary technique of <span class="emph">latent dirichlet allocation</span> should be as much a part of your toolbox as principal components and factor analysis.  It can be seen merely as a dimension reduction approach, but it can also be used for its rich interpretative quality as well. The basic idea is that we'll take a whole lot of terms, loosely defined, and boil them down to a few topics.   In this sense LDA is akin to discrete PCA.  Another way to think about this is more from the  perspective of factor analysis, where we are keenly interested in interpretation of the result, and want to know both what terms are associated with which topics, and what documents are more likely to present which topics.  
+
+In the standard setting, to be able to conduct such an analysis from text one needs a <span class="emph">document-term matrix</span>, where rows represent documents, and columns terms. Each cell is a count of how many times the term occurs in the document. Terms are typically words, but could be any <span class="emph">n-gram</span> of interest. Outside of text analysis they could represent bacteria, genetic information, or who knows what. 
+
+
+## Examples

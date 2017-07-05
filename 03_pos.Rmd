@@ -26,11 +26,11 @@ rbind(c('JJ', 'JJ', 'NNS', 'VBP', 'RB'),
 
 We have two adjectives (JJ), a plural noun (NNS), a verb (VBP), and an adverb (RB).
 
-Common analysis may then be used to predict POS given the current state of text, comparing the grammar of different texts, human-computer interaction, or translation from one language to another.
+Common analysis may then be used to predict POS given the current state of the text, comparing the grammar of different texts, human-computer interaction, or translation from one language to another.
 
-## Example
+## Examples
 
-The following approach to POS-tagging is very similar to what we did for sentiment analysis as depicted previously. We have a POS dictionary, and can use an inner join to attach the words to their POS.  Unfortunately this approach is course unrealistically simplistic, as additional steps would need to be taken to ensure words are correctly classified.  Without more information, we are unable to tell if some words are being used, e.g. as nouns or verbs.  However, it serves as a starting point.
+The following approach to POS-tagging is very similar to what we did for sentiment analysis as depicted previously. We have a POS dictionary, and can use an inner join to attach the words to their POS.  Unfortunately this approach is unrealistically simplistic, as additional steps would need to be taken to ensure words are correctly classified.  For example, without more information, we are unable to tell if some words are being used as nouns or verbs (human being vs. being a problematic part of speech).  However, this example can serve as a starting point.
 
 ### Barthelme & Carver
 
@@ -92,7 +92,8 @@ carver_pos %>%
   plot_ly() %>% 
   add_markers(x=~pos, y=~prop, color=I('gray50'), opacity=.5, size=I(20), name='Carver') %>% 
   add_markers(x=~pos, y=~prop, color=~text, size=I(10), data=barthelme_pos) %>% 
-  theme_plotly()
+  theme_plotly() %>% 
+  layout(xaxis = list(title=F))
 ```
 
 It would appear Barthelme is fairly consistent. It would appear Carver preferred nouns and pronouns. 

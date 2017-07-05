@@ -14,15 +14,15 @@ output:
     hightlight: pygments
     number_sections: false
     # split_by: section
+    toc_depth: 2
     config:
-      toc:
-        collapse: chapter
-        scroll_highlight: yes
-        before: null
-        after: null
-      toc_depth: 2
-      toolbar:
-        position: fixed
+      # toc:
+        # collapse: chapter
+      #   scroll_highlight: yes
+      #   before: null
+      #   after: null
+      # toolbar:
+      #   position: fixed
       edit : null
       download: null
       search: yes
