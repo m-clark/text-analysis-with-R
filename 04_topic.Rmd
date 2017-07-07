@@ -9,3 +9,53 @@ In the standard setting, to be able to conduct such an analysis from text one ne
 
 
 ## Examples
+
+
+```{r eval=F}
+rnj_filtered %>% 
+   count(word) %>% 
+   arrange(desc(n)) %>% data.frame
+```
+
+```{r rnj_remove_names eval=F}
+rnj_names = rnj %>% 
+  slice(10:35) %>% 
+  mutate(name=str_extract(text, pattern='.+?(?=,)'),
+         name_lower = str_to_lower(name)) 
+rnj_names
+
+```
+
+```{r eval=F}
+oldE = data_frame(word = c('thou', 'thee', 'thine', 'thy',
+                           'ye', 'hath', 'art', 'tis',
+                           'hast', 'ay', 'ere', 'dost'))
+rnj_filtered2 = rnj_filtered %>% 
+  filter(!word %in% pull(rnj_names, name_lower)) %>% 
+  anti_join(stop_words) %>% 
+  anti_join(oldE)
+
+rnj_filtered2 %>% 
+   count(word) %>% 
+   arrange(desc(n))
+```
+
+```{r test_tm_map, eval=FALSE}
+test = rnj %>% 
+  slice(-(1:49)) %>% 
+  filter(!text == str_to_upper(text),
+         !str_detect(text, pattern='^Scene|^Act |^\\[')) %>% 
+  select(-gutenberg_id) %>% 
+  unnest_tokens(para, input=text, token='paragraphs') %>% 
+  mutate(paraID = 1:n())
+
+skipWords <- function(x) removeWords(x, c("it", "the", pull(oldE, word)))
+funs <- list(stripWhitespace,
+             skipWords,
+             removePunctuation,
+             content_transformer(tolower),
+             stemDocument)
+test_tm = tm_map(VCorpus(DataframeSource(select(test, para))), FUN = tm_reduce, tmFuns = funs)[[1]]
+content(test_tm)
+```
+

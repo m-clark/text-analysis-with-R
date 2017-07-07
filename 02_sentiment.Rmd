@@ -84,31 +84,72 @@ inner join
 return all rows from x where there are matching values in y, and all columns from x and y. If there are multiple matches between x and y, all combination of the matches are returned.
 
 
-### Exercises
+## Exercises
 
 ### Romeo & Juliet
 
 
-```{r load_rj}
+```{r rnj_load}
 library(gutenbergr)
 gw0 = gutenberg_works(title == "Romeo and Juliet")  # look for something with this title
 gw0
 rnj = gutenberg_download(gw0$gutenberg_id)
-rnj %>% data.frame %>% head(500)  
+DT::datatable(rnj, options(scrollX=T))
+```
 
+```{r rnj_clean}
 rnj_filtered = rnj %>% 
   slice(-(1:49)) %>% 
   filter(!text == str_to_upper(text),
-         !str_detect(text, pattern='^Scene'))
-  
-rnj_filtered %>% data.frame %>% head(500)  
-rnj_filtered %>% 
-  filter(ifelse(length(text)==1, T, F)) %$% 
-  table(text)  
-
-rnj_filtered2 = rnj_filtered %>% 
-  unnest(text) %>% 
-  unnest_tokens(text, input=text, token='sentences')
-rnj_filtered2$text
+         !str_detect(text, pattern='^Scene|^Act |^\\[')) %>% 
+  select(-gutenberg_id) %>% 
+  unnest_tokens(sentence, input=text, token='sentences') %>% 
+  mutate(sentenceID = 1:n())
+DT::datatable(rnj_filtered, rownames=F, options=list(dom='pt'))
 ```
+
+
+```{r rnj_stopwords}
+rnj_filtered = rnj_filtered %>% 
+  unnest_tokens(word, sentence, token='words') %>%   # remember to call it word or antijoin won't work
+  anti_join(stop_words)
+```
+
+
+```{r rnj_sentiment}
+rnj_filtered %>% 
+  count(word) %>% 
+  arrange(desc(n))
+
+rnj_sentiment = rnj_filtered %>% 
+  inner_join(sentiments)
+rnj_sentiment
+```
+
+```{r rnj_bing}
+rnj_sentiment_bing = rnj_sentiment %>% 
+  filter(lexicon=='bing')
+table(rnj_sentiment_bing$sentiment)
+```
+
+```{r rnj_sentiment_as_game}
+rnj_sentiment_bing %>% 
+  arrange(sentenceID) %>% 
+  mutate(positivity = cumsum(sentiment=='positive'),
+         negativity = cumsum(sentiment=='negative')) %>% 
+  plot_ly() %>% 
+  add_lines(x=~sentenceID, y=~positivity, name='positive') %>% 
+  add_lines(x=~sentenceID, y=~negativity, name='negative')
+  
+```
+
+```{r rnj_sentiment_diff}
+rnj_sentiment_bing %>% 
+  arrange(sentenceID) %>% 
+  mutate(positivity = cumsum(sentiment=='positive'),
+         negativity = cumsum(sentiment=='negative')) %>% 
+  plot_ly() %>% 
+  add_lines(x=~sentenceID, y=~positivity-negativity)
+```
+
 
