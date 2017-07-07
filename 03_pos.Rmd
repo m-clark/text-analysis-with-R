@@ -98,7 +98,7 @@ carver_pos %>%
 
 <br>
 
-It would appear Barthelme is fairly consistent. It would appear Carver preferred nouns and pronouns. 
+It would appear Barthelme is fairly consistent, and also that relative to the Barthelme texts, Carver preferred nouns and pronouns. 
 
 ### More taggin
 
@@ -229,8 +229,9 @@ barthelme_pos %>%
 
 For more information, consult the following:
 
-- [Penn Treebank](http://repository.upenn.edu/cgi/viewcontent.cgi?article=1603&context=cis_reports)
-- [Maxent function](http://maxent.sourceforge.net/about.html)
+- [Penn Treebank](http://repository.upenn.edu/cgi/viewcontent.cgi?article=1603&context=cis_reports) 
+- [Maxent function](http://maxent.sourceforge.net/about.html) Note that this 'maximum entropy' approach is just one way to go about things. Other models include hidden markov models, conditional random fields, and more recently, deep learning techniques.
+
 
 
 For more natural language processing tools in R, consult the corresponding [task view](https://www.r-pkg.org/ctv/NaturalLanguageProcessing).  Much natural language processing is done with deep learning techniques, which generally requires a lot of data, notable computing resources, fine tunining, and often involves optimization towards a specific task.  Most of the cutting edge work there is done in Python, but as a starting point for more common approaches, you can check out the [Natural Language Toolkit](http://www.nltk.org/book/).

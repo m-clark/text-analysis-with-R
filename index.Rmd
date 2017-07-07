@@ -58,7 +58,7 @@ knitr::opts_chunk$set(echo = TRUE, message=F, warning=F, error=F, comment=NA, R.
 ```
 
 ```{r packages, include=FALSE, cache=FALSE}
-library(tidyverse); library(stringr); library(pander); library(plotly); library(lazerhawk)
+library(magrittr); library(tidyverse); library(stringr); library(pander); library(plotly); library(lazerhawk)
 ```
 
 
