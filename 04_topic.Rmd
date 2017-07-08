@@ -57,5 +57,18 @@ funs <- list(stripWhitespace,
              stemDocument)
 test_tm = tm_map(VCorpus(DataframeSource(select(test, para))), FUN = tm_reduce, tmFuns = funs)[[1]]
 content(test_tm)
+
 ```
 
+```{r test_quanteda, eval=FALSE}
+library(quanteda)
+test = rnj %>% 
+  slice(-(1:49)) %>% 
+  filter(!text == str_to_upper(text),
+         !str_detect(text, pattern='^Scene|^Act |^\\[')) %>% 
+  select(-gutenberg_id) %>% 
+  unnest_tokens(text, input=text, token='paragraphs', to_lower=F) %>% 
+  mutate(paraID = 1:n())
+testq = corpus(test)
+summary(testq)
+```
