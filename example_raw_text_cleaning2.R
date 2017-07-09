@@ -51,6 +51,22 @@ names(works) = c("All's Well That Ends Well", "As You Like It", "The Comedy of E
                  "The Rape of Lucrece", "Venus and Adonis", "Elegy")
 
 
+#○ Sonnets -----------------------------------------------------------------
+
+sonnet_url = paste0('http://shakespeare.mit.edu/', grep(works_urls0, pattern='sonnet', value=T)) %>%
+  read_html() %>%
+  html_nodes('a') %>%
+  html_attr('href')
+
+sonnet_url = sonnet_url[-1]  # remove amazon link
+
+sonnet0 = purrr::map(sonnet_url, function(x) read_html(paste0('http://shakespeare.mit.edu/Poetry/', x)))
+sonnet = sapply(sonnet0, html_text_collapse)
+works$Sonnets = sonnet
+
+
+#○ Save and write out ------------------------------------------------------
+
 save(works, file='data/texts_raw/shakes/moby_from_web.RData')
 
 # This will spit the text to the console for reasons unknown
@@ -138,15 +154,26 @@ titles =  c("All's Well That Ends Well", "As You Like It", "The Comedy of Errors
             "Julius Caesar", "King Lear", "Macbeth",
             "Othello", "Romeo and Juliet", "Timon of Athens",
             "Titus Andronicus", "Sonnets", "A Lover's Complaint",
-            "The Rape of Lucrece", "Venus and Adonis", "Elegy")
+            "The Rape of Lucrece", "Venus and Adonis", "Elegy", "The Phoenix and the Turtle")
+
+# for later
+shakes_types = data_frame(title=titles) %>%
+  mutate(class = 'Comedy',
+         class = if_else(grepl(title, pattern='Adonis|Lucrece|Complaint|Turtle|Pilgrim|Sonnet|Elegy'), 'Poem', class),
+         class = if_else(grepl(title, pattern='Henry|Richard|John'), 'History', class),
+         class = if_else(grepl(title, pattern='Troilus|Coriolanus|Titus|Romeo|Timon|Julius|Macbeth|Hamlet|Othello|Antony|Cymbeline|Lear'), 'Tragedy', class),
+         problem = if_else(grepl(title, pattern='Measure|Merchant|^All|Troilus|Timon|Passion'), 'Problem', 'Not'),
+         late_romance = if_else(grepl(title, pattern='Cymbeline|Kinsmen|Pericles|Winter|Tempest'), 'Late', 'Other'))
+
+save(shakes_types, file='data/shakespeare_classification.RData')
 
 shakes_trim = shakes_trim %>%
   filter(text != '',                     # empties
          !text %in% titles,              # titles
-         !str_detect(text, '^ACT|^SCENE|^Enter|^Exit|^Exeunt')  # acts etc.
+         !str_detect(text, '^ACT|^SCENE|^Enter|^Exit|^Exeunt|^Sonnet')  # acts etc.
          )
 
-shakes_trim %>% filter(id=='Romeo_and_Juliet')
+shakes_trim %>% filter(id=='Romeo_and_Juliet') # we'll get prologue later
 
 
 
@@ -192,19 +219,23 @@ chars =  chars[chars != '']
 
 #○ Old/middle English ------------------------------------------------------
 
-# me from python cltk module; em from http://earlymodernconversions.com/wp-content/uploads/2013/12/stopwords.txt; I also added some to me
+# old and me from python cltk module; em from http://earlymodernconversions.com/wp-content/uploads/2013/12/stopwords.txt; I also added some to me
+
+old_stops0 = read_lines('data/old_english_stop_words.txt')
+# sort(old_stops0)
+old_stops = data_frame(word=str_conv(old_stops0, 'UTF8'),
+                      lexicon = 'cltk')
+
 me_stops0 = read_lines('data/middle_english_stop_words')
 # sort(me_stops0)
 me_stops = data_frame(word=str_conv(me_stops0, 'UTF8'),
                       lexicon = 'cltk')
-
 
 em_stops0 = read_lines('data/early_modern_english_stop_words.txt')
 # sort(em_stops0)
 em_stops = data_frame(word=str_conv(em_stops0, 'UTF8'),
                       lexicon = 'emc')
 
-# quanteda ----------------------------------------------------------------
 
 library(tidytext)
 library(quanteda)
@@ -212,49 +243,135 @@ library(quanteda)
 # test = readtext('data/texts_raw/shakes/moby/Antony_and_Cleopatra')
 
 
-shakes_test = shakes_trim %>%
-  filter(!str_detect(text, paste0('^', chars, collapse='|'))) %>%   # remove name only lines
+#○ Remove name only lines --------------------------------------------------
+
+shakes_words = shakes_trim %>%
+  filter(!str_detect(text, paste0('^', chars, collapse='|'))) %>%
   unnest_tokens(word, text, token='words')
 
 
-shakes_test = shakes_test %>%
+#○ Deal with suffixes ------------------------------------------------------
+
+source('r/st_stem.R')
+
+shakes_words = shakes_words %>%
   mutate(word = str_trim(word),    # remove possible whitespace
-         word = str_replace(word, "'er$|'d$|'t$|'ld$|'rt$", '')) %>%        # remove me style endings
+         word = str_replace(word, "'er$|'d$|'t$|'ld$|'rt$|'st$|'dst$", ''),    # remove me style endings
+         word = vapply(word, me_st_stem, 'a')) %>%
+  anti_join(old_stops) %>%
   anti_join(me_stops) %>%
   anti_join(em_stops) %>%
   anti_join(data_frame(word=str_to_lower(c(chars, 'prologue')))) %>%
   anti_join(data_frame(word=str_to_lower(paste0(chars, "'s")))) %>%     # remove possessive names
   anti_join(stop_words)
 
-# other fixes to do before counts
 
-shakes_test = shakes_test %>%
+#○ Other fixes to do before counts -----------------------------------------
+
+# porter should catch remaining est
+
+
+add_a =  c('mongst', 'gainst')
+shakes_words = shakes_words %>%
   mutate(word = if_else(word=='honour', 'honor', word),
-         word = str_replace(word, "'s$", ''))                # remaining possessives
+         word = if_else(word=='durst', 'dare', word),
+         word = if_else(word=='wast', 'was', word),
+         word = if_else(word=='dust', 'does', word),
+         word = if_else(word=='curst', 'cursed', word),
+         word = if_else(word=='blest', 'blessed', word),
+         word = if_else(word=='crost', 'crossed', word),
+         word = if_else(word=='accurst', 'accursed', word),
+         word = if_else(word %in% add_a,
+                        paste0('a', word),
+                        word),
+         word = str_replace(word, "'s$", ''),                # strip remaining possessives
+         word = if_else(str_detect(word, pattern="o'er"),
+                        str_replace(word, "'", 'v'),
+                        word)) %>%
+  filter(str_count(word)>2)
 
-
-term_counts = shakes_test %>%
+# term counts and tests
+term_counts = shakes_words %>%
   group_by(id, word) %>%
   count
-term_counts %>%
-  arrange(desc(n)) %>%
-  # filter(str_count(word)>2) %>%
-  data.frame()
 # term_counts %>%
-  arrange(desc(n)) %>%
-  filter(str_count(word)>2) %>%
-  data.frame() %>%
-  filter(n<28)
+#   arrange(desc(n)) %>%
+#   # filter(str_count(word)>2) %>%
+#   data.frame()
+# term_counts %>%
+#   arrange(desc(n)) %>%
+#   data.frame() %>%
+#   filter(n<5)
+# term_counts %>%
+#   ungroup %>%
+#   arrange(desc(n)) %>%
+#   data.frame() %>%
+#   filter(grepl(word, pattern='st$')) %>%
+#   filter(!grepl(word, pattern='est$')) %>%
+#   distinct(word)
 
-term_counts %>%
-  arrange(desc(n)) %>%
-  filter(str_count(word)>2) %>%
-  data.frame() %>%
-  filter(n<21)
-# shakes_test = shakes_trim %>%
-#   filter(id %in% c('Hamlet', 'Romeo_and_Juliet')) %>%
-#   split
+save(shakes_words, term_counts, file='data/shakes_words_df.RData')
 
-test = shakes_test %>%
-  split(.$id) %>%
-  map(~corpus(.$text))
+# Document term matrix ----------------------------------------------------
+
+load('data/shakes_words_df.RData')
+
+library(quanteda)
+
+shakes_dtm = term_counts %>%
+  cast_dfm(document=id, term=word, value=n)
+ncol(shakes_dtm)
+shakes_dtm = shakes_dtm %>%
+  dfm_wordstem()
+ncol(shakes_dtm)
+summary(shakes_dtm)
+
+# top 20 words
+topfeatures(shakes_dtm, 20)
+
+# useless!
+textplot_wordcloud(shakes_dtm, min.freq = 300, random.order = T,
+                   rot.per = .25,
+                   colors = viridis::viridis(500))
+
+# similarity
+
+textstat_simil(shakes_dtm, margin = "documents", method = "cosine") %>%
+  heatR::corrheat()
+
+textstat_simil(dfm_weight(shakes_dtm, 'relFreq'), margin = "documents", method = "correlation") %>%
+  heatR::corrheat()
+
+
+# text model scaling
+
+test_scale = textmodel(shakes_dtm, model = "wordfish", dir=c(2,1))
+
+# topic model
+
+library(topicmodels)
+shakes_10 = LDA(convert(shakes_dtm, to = "topicmodels"), k = 10)
+get_terms(shakes_10, 20)
+topics(shakes_10, 3)
+
+# pal = c(lazerhawk::palettes$latvian_red$latvian_red, lazerhawk::palettes$latvian_red$tetradic)
+
+row_dend  = textstat_simil(shakes_dtm, margin = "documents", method = "cosine") %>%
+  as.dist() %>%
+  hclust(method="ward.D") %>%
+  as.dendrogram %>%
+  set("branches_k_color", k = 3) %>% set("branches_lwd", c(.5,.5)) %>%
+  ladderize
+
+shakes_10@gamma %>%
+  round(3) %>%
+  heatmaply::heatmaply(Rowv=row_dend,
+                       Colv=F,
+                       # distfun = '',
+                       # dendrogram = 'none',
+                       labRow=rownames(shakes_dtm),
+                       labCol=paste0('topic', 1:10),
+                       colors=viridis::inferno(50),
+                       k_row = 4,
+                       row_side_colors = select(arrange(shakes_types, title), class),
+                       fontsize_row=7)
