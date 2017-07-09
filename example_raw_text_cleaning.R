@@ -205,7 +205,7 @@ other_stops = data_frame(word= c('ile', 'ite', 'nch', 'nce', 'wne', 'lord',
                                  'ens', 'empts', 'empt', 'emp', 'padua', 'alas',
                                  'anor', 'lish', 'sby', 'morrow', 'cian', "is't",
                                  'shalt', 'rousillon', 'rge', 'refore', 'fulvia',
-                                 'inst', 'don', 'ere', 'ill', 'nckle', 'jan', 'scena',
+                                 'inst', 'don', 'ere', 'nckle', 'jan', 'scena',
                                  'alarum', 'alan', 'ces', 'ioles', 'cesario'))
 
 # Fixes based on counts
