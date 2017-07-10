@@ -261,15 +261,20 @@ span
 as.duration(span)
 ```
 
+This package makes dates so much easier, you should always use it when dealing with them.
+
 #### Categorical Time
 
 In regression modeling with few time points, one often has to decide on whether to treat the year as categorical (factor) or numeric (continuous).  This greatly depends on how you want to tell your data story or other practical concerns.  For example, if you have five years in your data, treating <span class="objclass">year</span> as categorical means you are interested in accounting for unspecified things that go on in a given year.  If you treat it as numeric, you are more interested in trends. Either is fine.
 
+#### Encoding
+
+Encoding can be a sizeable PITA sometimes, and will often come up when dealing with webscraping and other languages.  The <span class="pack">rvest</span> and <span class="pack">stringr</span> packages may be able to get you past some issues at least. See their respective functions <span class="func">repair_encoding</span> and <span class="func">str_conv</span> as starting points on this issue.
 
 
 ### Summary of basic text functionality
 
-Being familiar with commonly used string functionality in base R and packages like <span class="pack">stringr</span> can save a ridiculous amount of time in your data processing.
+Being familiar with commonly used string functionality in base R and packages like <span class="pack">stringr</span> can save a ridiculous amount of time in your data processing.  The more familiar you are with them the easier time you'll have with text.
 
 
 
@@ -277,9 +282,9 @@ Being familiar with commonly used string functionality in base R and packages li
 ## Regular Expressions
 
 
-## dplyr helper functions
+### dplyr helper functions
 
-The <span class="pack">dplyr</span> package comes with some poorly documented[^poordoc] helper functions that essentially serve as human-readable regex, which is a good thing.  These functions allow you to select variables based on their names.  They are just calling <span class="func">grep</span> in the end.
+The <span class="pack">dplyr</span> package comes with some poorly documented[^poordoc] but quite useful helper functions that essentially serve as human-readable regex, which is a good thing.  These functions allow you to select variables[^helperrows] based on their names.  They are just calling <span class="func">grep</span> in the end.
 
 - <span class="func">starts_with</span>: starts with a prefix (same as regex '^blah')
 - <span class="func">ends_with</span>: ends with a prefix     (same as regex 'blah$')
@@ -293,7 +298,7 @@ The <span class="pack">dplyr</span> package comes with some poorly documented[^p
 
 ### Example 1
 
-Let's say you're dealing with some data that has been handled typically, that is to say, poorly. For example, you have a variable in your data representing whether something if from the north or south.
+Let's say you're dealing with some data that has been handled typically, that is to say, poorly. For example, you have a variable in your data representing whether something is from the north or south region.
 
 ```{r label_problem, echo=FALSE}
 df = data_frame(
@@ -325,9 +330,9 @@ The <span class="func">str_trim</span> function trims white space from either si
 
 ### Example 2
 
-Suppose you import a data frame, and the data was originally in wide format, where each column represented a year of data collection for the individual. Since it is bad form for data columns to have numbers for names, when you import it, the result looks like the following
+Suppose you import a data frame, and the data was originally in wide format, where each column represented a year of data collection for the individual. Since it is bad form for data columns to have numbers for names, when you import it, the result looks like the following.
 
-```{r rename_chunk}
+```{r rename_chunk, echo=FALSE}
 df = data.frame(id=1:20, round(matrix(rnorm(100), ncol=5), 2))
 DT::datatable(df, options=list(dom='pt'), rownames=F)
 ```
@@ -359,7 +364,7 @@ df %>%
   head
 ```
 
-We just have to use the <span class="func">num_range</span> helper function within and let <span class="func">str_replace</span> do the rest. 
+We just have to use the <span class="func">num_range</span> helper function within the funtion that tells <span class="func">rename_at</span> what it should be renaming, and let <span class="func">str_replace</span> do the rest. 
 
 
 
@@ -368,6 +373,8 @@ We just have to use the <span class="func">num_range</span> helper function with
 [^poordoc]: At least they're exposed now.
 
 [^excel]: This is a very common issue among Excel users, and just one of the many reasons not to use it.
+
+[^helperrows]: And maybe some day, the oh so challenging rows!
 
 [^str_all]: I also don't think it necessary to have separate functions for str_* functions in <span class="pack">stringr</span> depending on whether, e.g. I want 'all' matches (practically every situation) or just the first (very rarely). It could have just been an additional argument with default `all=TRUE`.
 
@@ -380,7 +387,7 @@ We just have to use the <span class="func">num_range</span> helper function with
 
 A common and intuitive approach to text is <span class="emph">sentiment analysis</span>.  In a grand sense we are interested in the emotional content of some text, e.g. posts on Facebook, tweets, or movie reviews.  Most of the time, this is obvious when one reads it, but if you have hundreds of thousands or millions of strings to analyze, we'd like to be able to do so efficiently.
 
-We will use the <span class="pack">tidytext</span> package for our demonstration.  It comes with a lexicon of positive and negative words that is actually a combination of multiple sources, one of which provides numeric ratings.
+We will use the <span class="pack">tidytext</span> package for our demonstration.  It comes with a lexicon of positive and negative words that is actually a combination of multiple sources, one of which provides numeric ratings, while the others suggest different classses of sentiment.
 
 
 ```{r lexicon, echo=-1}
@@ -401,17 +408,36 @@ Now consider the following.
 sentiments %>% filter(word=='sick') 
 ```
 
-The word *sick* has been used at least since 1960s surfing culture to be slang for positive.  A basic approach to sentiment analysis as described here will not be able to detect slang or other context like sarcasm.  
+The word *sick* has been used at least since 1960s surfing culture as slang for positive.  A basic approach to sentiment analysis as described here will not be able to detect slang or other context like sarcasm.  
 
 ### Lexicons
 
-In addition, the lexicons are going to maybe be applicable to *general* usage of English in the western world.  Some might wonder where exactly these came from or who decided that the word *abacus* should be affiliated with 'trust'. You may start your path by typing `?sentiments` at teh console if you have the <span class="pack">tidytext</span> package loaded.
+In addition, the lexicons are going to maybe be applicable to *general* usage of English in the western world.  Some might wonder where exactly these came from or who decided that the word *abacus* should be affiliated with 'trust'. You may start your path by typing `?sentiments` at the console if you have the <span class="pack">tidytext</span> package loaded.
 
 ## Examples
 
 ### 
 
 ### The first thing the baby did wrong.
+
+We demonstrate sentiment analysis with the text *The first thing the baby did wrong*, which is a very popular brief guide to parenting written by world renown psychologist Donald Barthelme who, in his spare time, also wrote postmodern literature.  This particular text talks about an issue with the baby, who likes to tear pages out of books. Attempts are made to rectify the situation, which is finally resolved at the end.
+
+How do we start? Let's look at the <span class="objclass">sentiments</span> data set in the <span class="pack">tidytext</span> package.
+
+
+```{r inspect_sentiments}
+library(tidytext)
+sentiments %>% slice(sample(1:nrow(sentiments)))
+```
+
+The <span class="objclass">bing</span> lexicon is just *positive* or *negative*. The AFINN is numerical, with ratings -5:5 that are in the <span class="objclass">score</span> column. The others get more imaginative, but also more problematic. Why *assimilate* is *superfluous* is beyond me. It clearly should be negative given the Borg connotations.
+
+```{r superfluous}
+sentiments %>% 
+  filter(sentiment=='superfluous')
+```
+
+But I digress.
 
 ```{r baby_sentiment_importraw, echo=FALSE}
 library(tidytext)
@@ -791,7 +817,7 @@ rnj_filtered %>%
    arrange(desc(n)) %>% data.frame
 ```
 
-```{r rnj_remove_names eval=F}
+```{r rnj_remove_names, eval=F}
 rnj_names = rnj %>% 
   slice(10:35) %>% 
   mutate(name=str_extract(text, pattern='.+?(?=,)'),
@@ -848,6 +874,112 @@ summary(testq)
 ```
 
 <!--chapter:end:04_topic.Rmd-->
+
+# Shakespeare Start to Finish
+
+The following attempts to demonstrate the usual difficulties in dealing with text by procuring and processing the works of Shakespeare.  The source is [MIT](http://shakespeare.mit.edu/) which has made the 'complete' works available on the web since 1993, plus one other from Gutenberg.  The initia issue is simply getting the works from the web.  Subsequently there is metadata, character names, stopwords etc. to be removed. At that point we can stem and count the words in each work, which, when complete, puts us at the point we are ready for analysis.
+
+The primary packages used are <span class="pack">tidytext</span>, <span class="pack">stringr</span>, and when things are ready for analysis, <span class="pack">quanteda.</span>
+
+
+
+## ACT I. Scrape Moby and Gutenberg Shakespeare
+
+Initially we must scrape the web to get the documents we need.  The <span class="pack">rvest</span> package will be used as follows.
+
+- Start with the url of the site
+- Get the links off that page to serve as base urls for the works
+- Scrape the document for each url
+- Deal with the collection of Sonnets separately
+- Write out results
+
+
+```{r shakes_urls, eval=FALSE}
+library(rvest); library(tidyverse); library(stringr)
+
+page0 = read_html('http://shakespeare.mit.edu/')
+
+works_urls0 = page0 %>%
+  html_nodes('a') %>%
+  html_attr('href')
+
+main = works_urls0 %>%
+  grep(pattern='index', value=T) %>%
+  str_replace_all(pattern='index', replacement='full')
+
+other = works_urls0[!grepl(works_urls0, pattern='index|edu|org|news')]
+
+works_urls = c(main, other)
+works_urls[1:3]
+```
+
+Now we just paste the main site url to the work urls and download them.  Here is where we come across our first snag.  The <span class="func">html_text</span> function has what I would call a bug but what the author feels is a feature.  [Basically it ignores line breaks of the form <br> in certain situations](https://github.com/hadley/rvest/issues/175).  This means it will smash text together that shouldn't be, thereby making *any* analysis of it fairly useless[^bug].  Luckily, [@rentrop](https://github.com/rentrop) provided a solution, which is in `r/fix_read_html.R`.
+
+```{r scrape_shakes, eval=FALSE}
+works0 = lapply(works_urls, function(x) read_html(paste0('http://shakespeare.mit.edu/', x)))
+
+source('r/fix_read_html.R')
+
+html_text_collapse(works0[[1]]) #works
+works = lapply(works0, html_text_collapse)
+
+
+names(works) = c("All's Well That Ends Well", "As You Like It", "The Comedy of Errors",
+                 "Cymbeline", "Love's Labour's Lost", "Measure for Measure",
+                 "The Merry Wives of Windsor", "The Merchant of Venice", "A Midsummer Night's Dream",
+                 "Much Ado about Nothing", "Pericles Prince of Tyre", "The Taming of the Shrew",
+                 "The Tempest", "Troilus and Cressida", "Twelfth Night",
+                 "The Two Gentlemen of Verona", "The Winter's Tale", "King Henry IV Part 1",
+                 "King Henry IV Part 2", "Henry V", "Henry VI Part 1",
+                 "Henry VI Part 2", "Henry VI Part 3", "Henry VIII",
+                 "King John", "Richard II", "Richard III",
+                 "Antony and Cleopatra", "Coriolanus", "Hamlet",
+                 "Julius Caesar", "King Lear", "Macbeth",
+                 "Othello", "Romeo and Juliet", "Timon of Athens",
+                 "Titus Andronicus", "Sonnets", "A Lover's Complaint",
+                 "The Rape of Lucrece", "Venus and Adonis", "Elegy")
+```
+
+
+### Sonnets :heart:
+
+We hit a slight nuisance with the Sonnets. The Sonnets have a bit of a different structure than the plays. All links are in a single page, with a different form for the url, and each sonnet has its own page.
+
+```{r scrape_sonnets, eval=F}
+sonnet_urls = paste0('http://shakespeare.mit.edu/', grep(works_urls0, pattern='sonnet', value=T)) %>%
+  read_html() %>%
+  html_nodes('a') %>%
+  html_attr('href')
+
+sonnet_urls = grep(sonnet_urls, pattern = 'sonnet', value=T)  # remove amazon link
+
+# read the texts
+sonnet0 = purrr::map(sonnet_urls, function(x) read_html(paste0('http://shakespeare.mit.edu/Poetry/', x)))
+
+# collapse to one 'Sonnets' work
+sonnet = sapply(sonnet0, html_text_collapse)
+works$Sonnets = sonnet
+```
+
+
+### Save and write out 
+
+Now we can save our results so we won't have to repeat any scraping.  We want to save the main text object as an RData file, and write out the texts to their own file.
+
+```{r initial_save, eval=F}
+save(works, file='data/texts_raw/shakes/moby_from_web.RData')
+
+# This will spit the text to the console unfortunately
+
+purrr::map2(works,
+            paste0('data/texts_raw/shakes/moby/', str_replace_all(names(works), " |'", '_'), '.txt'),
+            function(x, nam) write_lines(x, path=nam))
+```
+
+
+[^bug]: If you can think of a use case where `x<br>y` leading to `xy` would be both expected as default behavior and desired please enlighten me.
+
+<!--chapter:end:09_shakespeare.Rmd-->
 
 # Appendix
 

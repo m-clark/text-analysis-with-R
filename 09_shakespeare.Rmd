@@ -1,0 +1,231 @@
+# Shakespeare Start to Finish
+
+The following attempts to demonstrate the usual difficulties in dealing with text by procuring and processing the works of Shakespeare.  The source is [MIT](http://shakespeare.mit.edu/) which has made the 'complete' works available on the web since 1993, plus one other from Gutenberg.  The initia issue is simply getting the works from the web.  Subsequently there is metadata, character names, stopwords etc. to be removed. At that point we can stem and count the words in each work, which, when complete, puts us at the point we are ready for analysis.
+
+The primary packages used are <span class="pack">tidytext</span>, <span class="pack">stringr</span>, and when things are ready for analysis, <span class="pack">quanteda.</span>
+
+
+
+## ACT I. Scrape Moby and Gutenberg Shakespeare
+
+Initially we must scrape the web to get the documents we need.  The <span class="pack">rvest</span> package will be used as follows.
+
+- Start with the url of the site
+- Get the links off that page to serve as base urls for the works
+- Scrape the document for each url
+- Deal with the collection of Sonnets separately
+- Write out results
+
+
+```{r shakes_urls, eval=FALSE}
+library(rvest); library(tidyverse); library(stringr)
+
+page0 = read_html('http://shakespeare.mit.edu/')
+
+works_urls0 = page0 %>%
+  html_nodes('a') %>%
+  html_attr('href')
+
+main = works_urls0 %>%
+  grep(pattern='index', value=T) %>%
+  str_replace_all(pattern='index', replacement='full')
+
+other = works_urls0[!grepl(works_urls0, pattern='index|edu|org|news')]
+
+works_urls = c(main, other)
+works_urls[1:3]
+```
+
+Now we just paste the main site url to the work urls and download them.  Here is where we come across our first snag.  The <span class="func">html_text</span> function has what I would call a bug but what the author feels is a feature.  [Basically it ignores line breaks of the form <br> in certain situations](https://github.com/hadley/rvest/issues/175).  This means it will smash text together that shouldn't be, thereby making *any* analysis of it fairly useless[^bug].  Luckily, [@rentrop](https://github.com/rentrop) provided a solution, which is in `r/fix_read_html.R`.
+
+```{r scrape_shakes, eval=FALSE}
+works0 = lapply(works_urls, function(x) read_html(paste0('http://shakespeare.mit.edu/', x)))
+
+source('r/fix_read_html.R')
+
+html_text_collapse(works0[[1]]) #works
+works = lapply(works0, html_text_collapse)
+
+
+names(works) = c("All's Well That Ends Well", "As You Like It", "The Comedy of Errors",
+                 "Cymbeline", "Love's Labour's Lost", "Measure for Measure",
+                 "The Merry Wives of Windsor", "The Merchant of Venice", "A Midsummer Night's Dream",
+                 "Much Ado about Nothing", "Pericles Prince of Tyre", "The Taming of the Shrew",
+                 "The Tempest", "Troilus and Cressida", "Twelfth Night",
+                 "The Two Gentlemen of Verona", "The Winter's Tale", "King Henry IV Part 1",
+                 "King Henry IV Part 2", "Henry V", "Henry VI Part 1",
+                 "Henry VI Part 2", "Henry VI Part 3", "Henry VIII",
+                 "King John", "Richard II", "Richard III",
+                 "Antony and Cleopatra", "Coriolanus", "Hamlet",
+                 "Julius Caesar", "King Lear", "Macbeth",
+                 "Othello", "Romeo and Juliet", "Timon of Athens",
+                 "Titus Andronicus", "Sonnets", "A Lover's Complaint",
+                 "The Rape of Lucrece", "Venus and Adonis", "Elegy")
+```
+
+
+### Sonnets 
+
+We hit a slight nuisance with the Sonnets. The Sonnets have a bit of a different structure than the plays. All links are in a single page, with a different form for the url, and each sonnet has its own page.
+
+```{r scrape_sonnets, eval=F}
+sonnet_urls = paste0('http://shakespeare.mit.edu/', grep(works_urls0, pattern='sonnet', value=T)) %>%
+  read_html() %>%
+  html_nodes('a') %>%
+  html_attr('href')
+
+sonnet_urls = grep(sonnet_urls, pattern = 'sonnet', value=T)  # remove amazon link
+
+# read the texts
+sonnet0 = purrr::map(sonnet_urls, function(x) read_html(paste0('http://shakespeare.mit.edu/Poetry/', x)))
+
+# collapse to one 'Sonnets' work
+sonnet = sapply(sonnet0, html_text_collapse)
+works$Sonnets = sonnet
+```
+
+
+### Save and write out 
+
+Now we can save our results so we won't have to repeat any scraping.  We want to save the main text object as an RData file, and write out the texts to their own file.
+
+```{r initial_save, eval=F}
+save(works, file='data/texts_raw/shakes/moby_from_web.RData')
+
+# This will spit the text to the console unfortunately
+
+purrr::map2(works,
+            paste0('data/texts_raw/shakes/moby/', str_replace_all(names(works), " |'", '_'), '.txt'),
+            function(x, nam) write_lines(x, path=nam))
+```
+
+### Read text in
+
+After the above is done, it's not required to redo, so we can always get what we need.  I'll start with the raw text as files, as that is one of the more common ways one deals with documents.  When text is nice and clean, this can be fairly straightforward.
+
+The  function at the end comes from the <span class="pack">tidyr</span> package. Up to that line, each element in the <span class="objclass">text</span> column is the entire text, while the column itself is thus a 'list-column'. In other words we have a 42 x 2 matrix. But to do what we need, we'll want to have access to each line, and the <span class="func">unnest</span> function unpacks each line within the title. The first few lines of the result is shown after.
+
+```{r read_shakes_works, echo=-5, eval=FALSE}
+library(tidyverse); library(stringr)
+
+shakes0 =
+  data_frame(file = dir('data/texts_raw/shakes/moby/', full.names = TRUE)) %>%
+  mutate(text = map(file, read_lines)) %>%
+  transmute(id = basename(file), text) %>%
+  unnest(text)
+
+save(shakes0, file='data/initial_shakes_dt.RData')
+
+# Alternate that provides for more options
+# library(readtext)
+# shakes0 =
+#   data_frame(file = dir('data/texts_raw/shakes/moby/', full.names = TRUE)) %>%
+#   mutate(text = map(file, readtext, encoding='UTF8')) %>%
+#   unnest(text)
+```
+
+```{r show_shakes0, echo=F}
+load('data/initial_shakes_dt.RData')
+DT::datatable(shakes0[1:20,], options=list(dom='tp'))
+```
+
+
+### Add additional works 
+
+It is typical to be gathering texts from multiple sources. In this case, we'll get *The Phoenix and the Turtle* from the Gutenberger website.  There is an R package that will allow us to work directly with the site, making the process straightforward[^r4everything].  I also considered two other works, but I refrained from "The Two Noble Kinsmen" because like many other of Shakespeare's versions on Gutenberg, it's basically written in a different language.  I also refrained from  *The Passionate Pilgrim* because it's mostly not Shakespeare.
+
+When first doing this project, I actually started with Gutenberg, but it became a notable PITA. The texts were inconsistent in source, and sometimes reproduced printing errors purposely, which would have compounded typical problems.  I thought it could have been solved by using the *Complete Works of Shakespeare* but the download only came with that title, meaning one would have to hunt for and delineate each separate work.  This might not have been too big of an issue, except that there is no table of contents, nor consistent naming of titles across different printings.  The MIT approach, on the other hand, was a few lines of code. This represents a common issue in text analysis when dealing with sources, a different option may save a lot of time in the end.
+
+The following code could be more succinct to deal with one text, but I initially was dealing with multiple works, so I've left it in that mode.  In the end we'll have a <span class="objclass">tibble</span> with an id column for the file/work name, and another column that contains the lines of text.
+
+```{r phoenix_turtle, eval=FALSE}
+library(gutenbergr)
+
+works_not_included = c("The Phoenix and the Turtle")   # add others if desired
+
+gute0 = gutenberg_works(title %in% works_not_included)
+gute = lapply(gute0$gutenberg_id, gutenberg_download)
+gute = mapply(function(x, y) mutate(x, id=y) %>% select(-gutenberg_id), 
+              gute, works_not_included, 
+              SIMPLIFY=F)
+
+shakes = shakes0 %>%
+  bind_rows(gute) %>%
+  mutate(id = str_replace(id, '.txt', ''))
+
+# shakes %>% split(.$id) # inspect
+
+save(shakes, file='data/texts_raw/shakes/shakes_df.RData')
+```
+
+## ACT II. Preliminary Cleaning
+
+If you think we're even remotely getting close to being ready for analysis, I say Ha! to you. Our journey has only just begun (cue the Carpenters). 
+
+Now we can start thinking about prepping the data for eventual analysis. One of the nice things about having the data in a tidy format is that we can use string functionality over the column of text in a simple fashion.
+
+First on our todo list is to get rid of all the prelimnary text of titles, authorship etc.  This is fairly easy when you think that every text will start with ACT I, or in the case of the Sonnets, the word Sonnet, and for the other poems we'll be on the lookout for lines that start with 'by', as in 'by William Shakespeare'.  We want to drop all text up to those points.  I've created a [function](https://github.com/m-clark/text-analysis-with-R/blob/master/r/detect_first_act.R) that will do that, and then just apply it to each works tibble[^tibblefail].  The one thing it doesn't work on is *A Funeral Elegy for Master William Peter*, but I added that peculiarity to the function.
+
+```{r remove_preliminary_text, echo=-(1:2)}
+load('data/texts_raw/shakes/shakes_df.RData')
+
+source('r/detect_first_act.R')
+
+shakes_trim = shakes %>%
+  split(.$id) %>%
+  lapply(detect_first_act) %>%
+  bind_rows
+
+shakes %>% filter(id=='Romeo_and_Juliet') %>% head
+shakes_trim %>% filter(id=='Romeo_and_Juliet') %>% head
+```
+
+
+Next, we'll want to remove empty rows, titles, lines that denote the act or scene, and other stuff.  I'm going to remove the word *prologue* as a stopword later. While some texts have a line that just says that (`PROLOGUE`), others have text that describes the scene (`Prologue. Blah blah`) and which I've decided to keep. As such, we just need the word itself gone.
+
+```{r remove_misc}
+titles =  c("All's Well That Ends Well", "As You Like It", "The Comedy of Errors",
+            "Cymbeline", "Love's Labour's Lost", "Measure for Measure",
+            "The Merry Wives of Windsor", "The Merchant of Venice", "A Midsummer Night's Dream",
+            "Much Ado about Nothing", "Pericles Prince of Tyre", "The Taming of the Shrew",
+            "The Tempest", "Troilus and Cressida", "Twelfth Night",
+            "The Two Gentlemen of Verona", "The Winter's Tale", "King Henry IV Part 1",
+            "King Henry IV Part 2", "Henry V", "Henry VI Part 1",
+            "Henry VI Part 2", "Henry VI Part 3", "Henry VIII",
+            "King John", "Richard II", "Richard III",
+            "Antony and Cleopatra", "Coriolanus", "Hamlet",
+            "Julius Caesar", "King Lear", "Macbeth",
+            "Othello", "Romeo and Juliet", "Timon of Athens",
+            "Titus Andronicus", "Sonnets", "A Lover's Complaint",
+            "The Rape of Lucrece", "Venus and Adonis", "A Funeral Elegy", "The Phoenix and the Turtle")
+
+shakes_trim = shakes_trim %>%
+  filter(text != '',                     # empties
+         !text %in% titles,              # titles
+         !str_detect(text, '^ACT|^SCENE|^Enter|^Exit|^Exeunt|^Sonnet')  # acts etc.
+         )
+
+shakes_trim %>% filter(id=='Romeo_and_Juliet') # we'll get prologue later
+```
+
+While we're at it, we can save the classical (often arbitrary) classifications of Shakespeare's works for later comparison to what we'll get in our analyses.
+
+```{r shakespeare_classes, eval=FALSE}
+shakes_types = data_frame(title=titles) %>%
+  mutate(class = 'Comedy',
+         class = if_else(grepl(title, pattern='Adonis|Lucrece|Complaint|Turtle|Pilgrim|Sonnet|Elegy'), 'Poem', class),
+         class = if_else(grepl(title, pattern='Henry|Richard|John'), 'History', class),
+         class = if_else(grepl(title, pattern='Troilus|Coriolanus|Titus|Romeo|Timon|Julius|Macbeth|Hamlet|Othello|Antony|Cymbeline|Lear'), 'Tragedy', class),
+         problem = if_else(grepl(title, pattern='Measure|Merchant|^All|Troilus|Timon|Passion'), 'Problem', 'Not'),
+         late_romance = if_else(grepl(title, pattern='Cymbeline|Kinsmen|Pericles|Winter|Tempest'), 'Late', 'Other'))
+
+save(shakes_types, file='data/shakespeare_classification.RData') # save for later
+```
+
+
+
+[^bug]: If you can think of a use case where `x<br>y` leading to `xy` would be both expected as default behavior and desired please enlighten me.
+
+[^r4everything]: If this surprises you, let me remind you that there are over 10k packages on CRAN alone.
+
+[^tibblefail]: I found it easier to work with the entire data frame for the function, hence splitting it on id and recombining.  Some attempt was made to work within the tidyverse, but there were numerous issues to what should have been a fairly easy task.
