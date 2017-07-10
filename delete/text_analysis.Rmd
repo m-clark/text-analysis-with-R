@@ -14,15 +14,15 @@ output:
     hightlight: pygments
     number_sections: false
     # split_by: section
-    toc_depth: 0
+    toc_depth: 2
     config:
       # toc:
-      #   # collapse: chapter
+        # collapse: chapter
       #   scroll_highlight: yes
       #   before: null
       #   after: null
-      toolbar:
-        position: fixed
+      # toolbar:
+      #   position: fixed
       edit : null
       download: null
       search: yes
@@ -58,7 +58,7 @@ knitr::opts_chunk$set(echo = TRUE, message=F, warning=F, error=F, comment=NA, R.
 ```
 
 ```{r packages, include=FALSE, cache=FALSE}
-library(tidyverse); library(stringr); library(pander); library(plotly); library(lazerhawk)
+library(magrittr); library(tidyverse); library(stringr); library(pander); library(plotly); library(lazerhawk)
 ```
 
 
@@ -146,7 +146,7 @@ x = factor(rep(letters[1:3], e=10))
 attributes(x)
 ```
 
-While the underlying representation is numeric, but it is important to remember that factors are *categorical*. They can't be used as numbers would be, as the following demonstrates.
+While the underlying representation is numeric, it is important to remember that factors are *categorical*. They can't be used as numbers would be, as the following demonstrates.
 
 ```{r factor_sum, eval=TRUE, error=TRUE}
 as.numeric(x)
@@ -184,14 +184,14 @@ model.matrix(lm(y ~ x + factor_1 + factor_2, data=df)) %>%
   pander()
 ```
 
-The <span class="func">model.matrix</span> function exposes the underlying matrix that is used in the regression.  You'd get a coefficient for each column of that matrix. As such, even the intercept must be represented in some fashion. For categorical data, the default coding scheme is <span class="emph">dummy coding</span>. A reference category is arbitrarily chosen (it doesn't matter which), while the other categories are represented by indicator variables, where a 1 represents the corresponding label and everything else is zero.  For details on this coding scheme or others, consult any basic statistical modeling book.
+The <span class="func">model.matrix</span> function exposes the underlying matrix that is actually used in the regression analysis.  You'd get a coefficient for each column of that matrix. As such, even the intercept must be represented in some fashion. For categorical data, the default coding scheme is <span class="emph">dummy coding</span>. A reference category is arbitrarily chosen (it doesn't matter which, and you can always change it), while the other categories are represented by indicator variables, where a 1 represents the corresponding label and everything else is zero.  For details on this coding scheme or others, consult any basic statistical modeling book.
 
 
 ### Characters vs. Factors
 
 The main thing to note is that factors are generally a statistical phenomenon, and are required to do statistical things with data that would otherwise be a simple character string.  If you know the relatively few levels the data can take, you'll generally want to use factors, or at least know that statistical packages and methods will require them.  In addition, factors allow you to easily overcome the sometimes silly default alphabetical ordering of category levels in some very popular visualization packages.
 
-For other things, such as text analysis, you'll almost certainly want character strings instead, and in many cases it will be required.  It's also worth noting that a lot of base R and other behavior will coerce strings to factors.  This made a lot more sense in the early days of R, but not so much these days.
+For other things, such as text analysis, you'll almost certainly want character strings instead, and in many cases it will be required.  It's also worth noting that a lot of base R and other behavior will coerce strings to factors.  This made a lot more sense in the early days of R, but is not really necessary these days.
 
 
 For more on this stuff see the following:
@@ -243,6 +243,8 @@ A couple packages will probably take care of the vast majority of your standard 
 One issue I have with both packages and base R is that often they return a list object, when it should be simplifying to the vector format it was initially fed.  This sometimes requires an additional step or two of further processing that shouldn't be necessary, but be prepared for it[^str_all]. 
 
 ### Other
+
+In this section I'll add some things that come to mind from time to time that might come into play when you're dealing with text.
 
 #### Dates
 
@@ -299,14 +301,15 @@ df = data_frame(
   x = round(rnorm(500), 2), 
   region = sample(c('north', 'north ', 'south', 'South', ' South', 'North ', 'North'), 500, replace=T)
 )
-DT::datatable(df)
+DT::datatable(df, options=list(dom='pt'))
 ```
 
 
 It might seem okay until...
 
-```{r label_problem2}
+```{r label_problem2, echo=1, eval=2}
 table(df$region)
+pander(table(df$region))
 ```
 
 Even if you spotted the casing issue, there is still a white space problem[^excel]. Let's say you want this to be capitalized 'North' and 'South'. How might you do it? It's actually quite easy with the <span class="pack">stringr</span> tools.
@@ -366,7 +369,7 @@ We just have to use the <span class="func">num_range</span> helper function with
 
 [^excel]: This is a very common issue among Excel users, and just one of the many reasons not to use it.
 
-[^str_all]: I also don't think it necessary to have separate functions for str_* functions in <span class="pack">stringr</span> depending on whether, e.g. I want 'all' matches (practically every situation) or just the first (hasn't come up). It could have just been an additional argument.
+[^str_all]: I also don't think it necessary to have separate functions for str_* functions in <span class="pack">stringr</span> depending on whether, e.g. I want 'all' matches (practically every situation) or just the first (very rarely). It could have just been an additional argument with default `all=TRUE`.
 
 <!--chapter:end:01_strings.Rmd-->
 
@@ -456,9 +459,76 @@ inner join
 return all rows from x where there are matching values in y, and all columns from x and y. If there are multiple matches between x and y, all combination of the matches are returned.
 
 
-### Exercises
+## Exercises
 
 ### Romeo & Juliet
+
+
+```{r rnj_load}
+library(gutenbergr)
+gw0 = gutenberg_works(title == "Romeo and Juliet")  # look for something with this title
+gw0
+rnj = gutenberg_download(gw0$gutenberg_id)
+DT::datatable(rnj, options(scrollX=T))
+```
+
+```{r rnj_clean}
+rnj_filtered = rnj %>% 
+  slice(-(1:49)) %>% 
+  filter(!text == str_to_upper(text),
+         !str_detect(text, pattern='^Scene|^Act |^\\[')) %>% 
+  select(-gutenberg_id) %>% 
+  unnest_tokens(sentence, input=text, token='sentences') %>% 
+  mutate(sentenceID = 1:n())
+DT::datatable(rnj_filtered, rownames=F, options=list(dom='pt'))
+```
+
+
+```{r rnj_stopwords}
+rnj_filtered = rnj_filtered %>% 
+  unnest_tokens(word, sentence, token='words') %>%   # remember to call it word or antijoin won't work
+  anti_join(stop_words)
+```
+
+
+```{r rnj_sentiment}
+rnj_filtered %>% 
+  count(word) %>% 
+  arrange(desc(n))
+
+rnj_sentiment = rnj_filtered %>% 
+  inner_join(sentiments)
+rnj_sentiment
+```
+
+```{r rnj_bing}
+rnj_sentiment_bing = rnj_sentiment %>% 
+  filter(lexicon=='bing')
+table(rnj_sentiment_bing$sentiment)
+```
+
+```{r rnj_sentiment_as_game}
+rnj_sentiment_bing %>% 
+  arrange(sentenceID) %>% 
+  mutate(positivity = cumsum(sentiment=='positive'),
+         negativity = cumsum(sentiment=='negative')) %>% 
+  plot_ly() %>% 
+  add_lines(x=~sentenceID, y=~positivity, name='positive') %>% 
+  add_lines(x=~sentenceID, y=~negativity, name='negative')
+  
+```
+
+```{r rnj_sentiment_diff}
+rnj_sentiment_bing %>% 
+  arrange(sentenceID) %>% 
+  mutate(positivity = cumsum(sentiment=='positive'),
+         negativity = cumsum(sentiment=='negative')) %>% 
+  plot_ly() %>% 
+  add_lines(x=~sentenceID, y=~positivity-negativity)
+```
+
+
+
 
 <!--chapter:end:02_sentiment.Rmd-->
 
@@ -490,11 +560,11 @@ rbind(c('JJ', 'JJ', 'NNS', 'VBP', 'RB'),
 
 We have two adjectives (JJ), a plural noun (NNS), a verb (VBP), and an adverb (RB).
 
-Common analysis may then be used to predict POS given the current state of text, comparing the grammar of different texts, human-computer interaction, or translation from one language to another.
+Common analysis may then be used to predict POS given the current state of the text, comparing the grammar of different texts, human-computer interaction, or translation from one language to another.
 
-## Example
+## Examples
 
-The following approach to POS-tagging is very similar to what we did for sentiment analysis as depicted previously. We have a POS dictionary, and can use an inner join to attach the words to their POS.  Unfortunately this approach is course unrealistically simplistic, as additional steps would need to be taken to ensure words are correctly classified.  Without more information, we are unable to tell if some words are being used, e.g. as nouns or verbs.  However, it serves as a starting point.
+The following approach to POS-tagging is very similar to what we did for sentiment analysis as depicted previously. We have a POS dictionary, and can use an inner join to attach the words to their POS.  Unfortunately this approach is unrealistically simplistic, as additional steps would need to be taken to ensure words are correctly classified.  For example, without more information, we are unable to tell if some words are being used as nouns or verbs (human being vs. being a problematic part of speech).  However, this example can serve as a starting point.
 
 ### Barthelme & Carver
 
@@ -556,10 +626,13 @@ carver_pos %>%
   plot_ly() %>% 
   add_markers(x=~pos, y=~prop, color=I('gray50'), opacity=.5, size=I(20), name='Carver') %>% 
   add_markers(x=~pos, y=~prop, color=~text, size=I(10), data=barthelme_pos) %>% 
-  theme_plotly()
+  theme_plotly() %>% 
+  layout(xaxis = list(title=F))
 ```
 
-It would appear Barthelme is fairly consistent. It would appear Carver preferred nouns and pronouns. 
+<br>
+
+It would appear Barthelme is fairly consistent, and also that relative to the Barthelme texts, Carver preferred nouns and pronouns. 
 
 ### More taggin
 
@@ -687,10 +760,12 @@ barthelme_pos %>%
                       title=F))
 ```
 
+
 For more information, consult the following:
 
-- [Penn Treebank](http://repository.upenn.edu/cgi/viewcontent.cgi?article=1603&context=cis_reports)
-- [Maxent function](http://maxent.sourceforge.net/about.html)
+- [Penn Treebank](http://repository.upenn.edu/cgi/viewcontent.cgi?article=1603&context=cis_reports) 
+- [Maxent function](http://maxent.sourceforge.net/about.html) Note that this 'maximum entropy' approach is just one way to go about things. Other models include hidden markov models, conditional random fields, and more recently, deep learning techniques.
+
 
 
 For more natural language processing tools in R, consult the corresponding [task view](https://www.r-pkg.org/ctv/NaturalLanguageProcessing).  Much natural language processing is done with deep learning techniques, which generally requires a lot of data, notable computing resources, fine tunining, and often involves optimization towards a specific task.  Most of the cutting edge work there is done in Python, but as a starting point for more common approaches, you can check out the [Natural Language Toolkit](http://www.nltk.org/book/).
@@ -702,12 +777,129 @@ For more natural language processing tools in R, consult the corresponding [task
 
 ## Basic idea
 
-Topic modeling as typically done is a tool for much more than text.  The primary technique of <span class="emph">latent dirichlet allocation</span> should be as much a part of your toolbox as principal components and factor analysis.  It can be seen as both a dimension reduction approach but also have a rich interpretative quality as well. The basic idea is that we'll take a whole lot of terms, loosely defined, and boil them down to a few topics.   In this sense LDA is akin to discrete PCA.  Another way to think about this is more from the  perspective of factor analysis, where we are keenly interested in interpretation of the result, and want to know both what terms are associated with which topics, and what documents are more likely to present which topics.  
+<span class="emph">Topic modeling</span> as typically done is a tool for much more than text.  The primary technique of <span class="emph">latent dirichlet allocation</span> should be as much a part of your toolbox as principal components and factor analysis.  It can be seen merely as a dimension reduction approach, but it can also be used for its rich interpretative quality as well. The basic idea is that we'll take a whole lot of terms, loosely defined, and boil them down to a few topics.   In this sense LDA is akin to discrete PCA.  Another way to think about this is more from the  perspective of factor analysis, where we are keenly interested in interpretation of the result, and want to know both what terms are associated with which topics, and what documents are more likely to present which topics.  
 
-In the standard setting, to be able to conduct such an analysis from text one needs a <span class="emph">document-term matrix</span>, where rows represent documents, and columns terms.  Terms are typically words but could be any <span class="emph">n-gram</span> of interest. 
+In the standard setting, to be able to conduct such an analysis from text one needs a <span class="emph">document-term matrix</span>, where rows represent documents, and columns terms. Each cell is a count of how many times the term occurs in the document. Terms are typically words, but could be any <span class="emph">n-gram</span> of interest. Outside of text analysis they could represent bacteria, genetic information, or who knows what. 
 
 
-## Example
+## Examples
+
+
+```{r eval=F}
+rnj_filtered %>% 
+   count(word) %>% 
+   arrange(desc(n)) %>% data.frame
+```
+
+```{r rnj_remove_names eval=F}
+rnj_names = rnj %>% 
+  slice(10:35) %>% 
+  mutate(name=str_extract(text, pattern='.+?(?=,)'),
+         name_lower = str_to_lower(name)) 
+rnj_names
+
+```
+
+```{r eval=F}
+oldE = data_frame(word = c('thou', 'thee', 'thine', 'thy',
+                           'ye', 'hath', 'art', 'tis',
+                           'hast', 'ay', 'ere', 'dost'))
+rnj_filtered2 = rnj_filtered %>% 
+  filter(!word %in% pull(rnj_names, name_lower)) %>% 
+  anti_join(stop_words) %>% 
+  anti_join(oldE)
+
+rnj_filtered2 %>% 
+   count(word) %>% 
+   arrange(desc(n))
+```
+
+```{r test_tm_map, eval=FALSE}
+test = rnj %>% 
+  slice(-(1:49)) %>% 
+  filter(!text == str_to_upper(text),
+         !str_detect(text, pattern='^Scene|^Act |^\\[')) %>% 
+  select(-gutenberg_id) %>% 
+  unnest_tokens(para, input=text, token='paragraphs') %>% 
+  mutate(paraID = 1:n())
+
+skipWords <- function(x) removeWords(x, c("it", "the", pull(oldE, word)))
+funs <- list(stripWhitespace,
+             skipWords,
+             removePunctuation,
+             content_transformer(tolower),
+             stemDocument)
+test_tm = tm_map(VCorpus(DataframeSource(select(test, para))), FUN = tm_reduce, tmFuns = funs)[[1]]
+content(test_tm)
+
+```
+
+```{r test_quanteda, eval=FALSE}
+library(quanteda)
+test = rnj %>% 
+  slice(-(1:49)) %>% 
+  filter(!text == str_to_upper(text),
+         !str_detect(text, pattern='^Scene|^Act |^\\[')) %>% 
+  select(-gutenberg_id) %>% 
+  unnest_tokens(text, input=text, token='paragraphs', to_lower=F) %>% 
+  mutate(paraID = 1:n())
+testq = corpus(test)
+summary(testq)
+```
 
 <!--chapter:end:04_topic.Rmd-->
+
+# Appendix
+
+## Texts
+
+
+### Donald Barthelme
+
+#### The First Thing the Baby Did Wrong
+
+This short story is essentially a how-to on parenting.
+
+[link](http://jessamyn.com/barth/baby.html)
+
+
+#### The Balloon
+
+This story is about a balloon that can represent whatever you want it to.
+
+[link](http://www.uni.edu/oloughli/elit11/Balloon.rtf)
+
+
+#### Some of Us Had Been Threatening Our Friend Colby
+
+A brief work about etiquette and how to act in society.
+
+[link](http://jessamyn.com/barth/colby.html)
+
+
+### Raymond Carver
+
+#### What We Talk About When We Talk About Love
+
+The text we use is actually *Beginners*, or the unedited version.
+
+[link](http://www.newyorker.com/magazine/2007/12/24/beginners)
+
+
+
+## R
+
+Up until even a couple years ago, R was *terrible* at text.
+
+[NLP task view](https://www.r-pkg.org/ctv/NaturalLanguageProcessing)
+
+monkeylearn?
+
+## Python
+
+- nltk
+- gensim
+- spacy
+
+<!--chapter:end:10_appendix.Rmd-->
 

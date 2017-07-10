@@ -17,7 +17,7 @@ rnj_filtered %>%
    arrange(desc(n)) %>% data.frame
 ```
 
-```{r rnj_remove_names eval=F}
+```{r rnj_remove_names, eval=F}
 rnj_names = rnj %>% 
   slice(10:35) %>% 
   mutate(name=str_extract(text, pattern='.+?(?=,)'),

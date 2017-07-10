@@ -41,7 +41,7 @@ x = factor(rep(letters[1:3], e=10))
 attributes(x)
 ```
 
-While the underlying representation is numeric, but it is important to remember that factors are *categorical*. They can't be used as numbers would be, as the following demonstrates.
+While the underlying representation is numeric, it is important to remember that factors are *categorical*. They can't be used as numbers would be, as the following demonstrates.
 
 ```{r factor_sum, eval=TRUE, error=TRUE}
 as.numeric(x)
@@ -79,14 +79,14 @@ model.matrix(lm(y ~ x + factor_1 + factor_2, data=df)) %>%
   pander()
 ```
 
-The <span class="func">model.matrix</span> function exposes the underlying matrix that is used in the regression.  You'd get a coefficient for each column of that matrix. As such, even the intercept must be represented in some fashion. For categorical data, the default coding scheme is <span class="emph">dummy coding</span>. A reference category is arbitrarily chosen (it doesn't matter which), while the other categories are represented by indicator variables, where a 1 represents the corresponding label and everything else is zero.  For details on this coding scheme or others, consult any basic statistical modeling book.
+The <span class="func">model.matrix</span> function exposes the underlying matrix that is actually used in the regression analysis.  You'd get a coefficient for each column of that matrix. As such, even the intercept must be represented in some fashion. For categorical data, the default coding scheme is <span class="emph">dummy coding</span>. A reference category is arbitrarily chosen (it doesn't matter which, and you can always change it), while the other categories are represented by indicator variables, where a 1 represents the corresponding label and everything else is zero.  For details on this coding scheme or others, consult any basic statistical modeling book.
 
 
 ### Characters vs. Factors
 
 The main thing to note is that factors are generally a statistical phenomenon, and are required to do statistical things with data that would otherwise be a simple character string.  If you know the relatively few levels the data can take, you'll generally want to use factors, or at least know that statistical packages and methods will require them.  In addition, factors allow you to easily overcome the sometimes silly default alphabetical ordering of category levels in some very popular visualization packages.
 
-For other things, such as text analysis, you'll almost certainly want character strings instead, and in many cases it will be required.  It's also worth noting that a lot of base R and other behavior will coerce strings to factors.  This made a lot more sense in the early days of R, but not so much these days.
+For other things, such as text analysis, you'll almost certainly want character strings instead, and in many cases it will be required.  It's also worth noting that a lot of base R and other behavior will coerce strings to factors.  This made a lot more sense in the early days of R, but is not really necessary these days.
 
 
 For more on this stuff see the following:
@@ -139,6 +139,8 @@ One issue I have with both packages and base R is that often they return a list 
 
 ### Other
 
+In this section I'll add some things that come to mind from time to time that might come into play when you're dealing with text.
+
 #### Dates
 
 Dates are not character strings. Though they may start that way, if you actually want to treat them as dates you'll need to convert the string to the appropiate date class. The <span class="pack">lubridate</span> package makes dealing with dates much easier.  It comes with conversion, extraction and other functionality that will be sure to save you some time.
@@ -154,15 +156,20 @@ span
 as.duration(span)
 ```
 
+This package makes dates so much easier, you should always use it when dealing with them.
+
 #### Categorical Time
 
 In regression modeling with few time points, one often has to decide on whether to treat the year as categorical (factor) or numeric (continuous).  This greatly depends on how you want to tell your data story or other practical concerns.  For example, if you have five years in your data, treating <span class="objclass">year</span> as categorical means you are interested in accounting for unspecified things that go on in a given year.  If you treat it as numeric, you are more interested in trends. Either is fine.
 
+#### Encoding
+
+Encoding can be a sizeable PITA sometimes, and will often come up when dealing with webscraping and other languages.  The <span class="pack">rvest</span> and <span class="pack">stringr</span> packages may be able to get you past some issues at least. See their respective functions <span class="func">repair_encoding</span> and <span class="func">str_conv</span> as starting points on this issue.
 
 
 ### Summary of basic text functionality
 
-Being familiar with commonly used string functionality in base R and packages like <span class="pack">stringr</span> can save a ridiculous amount of time in your data processing.
+Being familiar with commonly used string functionality in base R and packages like <span class="pack">stringr</span> can save a ridiculous amount of time in your data processing.  The more familiar you are with them the easier time you'll have with text.
 
 
 
@@ -170,9 +177,9 @@ Being familiar with commonly used string functionality in base R and packages li
 ## Regular Expressions
 
 
-## dplyr helper functions
+### dplyr helper functions
 
-The <span class="pack">dplyr</span> package comes with some poorly documented[^poordoc] helper functions that essentially serve as human-readable regex, which is a good thing.  These functions allow you to select variables based on their names.  They are just calling <span class="func">grep</span> in the end.
+The <span class="pack">dplyr</span> package comes with some poorly documented[^poordoc] but quite useful helper functions that essentially serve as human-readable regex, which is a good thing.  These functions allow you to select variables[^helperrows] based on their names.  They are just calling <span class="func">grep</span> in the end.
 
 - <span class="func">starts_with</span>: starts with a prefix (same as regex '^blah')
 - <span class="func">ends_with</span>: ends with a prefix     (same as regex 'blah$')
@@ -186,7 +193,7 @@ The <span class="pack">dplyr</span> package comes with some poorly documented[^p
 
 ### Example 1
 
-Let's say you're dealing with some data that has been handled typically, that is to say, poorly. For example, you have a variable in your data representing whether something if from the north or south.
+Let's say you're dealing with some data that has been handled typically, that is to say, poorly. For example, you have a variable in your data representing whether something is from the north or south region.
 
 ```{r label_problem, echo=FALSE}
 df = data_frame(
@@ -218,9 +225,9 @@ The <span class="func">str_trim</span> function trims white space from either si
 
 ### Example 2
 
-Suppose you import a data frame, and the data was originally in wide format, where each column represented a year of data collection for the individual. Since it is bad form for data columns to have numbers for names, when you import it, the result looks like the following
+Suppose you import a data frame, and the data was originally in wide format, where each column represented a year of data collection for the individual. Since it is bad form for data columns to have numbers for names, when you import it, the result looks like the following.
 
-```{r rename_chunk}
+```{r rename_chunk, echo=FALSE}
 df = data.frame(id=1:20, round(matrix(rnorm(100), ncol=5), 2))
 DT::datatable(df, options=list(dom='pt'), rownames=F)
 ```
@@ -252,7 +259,7 @@ df %>%
   head
 ```
 
-We just have to use the <span class="func">num_range</span> helper function within and let <span class="func">str_replace</span> do the rest. 
+We just have to use the <span class="func">num_range</span> helper function within the funtion that tells <span class="func">rename_at</span> what it should be renaming, and let <span class="func">str_replace</span> do the rest. 
 
 
 
@@ -262,4 +269,6 @@ We just have to use the <span class="func">num_range</span> helper function with
 
 [^excel]: This is a very common issue among Excel users, and just one of the many reasons not to use it.
 
-[^str_all]: I also don't think it necessary to have separate functions for str_* functions in <span class="pack">stringr</span> depending on whether, e.g. I want 'all' matches (practically every situation) or just the first (hasn't come up). It could have just been an additional argument.
+[^helperrows]: And maybe some day, the oh so challenging rows!
+
+[^str_all]: I also don't think it necessary to have separate functions for str_* functions in <span class="pack">stringr</span> depending on whether, e.g. I want 'all' matches (practically every situation) or just the first (very rarely). It could have just been an additional argument with default `all=TRUE`.

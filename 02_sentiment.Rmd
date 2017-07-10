@@ -5,7 +5,7 @@
 
 A common and intuitive approach to text is <span class="emph">sentiment analysis</span>.  In a grand sense we are interested in the emotional content of some text, e.g. posts on Facebook, tweets, or movie reviews.  Most of the time, this is obvious when one reads it, but if you have hundreds of thousands or millions of strings to analyze, we'd like to be able to do so efficiently.
 
-We will use the <span class="pack">tidytext</span> package for our demonstration.  It comes with a lexicon of positive and negative words that is actually a combination of multiple sources, one of which provides numeric ratings.
+We will use the <span class="pack">tidytext</span> package for our demonstration.  It comes with a lexicon of positive and negative words that is actually a combination of multiple sources, one of which provides numeric ratings, while the others suggest different classses of sentiment.
 
 
 ```{r lexicon, echo=-1}
@@ -26,17 +26,36 @@ Now consider the following.
 sentiments %>% filter(word=='sick') 
 ```
 
-The word *sick* has been used at least since 1960s surfing culture to be slang for positive.  A basic approach to sentiment analysis as described here will not be able to detect slang or other context like sarcasm.  
+The word *sick* has been used at least since 1960s surfing culture as slang for positive.  A basic approach to sentiment analysis as described here will not be able to detect slang or other context like sarcasm.  
 
 ### Lexicons
 
-In addition, the lexicons are going to maybe be applicable to *general* usage of English in the western world.  Some might wonder where exactly these came from or who decided that the word *abacus* should be affiliated with 'trust'. You may start your path by typing `?sentiments` at teh console if you have the <span class="pack">tidytext</span> package loaded.
+In addition, the lexicons are going to maybe be applicable to *general* usage of English in the western world.  Some might wonder where exactly these came from or who decided that the word *abacus* should be affiliated with 'trust'. You may start your path by typing `?sentiments` at the console if you have the <span class="pack">tidytext</span> package loaded.
 
 ## Examples
 
 ### 
 
 ### The first thing the baby did wrong.
+
+We demonstrate sentiment analysis with the text *The first thing the baby did wrong*, which is a very popular brief guide to parenting written by world renown psychologist Donald Barthelme who, in his spare time, also wrote postmodern literature.  This particular text talks about an issue with the baby, who likes to tear pages out of books. Attempts are made to rectify the situation, which is finally resolved at the end.
+
+How do we start? Let's look at the <span class="objclass">sentiments</span> data set in the <span class="pack">tidytext</span> package.
+
+
+```{r inspect_sentiments}
+library(tidytext)
+sentiments %>% slice(sample(1:nrow(sentiments)))
+```
+
+The <span class="objclass">bing</span> lexicon is just *positive* or *negative*. The AFINN is numerical, with ratings -5:5 that are in the <span class="objclass">score</span> column. The others get more imaginative, but also more problematic. Why *assimilate* is *superfluous* is beyond me. It clearly should be negative given the Borg connotations.
+
+```{r superfluous}
+sentiments %>% 
+  filter(sentiment=='superfluous')
+```
+
+But I digress.
 
 ```{r baby_sentiment_importraw, echo=FALSE}
 library(tidytext)
