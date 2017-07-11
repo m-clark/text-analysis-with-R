@@ -359,9 +359,10 @@ topics(shakes_10, 3)
 
 # pal = c(lazerhawk::palettes$latvian_red$latvian_red, lazerhawk::palettes$latvian_red$tetradic)
 
-row_dend  = textstat_simil(shakes_dtm, margin = "documents", method = "cosine") %>%
+library(dendextend)
+row_dend  = (1-textstat_simil(shakes_dtm, margin = "documents", method = "cosine")) %>%
   as.dist() %>%
-  hclust(method="ward.D") %>%
+  hclust(method="complete") %>%
   as.dendrogram %>%
   set("branches_k_color", k = 3) %>% set("branches_lwd", c(.5,.5)) %>%
   ladderize

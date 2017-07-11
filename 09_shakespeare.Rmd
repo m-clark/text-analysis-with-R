@@ -382,7 +382,7 @@ term_counts %>%
 save(shakes_words, term_counts, file='data/shakes_words_df.RData')
 ```
 
-Now we're looking like Shakespeare, with love for everyone.  You'll notice I've kept place names such as Rome, but this might be something you'd prefer to remove.  
+Now we're looking like Shakespeare, with love for everyone.  Love might as well be a stopword for Shakespere.  You'll notice I've kept place names such as Rome, but this might be something you'd prefer to remove.  Other candidates would be madam, woman, man, majesty (as in 'his/her') etc.
 
 [^bug]: If you can think of a use case where `x<br>y<br>z` leading to `xyz` would be both expected as default behavior and desired please let me know.
 
