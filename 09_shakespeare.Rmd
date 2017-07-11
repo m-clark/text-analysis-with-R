@@ -368,10 +368,13 @@ At this point we could still maybe add things to this list of additional fixes, 
 
 ## ACT V. Fun stuff
 
-We are finally ready to get to the fun stuff.  We can get term counts with standard <span class="pack">dplyr</span> approaches, and <span class="pack">tidytext</span> will take that and do the other things we might want. With word counts in hand, now would be a good save point.
+We are finally ready to get to the fun stuff.  Finally! And now things get easy. 
 
-```{r term_counts, results='hold'}
-# term counts and tests
+### Scene I. Count the terms
+
+We can get term counts with standard <span class="pack">dplyr</span> approaches, and <span class="pack">tidytext</span> will take that and do the other things we might want. Specifically, we can use the latter to create the document term matrix which will be used in other analysis.  The function <span class="func">cast_dfm</span> will create a dfm class object, or 'document-feature' matrix, which is the same thing but recognizes this sort of stuff is not specific to words.  With word counts in hand, now would be a good save point since they'll serve as the basis for other things.
+
+```{r term_counts, results='hold', eval=-8}
 term_counts = shakes_words %>%
   group_by(id, word) %>%
   count
@@ -379,13 +382,101 @@ term_counts = shakes_words %>%
 term_counts %>% 
   arrange(desc(n))
 
-save(shakes_words, term_counts, file='data/shakes_words_df.RData')
+library(quanteda)
+shakes_dtm = term_counts %>%
+  cast_dfm(document=id, term=word, value=n)
+
+save(shakes_words, term_counts, shakes_dtm, file='data/shakes_words_df.RData')
 ```
 
-Now we're looking like Shakespeare, with love for everyone.  Love might as well be a stopword for Shakespere.  You'll notice I've kept place names such as Rome, but this might be something you'd prefer to remove.  Other candidates would be madam, woman, man, majesty (as in 'his/her') etc.
+Now things are looking like Shakespeare, with love for everyone[^love].  You'll notice I've kept place names such as Rome, but this might be something you'd prefer to remove.  Other candidates would be madam, woman, man, majesty (as in 'his/her') etc.  This sort of thing is up to the researcher.
+
+
+### Scene II. Stem
+
+Now we'll stem the words.  We could have done this in a step prior to counting the terms, but then you only have the stemmed result to work with for the document term matrix.  Depending on your situation, you may or may not want to stem, or compare results.  The <span class="pack">quanteda</span> package will actually stem with the DTM and collapse the word counts accordingly.  This will make words like eye and eyes just *ey*, or war, wars and warring to *war*.  I not the difference in words before and after.
+
+```{r stem, echo=-(1:4), results='hold'}
+load('data/shakes_words_df.RData')
+
+library(quanteda)
+
+shakes_dtm
+ncol(shakes_dtm)
+
+shakes_dtm = shakes_dtm %>%
+  dfm_wordstem()
+
+shakes_dtm
+ncol(shakes_dtm)
+```
+
+The result is notably fewer columns, which will speed up any analysis, as well as a slightly more dense matrix as well.
+
+### Scene III. Analysis
+
+```{r top_20_init, echo=F}
+top20 = topfeatures(shakes_dtm, 20)
+```
+
+Let's start looking more in depth.  The following shows the 20 most common words and their respective counts. This is an easy way to find candidates to add to the stopword list.  Note that dai and prai are stems for day and pray. Love occurs `r round(top20[1]/top20[2], 2)` times as much as the most frequent word!
+
+```{r top_20}
+top20 = topfeatures(shakes_dtm, 20)
+top20
+```
+
+The following is a wordcloud. They are among the most useless visual displays imaginable.  Just because you can, doesn't mean you should.
+
+```{r wordcloud}
+# useless!
+textplot_wordcloud(shakes_dtm, min.freq = 400, random.order = T,
+                   rot.per = .25,
+                   colors = viridis::viridis(30))
+```
+
+If you want to display relative frequency do so.
+
+```{r better_cloud}
+library(forcats)
+data_frame(term = names(top20), freq = top20) %>%
+  mutate(
+    term = fct_reorder(term, freq, .desc = TRUE),
+    percentage = freq/ncol(shakes_dtm)
+    ) %>% 
+  ggplot() +
+  geom_text(aes(x=term, y=percentage, size=percentage, label=term), 
+            color='#ff5500',
+            show.legend = F) +
+  lazerhawk::theme_trueMinimal() +
+  theme(axis.text.x = element_blank())
+```
+
+
+The <span class="pack">quanteda</span> package has some built in similarity measures such as [cosine similarity](https://en.wikipedia.org/wiki/Cosine_similarity), which you can treat similarly to the standard correlation (also available).  I display it visually to better get a sense of things.
+
+```{r similarity, echo=1, eval=2:3}
+textstat_simil(shakes_dtm, margin = "documents", method = "cosine") 
+
+textstat_simil(shakes_dtm, margin = "documents", method = "cosine") %>%
+  heatR::corrheat(show_grid = F, height = 500)
+
+textstat_simil(dfm_weight(shakes_dtm, 'relFreq'), margin = "documents", method = "correlation") %>%
+  heatR::corrheat()
+```
+
+<br>
+
+We can already begin to see the clusters of documents.  For example, the more historical are the clump in the upper left.  The oddball is [*The Phoenix and the Turtle*](https://en.wikipedia.org/wiki/The_Phoenix_and_the_Turtle), though *Lover's Complaint* and the *Elegy* are also less similar than standard Shakespeare.  The Phoenix and the Turtle is about the death of ideal love, represented by the Phoenix and Turtledove, for which there is a funeral. Elegy is actually written for a funeral. [*A Lover's Complaint*](https://en.wikipedia.org/wiki/A_Lover%27s_Complaint) is considered an inferior work by the Bard, so perhaps what we're seeing is a reflection of that lack of quality.
+
+
+
+
 
 [^bug]: If you can think of a use case where `x<br>y<br>z` leading to `xyz` would be both expected as default behavior and desired please let me know.
 
 [^r4everything]: If this surprises you, let me remind you that there are over 10k packages on CRAN alone.
 
 [^tibblefail]: I found it easier to work with the entire data frame for the function, hence splitting it on id and recombining.  Some attempt was made to work within the tidyverse, but there were numerous issues to what should have been a fairly easy task.
+
+[^love]: Love might as well be a stopword for Shakespere.

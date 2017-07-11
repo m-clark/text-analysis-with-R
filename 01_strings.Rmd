@@ -176,6 +176,24 @@ Being familiar with commonly used string functionality in base R and packages li
 
 ## Regular Expressions
 
+A <span class="emph">regular expression</span>, regex for short, is a sequence of characters that can be used as a search pattern for a string. Common operations are to merely detect, extract, or replace the matching string.  There are actually many different flavors of regex for different programming languages, which are all flavors that originate with the Perl approach, or can enable the Perl approach to be used.  However, knowing one means you pretty much know the others with only minor modifications if any.
+
+To be clear, not only is regex another language, it's nigh on indecipherable.  You will not learn much regex, but what you do learn will save a potentially enormous amount of time you'd otherwise spend. Furthermore, practically every situation that will come up has already been asked and answered on stackexchange, so you'll almost always be able to search for what you need.
+
+Here is an example:
+
+`^r(.)*shiny[0-9]$`
+
+What is that you may ask.  Well here is an example of what it would and wouldn't match.
+
+```{r regex_intro_ex}
+grepl(c('r is the shiny1', 'r shines brightly'), pattern='^r(.)*shiny[0-9]$')
+```
+
+What the regex esotericly is attempting to match is any string  that starts with 'r' and ends with 'shiny_' where _ is some single digit.  None of it makes sense
+
+
+### Typical Uses
 
 ### dplyr helper functions
 
