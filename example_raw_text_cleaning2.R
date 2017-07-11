@@ -196,7 +196,10 @@ shakes_trim %>% filter(id=='Romeo_and_Juliet') # we'll get prologue later
 # save(shakes_char, file='data/shakespeare_characters.RData')
 load('data/shakespeare_characters.RData')
 
-# some characters with multiple names may be represented (typically) by the first or last or in the case of three, the middle, e.g. sir Toby Belch; Others are still difficultly named e.g. RICHARD PLANTAGENET (DUKE OF GLOUCESTER). The following should capture everything given what we're working with
+# some characters with multiple names may be represented (typically) by the
+# first or last or in the case of three, the middle, e.g. sir Toby Belch; Others
+# are still difficultly named e.g. RICHARD PLANTAGENET (DUKE OF GLOUCESTER). The
+# following should capture everything given what we're working with
 
 # remove paren and split
 chars = shakes_char$Character
@@ -208,10 +211,9 @@ chars = str_split(chars, ' ') %>%
 chars_other = c('enobarbus', 'marcius', 'katharina', 'clarence','pyramus',
                 'andrew', 'arcite', 'perithous', 'hippolita', 'schoolmaster',
                 'cressid', 'diomed', 'kate', 'titinius', 'Palamon', 'Tarquin',
-                'Baptista', 'Lucrece', 'isidore', 'tom')
+                'Lucrece', 'isidore', 'tom')
 
 chars = unique(c(chars, chars_other))
-
 
 chars =  chars[chars != '']
 # sort(chars)
@@ -258,10 +260,10 @@ shakes_words = shakes_words %>%
   mutate(word = str_trim(word),    # remove possible whitespace
          word = str_replace(word, "'er$|'d$|'t$|'ld$|'rt$|'st$|'dst$", ''),    # remove me style endings
          word = vapply(word, me_st_stem, 'a')) %>%
-  anti_join(old_stops) %>%
-  anti_join(me_stops) %>%
   anti_join(em_stops) %>%
-  anti_join(data_frame(word=str_to_lower(c(chars, 'prologue')))) %>%
+  anti_join(me_stops) %>%
+  # anti_join(old_stops) %>%  # only gets wit and 1 se
+  anti_join(data_frame(word=str_to_lower(c(chars, 'prologue', 'epilogue')))) %>%
   anti_join(data_frame(word=str_to_lower(paste0(chars, "'s")))) %>%     # remove possessive names
   anti_join(stop_words)
 
@@ -288,6 +290,7 @@ shakes_words = shakes_words %>%
          word = if_else(str_detect(word, pattern="o'er"),
                         str_replace(word, "'", 'v'),
                         word)) %>%
+  filter(!(id=='Antony_and_Cleopatra' & word == 'mark')) %>%
   filter(str_count(word)>2)
 
 # term counts and tests
@@ -330,7 +333,7 @@ summary(shakes_dtm)
 topfeatures(shakes_dtm, 20)
 
 # useless!
-textplot_wordcloud(shakes_dtm, min.freq = 300, random.order = T,
+textplot_wordcloud(shakes_dtm, min.freq = 400, random.order = T,
                    rot.per = .25,
                    colors = viridis::viridis(500))
 
