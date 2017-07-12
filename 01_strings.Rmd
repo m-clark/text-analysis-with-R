@@ -196,7 +196,7 @@ What the regex esotericly is attempting to match is any string that starts with 
 - **.** : any character
 - **\*** : match the preceding zero or more times
 - **+** : match the preceding one or more times
-- **shiny** : followed by 'shiny'
+- **shiny** : match 'shiny'
 - **[0-9]** : any digit 0-9 (note that we are still talking about strings, not actual numbered values)
 - **$** : ends with preceding
 

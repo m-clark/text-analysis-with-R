@@ -13,6 +13,7 @@
     display: block;
     background-color: #fffff8;
     color: #595959;
+    padding: 5px 15px;
     font-family: Roboto;
     word-wrap: break-word;
     overflow: hidden;
@@ -31,6 +32,12 @@
     position: relative;
     outline: 0;
     background-color: #fffff8;
+}
+
+.book .book-body .page-wrapper .page-inner {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 20px 0 40px;
 }
 
 .book .book-header {

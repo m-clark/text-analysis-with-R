@@ -1,6 +1,6 @@
 # Shakespeare Start to Finish
 
-The following attempts to demonstrate the usual difficulties in dealing with text by procuring and processing the works of Shakespeare.  The source is [MIT](http://shakespeare.mit.edu/) which has made the 'complete' works available on the web since 1993, plus one other from Gutenberg.  The initia issue is simply getting the works from the web.  Subsequently there is metadata, character names, stopwords etc. to be removed. At that point we can stem and count the words in each work, which, when complete, puts us at the point we are ready for analysis.
+The following attempts to demonstrate the usual difficulties in dealing with text by procuring and processing the works of Shakespeare.  The source is [MIT](http://shakespeare.mit.edu/) which has made the 'complete' works available on the web since 1993, plus one other from Gutenberg.  The initial issue is simply getting the works from the web.  Subsequently there is metadata, character names, stopwords etc. to be removed. At that point we can stem and count the words in each work, which, when complete, puts us at the point we are ready for analysis.
 
 The primary packages used are <span class="pack">tidytext</span>, <span class="pack">stringr</span>, and when things are ready for analysis, <span class="pack">quanteda.</span>
 
@@ -38,7 +38,7 @@ works_urls = c(main, other)
 works_urls[1:3]
 ```
 
-Now we just paste the main site url to the work urls and download them.  Here is where we come across our first snag.  The <span class="func">html_text</span> function has what I would call a bug but what the author feels is a feature.  [Basically it ignores line breaks of the form <br> in certain situations](https://github.com/hadley/rvest/issues/175).  This means it will smash text together that shouldn't be, thereby making *any* analysis of it fairly useless[^bug].  Luckily, [@rentrop](https://github.com/rentrop) provided a solution, which is in `r/fix_read_html.R`.
+Now we just paste the main site url to the work urls and download them.  Here is where we come across our first snag.  The <span class="func">html_text</span> function has what I would call a bug but what the author feels is a feature.  [Basically it ignores line breaks of the form <br> in certain situations](https://github.com/hadley/rvest/issues/175).  This means it will smash text together that shouldn't be, thereby making *any* analysis of it fairly useless[^bug].  Luckily, [\@rentrop](https://github.com/rentrop) provided a solution, which is in `r/fix_read_html.R`.
 
 ```{r scrape_shakes, eval=FALSE}
 works0 = lapply(works_urls, function(x) read_html(paste0('http://shakespeare.mit.edu/', x)))
@@ -153,7 +153,9 @@ gute = mapply(function(x, y) mutate(x, id=y) %>% select(-gutenberg_id),
 
 shakes = shakes0 %>%
   bind_rows(gute) %>%
-  mutate(id = str_replace(id, '.txt', ''))
+  mutate(id = str_replace_all(id, " |'", '_')) %>% 
+  mutate(id = str_replace(id, '.txt', '')) %>% 
+  arrange(id)
 
 # shakes %>% split(.$id) # inspect
 
@@ -499,14 +501,15 @@ t(topics(shakes_10, 3)) %>%
   DT::datatable(options)
 ```
 
+<br>
 
-The following visualization shows
+The following visualization shows a heatmap for the topic probabilities of each document using <span class="pack">heatmaply</span>.  All the dark represents basically zero probability for a document expressing that topic.  The colors at the far right indicate the traditional classification of Shakespeare's works, I've also added a cluster analysis based on the previous cosine (dis)similarity matrix, and the resulting dendrogram.  
 
-```{r viz_topics}
+```{r viz_topics, echo=FALSE, cache=FALSE}
 load('data/shakespeare_classification.RData')
 
 library(dendextend)
-row_dend  = (1-textstat_simil(shakes_dtm, margin = "documents", method = "cosine")) %>%
+row_dend  = (1-quanteda::textstat_simil(shakes_dtm, margin = "documents", method = "cosine")) %>%
   as.dist() %>%
   hclust(method="complete") %>%
   as.dendrogram %>%
@@ -517,15 +520,53 @@ shakes_10@gamma %>%
   round(3) %>%
   heatmaply::heatmaply(Rowv=row_dend,
                        Colv=F,
-                       labRow=rownames(shakes_dtm),
+                       labRow=shakes_10@documents,
                        labCol=paste0('topic', 1:10),
                        colors=viridis::inferno(50),
                        k_row = 4,
+                       plot_method = 'plotly',
                        row_side_colors = select(arrange(shakes_types, title), class),
                        fontsize_row=7,
-                       width=auto,
-                       heigth=750) %>% 
+                       fontsize_col=7, 
+                       colorbar_len = 0.3,
+                       subplot_widths=750,
+                       subplot_heights=1800) %>% 
   lazerhawk::theme_plotly()
+```
+
+
+<br>
+
+A couple things stand out.  Traditional classificiation really probably only works for the historical works.  Furthermore, tragedies and comedies might hit on the same topics, albeit from different perspecitves.  In addition, at least some works are very poetical, or at least have 
+
+```{r ggplay, echo=F, eval=F}
+shakes_10@gamma %>%
+  data.frame() %>% 
+  round(3) %>%
+  rename_all(function(x) stringr::str_replace_all(x, 'X', 'Topic_')) %>% 
+  bind_cols(doc=shakes_10@documents, .) %>% 
+  gather(key=topic, value=prob, -doc) %>% 
+  mutate(topic = forcats::fct_reorder(topic, rep(1:10, e=n_distinct(doc)))) %>% 
+  ggplot(aes(x=prob, y=doc, height=..density..)) +
+  geom_joy(scale=20, fill='#ff5500', alpha=.25, color='#ff5500') +
+  scale_y_discrete(expand=c(0.01, 0)) +
+  scale_x_continuous(expand=c(0, 0)) + 
+  lazerhawk::theme_trueMinimal()
+```
+
+```{r ggplay2, echo=F, eval=F}
+shakes_10@gamma %>%
+  data.frame() %>% 
+  round(3) %>%
+  rename_all(function(x) stringr::str_replace_all(x, 'X', 'Topic_')) %>% 
+  bind_cols(doc=shakes_10@documents, .) %>% 
+  gather(key=topic, value=prob, -doc) %>% 
+  mutate(topic = forcats::fct_reorder(topic, rep(1:10, e=n_distinct(doc)))) %>% 
+  ggplot(aes(x=prob, y=topic, height=..density..)) +
+  geom_joy(scale=4, fill='#ff5500', alpha=.25, color='#ff5500') +
+  scale_y_discrete(expand=c(0.01, 0)) +
+  scale_x_continuous(expand=c(0, 0)) + 
+  lazerhawk::theme_trueMinimal()
 ```
 
 

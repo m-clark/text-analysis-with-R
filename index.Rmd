@@ -67,7 +67,7 @@ tags$style(".d3heatmap { margin-left: auto; margin-right: auto; }")
 tags$style(".heatmaplyr { margin-left: auto; margin-right: auto; }")
 tags$style(".datatable { 'dom': 'pt' }")  # this and variations do not work
 options(DT.options = list(dom='pt'))      # this doesn't either
-tags$style(".plotly { margin-left: auto; margin-right: auto; width=75%}")
+tags$style(".plotly { margin-left: auto; margin-right: auto;}")
 ```
 
 # 
