@@ -61,5 +61,13 @@ knitr::opts_chunk$set(echo = TRUE, message=F, warning=F, error=F, comment=NA, R.
 library(magrittr); library(tidyverse); library(stringr); library(pander); library(plotly); library(lazerhawk)
 ```
 
+```{r setup_heat, echo=FALSE, cache=FALSE}
+library(htmltools)
+tags$style(".d3heatmap { margin-left: auto; margin-right: auto; }")
+tags$style(".heatmaplyr { margin-left: auto; margin-right: auto; }")
+tags$style(".datatable { 'dom': 'pt' }")  # this and variations do not work
+options(DT.options = list(dom='pt'))      # this doesn't either
+tags$style(".plotly { margin-left: auto; margin-right: auto; width=75%}")
+```
 
 # 

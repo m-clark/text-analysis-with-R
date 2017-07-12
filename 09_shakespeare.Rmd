@@ -392,9 +392,9 @@ save(shakes_words, term_counts, shakes_dtm, file='data/shakes_words_df.RData')
 Now things are looking like Shakespeare, with love for everyone[^love].  You'll notice I've kept place names such as Rome, but this might be something you'd prefer to remove.  Other candidates would be madam, woman, man, majesty (as in 'his/her') etc.  This sort of thing is up to the researcher.
 
 
-### Scene II. Stem
+### Scene II. Stemming
 
-Now we'll stem the words.  We could have done this in a step prior to counting the terms, but then you only have the stemmed result to work with for the document term matrix.  Depending on your situation, you may or may not want to stem, or compare results.  The <span class="pack">quanteda</span> package will actually stem with the DTM and collapse the word counts accordingly.  This will make words like eye and eyes just *ey*, or war, wars and warring to *war*.  I not the difference in words before and after.
+Now we'll stem the words.  This will make words like eye and eyes just *ey*, or war, wars and warring to *war*. In other words it will reduce variations of a word to a common root form, or 'word stem'.  We could have done this in a step prior to counting the terms, but then you only have the stemmed result to work with for the document term matrix from then on.  Depending on your situation, you may or may not want to stem, or maybe you'd want to compare results.  The <span class="pack">quanteda</span> package will actually stem with the DTM and collapse the word counts accordingly.   I note the difference in words before and after.
 
 ```{r stem, echo=-(1:4), results='hold'}
 load('data/shakes_words_df.RData')
@@ -411,9 +411,9 @@ shakes_dtm
 ncol(shakes_dtm)
 ```
 
-The result is notably fewer columns, which will speed up any analysis, as well as a slightly more dense matrix as well.
+The result is notably fewer columns, which will speed up any analysis, as well as a slightly more dense matrix.
 
-### Scene III. Analysis
+### Scene III. Exploration
 
 ```{r top_20_init, echo=F}
 top20 = topfeatures(shakes_dtm, 20)
@@ -467,10 +467,66 @@ textstat_simil(dfm_weight(shakes_dtm, 'relFreq'), margin = "documents", method =
 
 <br>
 
-We can already begin to see the clusters of documents.  For example, the more historical are the clump in the upper left.  The oddball is [*The Phoenix and the Turtle*](https://en.wikipedia.org/wiki/The_Phoenix_and_the_Turtle), though *Lover's Complaint* and the *Elegy* are also less similar than standard Shakespeare.  The Phoenix and the Turtle is about the death of ideal love, represented by the Phoenix and Turtledove, for which there is a funeral. Elegy is actually written for a funeral. [*A Lover's Complaint*](https://en.wikipedia.org/wiki/A_Lover%27s_Complaint) is considered an inferior work by the Bard, so perhaps what we're seeing is a reflection of that lack of quality.
+We can already begin to see the clusters of documents.  For example, the more historical are the clump in the upper left.  The oddball is [*The Phoenix and the Turtle*](https://en.wikipedia.org/wiki/The_Phoenix_and_the_Turtle), though *Lover's Complaint* and the *Elegy* are also less similar than standard Shakespeare.  The Phoenix and the Turtle is about the death of ideal love, represented by the Phoenix and Turtledove, for which there is a funeral.  It actually is considered by scholars to be in stark constrast to his other output. Elegy itself is actually written for a funeral. [*A Lover's Complaint*](https://en.wikipedia.org/wiki/A_Lover%27s_Complaint) is considered an inferior work by the Bard, so perhaps what we're seeing is a reflection of that lack of quality.  In geneal, we're seeing things that we might expect.
+
+### Scene IV. Topic model
+
+I'd say we're now ready for topic model.  We'll run run one with 10 topics.  We can also see how things compare with the usual classifications for the texts.  Also, this will take a while to run depending on your machine (maybe a minute or two).
+
+```{r topic_model, echo=1:2, eval=F}
+library(topicmodels)
+shakes_10 = LDA(convert(shakes_dtm, to = "topicmodels"), k = 10)
+save(shakes_10, file='data/shakespeare_topic_model.RData')
+```
+
+```{r tm10_results, eval=FALSE}
+get_terms(shakes_10, 20)
+t(topics(shakes_10, 3))
+```
+
+```{r tm10_results_pretty_terms, echo=FALSE}
+load('data/shakespeare_topic_model.RData')
+library(topicmodels)
+get_terms(shakes_10, 20) %>% DT::datatable()
+```
+
+<br>
+
+```{r tm10_results_pretty_topic_classification, echo=FALSE}
+t(topics(shakes_10, 3)) %>% 
+  data.frame %>% 
+  rename_all(str_replace, 'X', 'Topic ') %>% 
+  DT::datatable(options)
+```
 
 
+The following visualization shows
 
+```{r viz_topics}
+load('data/shakespeare_classification.RData')
+
+library(dendextend)
+row_dend  = (1-textstat_simil(shakes_dtm, margin = "documents", method = "cosine")) %>%
+  as.dist() %>%
+  hclust(method="complete") %>%
+  as.dendrogram %>%
+  set("branches_k_color", k = 3) %>% set("branches_lwd", c(.5,.5)) %>%
+  ladderize
+
+shakes_10@gamma %>%
+  round(3) %>%
+  heatmaply::heatmaply(Rowv=row_dend,
+                       Colv=F,
+                       labRow=rownames(shakes_dtm),
+                       labCol=paste0('topic', 1:10),
+                       colors=viridis::inferno(50),
+                       k_row = 4,
+                       row_side_colors = select(arrange(shakes_types, title), class),
+                       fontsize_row=7,
+                       width=auto,
+                       heigth=750) %>% 
+  lazerhawk::theme_plotly()
+```
 
 
 [^bug]: If you can think of a use case where `x<br>y<br>z` leading to `xyz` would be both expected as default behavior and desired please let me know.

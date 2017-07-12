@@ -61,6 +61,13 @@ knitr::opts_chunk$set(echo = TRUE, message=F, warning=F, error=F, comment=NA, R.
 library(magrittr); library(tidyverse); library(stringr); library(pander); library(plotly); library(lazerhawk)
 ```
 
+```{r setup_heat, echo=FALSE}
+library(htmltools)
+tags$style(".d3heatmap { margin-left: auto; margin-right: auto; }")
+tags$style(".heatmaplyr { margin-left: auto; margin-right: auto; }")
+tags$style(".datatable { dom: 'pt' }")
+tags$style(".plotly { margin-left: auto; margin-right: auto; width=75%}")
+```
 
 # 
 
@@ -281,10 +288,58 @@ Being familiar with commonly used string functionality in base R and packages li
 
 ## Regular Expressions
 
+A <span class="emph">regular expression</span>, regex for short, is a sequence of characters that can be used as a search pattern for a string. Common operations are to merely detect, extract, or replace the matching string.  There are actually many different flavors of regex for different programming languages, which are all flavors that originate with the Perl approach, or can enable the Perl approach to be used.  However, knowing one means you pretty much know the others with only minor modifications if any.
+
+To be clear, not only is regex another language, it's nigh on indecipherable.  You will not learn much regex, but what you do learn will save a potentially enormous amount of time you'd otherwise spend trying to do things in a more haphazard fashion. Furthermore, practically every situation that will come up has already been asked and answered on [Stack Overflow](https://stackoverflow.com/questions/tagged/regex), so you'll almost always be able to search for what you need.
+
+Here is an example:
+
+`^r.*shiny[0-9]$`
+
+What is *that* you may ask?  Well here is an example of what it would and wouldn't match.
+
+```{r regex_intro_ex}
+grepl(c('r is the shiny', 'r is the shiny1', 'r shines brightly'), pattern='^r.*shiny[0-9]$')
+```
+
+What the regex esotericly is attempting to match is any string that starts with 'r' and ends with 'shiny_' where _ is some single digit.  Specifically it breaks down as follows:
+
+- ^ : starts with, so ^r means starts with r
+- . : any character
+- * : match the preceding zero or more times
+- + : match the preceding one or more times
+- shiny : followed by 'shiny'
+- [0-9] : any digit 0-9
+- $ : ends with preceding
+
+### Typical Uses
+
+None of it makes sense, so don't attempt to do so. Just try to remember a couple key approaches, and search the web for the rest.
+
+Along with ^ . * [0-9], a couple more common ones are:
+
+[a-z] : letters a-z
+[A-Z] : capital letters
+() : groupings
+| : logical or e.g. [a-z]|[0-9]  (a letter or a number)
+\ : escape a character, like if you actually wanted to search for a period, you'd use \., though in R you need \\, i.e. double slashes, for escape.
+
+The key functions can be found by looking at the help file for the <span class="func">grep</span> function (`?grep`).  However, the <span class="pack">stringr</span> package has the same functionality with perhaps a slightly faster processing (though that's due to the underlying <span class="pack">stringi</span> package).
+
+See if you can guess which of the following will turn up true.
+
+```{r eval=FALSE}
+grepl(c('apple', 'pear', 'banana'), pattern='a')
+grepl(c('apple', 'pear', 'banana'), pattern='^a')
+grepl(c('apple', 'pear', 'banana'), pattern='^a|a$')
+```
+
+
+Scraping the web, munging data, ... you can potentially use this all the time, and not only with text analysis, as we'll now see.
 
 ### dplyr helper functions
 
-The <span class="pack">dplyr</span> package comes with some poorly documented[^poordoc] but quite useful helper functions that essentially serve as human-readable regex, which is a good thing.  These functions allow you to select variables[^helperrows] based on their names.  They are just calling <span class="func">grep</span> in the end.
+The <span class="pack">dplyr</span> package comes with some poorly documented[^poordoc] but quite useful helper functions that essentially serve as human-readable regex, which is a very good thing.  These functions allow you to select variables[^helperrows] based on their names.  They are just calling <span class="func">grep</span> in the end.
 
 - <span class="func">starts_with</span>: starts with a prefix (same as regex '^blah')
 - <span class="func">ends_with</span>: ends with a prefix     (same as regex 'blah$')
@@ -1251,7 +1306,7 @@ We are finally ready to get to the fun stuff.  Finally! And now things get easy.
 
 We can get term counts with standard <span class="pack">dplyr</span> approaches, and <span class="pack">tidytext</span> will take that and do the other things we might want. Specifically, we can use the latter to create the document term matrix which will be used in other analysis.  The function <span class="func">cast_dfm</span> will create a dfm class object, or 'document-feature' matrix, which is the same thing but recognizes this sort of stuff is not specific to words.  With word counts in hand, now would be a good save point since they'll serve as the basis for other things.
 
-```{r term_counts, results='hold', eval=-5}
+```{r term_counts, results='hold', eval=-8}
 term_counts = shakes_words %>%
   group_by(id, word) %>%
   count
@@ -1269,9 +1324,9 @@ save(shakes_words, term_counts, shakes_dtm, file='data/shakes_words_df.RData')
 Now things are looking like Shakespeare, with love for everyone[^love].  You'll notice I've kept place names such as Rome, but this might be something you'd prefer to remove.  Other candidates would be madam, woman, man, majesty (as in 'his/her') etc.  This sort of thing is up to the researcher.
 
 
-### Scene II. Stem
+### Scene II. Stemming
 
-Now we'll stem the words.  We could have done this in a step prior to counting the terms, but then you only have the stemmed result to work with for the document term matrix.  Depending on your situation, you may or may not want to stem, or compare results.  The quanteda package will actually stem with the DTM and collapse the word counts accordingly.  This will make words like eye and eyes just *ey*, or war, wars and warring to *war*.  I not the difference in words before and after.
+Now we'll stem the words.  This will make words like eye and eyes just *ey*, or war, wars and warring to *war*. In other words it will reduce variations of a word to a common root form, or 'word stem'.  We could have done this in a step prior to counting the terms, but then you only have the stemmed result to work with for the document term matrix from then on.  Depending on your situation, you may or may not want to stem, or maybe you'd want to compare results.  The <span class="pack">quanteda</span> package will actually stem with the DTM and collapse the word counts accordingly.   I note the difference in words before and after.
 
 ```{r stem, echo=-(1:4), results='hold'}
 load('data/shakes_words_df.RData')
@@ -1284,21 +1339,112 @@ ncol(shakes_dtm)
 shakes_dtm = shakes_dtm %>%
   dfm_wordstem()
 
-ncol(shakes_dtm)
-
 shakes_dtm
+ncol(shakes_dtm)
 ```
 
-The result is notably fewer columns, which will speed up any analysis, as well as a slightly more dense matrix as well.
+The result is notably fewer columns, which will speed up any analysis, as well as a slightly more dense matrix.
 
-### Scene III. Analysis
+### Scene III. Exploration
 
-```{r}
+```{r top_20_init, echo=F}
+top20 = topfeatures(shakes_dtm, 20)
+```
 
+Let's start looking more in depth.  The following shows the 20 most common words and their respective counts. This is an easy way to find candidates to add to the stopword list.  Note that dai and prai are stems for day and pray. Love occurs `r round(top20[1]/top20[2], 2)` times as much as the most frequent word!
+
+```{r top_20}
+top20 = topfeatures(shakes_dtm, 20)
+top20
+```
+
+The following is a wordcloud. They are among the most useless visual displays imaginable.  Just because you can, doesn't mean you should.
+
+```{r wordcloud}
+# useless!
+textplot_wordcloud(shakes_dtm, min.freq = 400, random.order = T,
+                   rot.per = .25,
+                   colors = viridis::viridis(30))
+```
+
+If you want to display relative frequency do so.
+
+```{r better_cloud}
+library(forcats)
+data_frame(term = names(top20), freq = top20) %>%
+  mutate(
+    term = fct_reorder(term, freq, .desc = TRUE),
+    percentage = freq/ncol(shakes_dtm)
+    ) %>% 
+  ggplot() +
+  geom_text(aes(x=term, y=percentage, size=percentage, label=term), 
+            color='#ff5500',
+            show.legend = F) +
+  lazerhawk::theme_trueMinimal() +
+  theme(axis.text.x = element_blank())
 ```
 
 
+The <span class="pack">quanteda</span> package has some built in similarity measures such as [cosine similarity](https://en.wikipedia.org/wiki/Cosine_similarity), which you can treat similarly to the standard correlation (also available).  I display it visually to better get a sense of things.
 
+```{r similarity, echo=1, eval=2:3}
+textstat_simil(shakes_dtm, margin = "documents", method = "cosine") 
+
+textstat_simil(shakes_dtm, margin = "documents", method = "cosine") %>%
+  heatR::corrheat(show_grid = F, height = 500)
+
+textstat_simil(dfm_weight(shakes_dtm, 'relFreq'), margin = "documents", method = "correlation") %>%
+  heatR::corrheat()
+```
+
+<br>
+
+We can already begin to see the clusters of documents.  For example, the more historical are the clump in the upper left.  The oddball is [*The Phoenix and the Turtle*](https://en.wikipedia.org/wiki/The_Phoenix_and_the_Turtle), though *Lover's Complaint* and the *Elegy* are also less similar than standard Shakespeare.  The Phoenix and the Turtle is about the death of ideal love, represented by the Phoenix and Turtledove, for which there is a funeral.  It actually is considered by scholars to be in stark constrast to his other output. Elegy itself is actually written for a funeral. [*A Lover's Complaint*](https://en.wikipedia.org/wiki/A_Lover%27s_Complaint) is considered an inferior work by the Bard, so perhaps what we're seeing is a reflection of that lack of quality.  In geneal, we're seeing things that we might expect.
+
+### Scene IV. Topic model
+
+I'd say we're now ready for topic model.  We'll run a topic model and see how things shake out with 10 topics.  We can also see how things compare with the usual classifications for the texts.
+
+```{r topic_model, echo=1:2, eval=1:2}
+library(topicmodels)
+shakes_10 = LDA(convert(shakes_dtm, to = "topicmodels"), k = 10)
+save(shakes_10, file='data/shakespeare_topic_model.RData')
+```
+
+```{r tm10_results, eval=FALSE}
+get_terms(shakes_10, 20)
+t(topics(shakes_10, 3))
+```
+
+```{r tm10_results_pretty, echo=FALSE}
+load('data/shakespeare_topic_model.RData')
+get_terms(shakes_10, 20) %>% DT::datatable()
+t(topics(shakes_10, 3)) %>% DT::datatable()
+```
+
+
+```{r viz_topics}
+load('data/shakespeare_classification.RData')
+
+library(dendextend)
+row_dend  = (1-textstat_simil(shakes_dtm, margin = "documents", method = "cosine")) %>%
+  as.dist() %>%
+  hclust(method="complete") %>%
+  as.dendrogram %>%
+  set("branches_k_color", k = 3) %>% set("branches_lwd", c(.5,.5)) %>%
+  ladderize
+
+shakes_10@gamma %>%
+  round(3) %>%
+  heatmaply::heatmaply(Rowv=row_dend,
+                       Colv=F,
+                       labRow=rownames(shakes_dtm),
+                       labCol=paste0('topic', 1:10),
+                       colors=viridis::inferno(50),
+                       k_row = 4,
+                       row_side_colors = select(arrange(shakes_types, title), class),
+                       fontsize_row=7)
+```
 
 
 [^bug]: If you can think of a use case where `x<br>y<br>z` leading to `xyz` would be both expected as default behavior and desired please let me know.

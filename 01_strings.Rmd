@@ -178,26 +178,56 @@ Being familiar with commonly used string functionality in base R and packages li
 
 A <span class="emph">regular expression</span>, regex for short, is a sequence of characters that can be used as a search pattern for a string. Common operations are to merely detect, extract, or replace the matching string.  There are actually many different flavors of regex for different programming languages, which are all flavors that originate with the Perl approach, or can enable the Perl approach to be used.  However, knowing one means you pretty much know the others with only minor modifications if any.
 
-To be clear, not only is regex another language, it's nigh on indecipherable.  You will not learn much regex, but what you do learn will save a potentially enormous amount of time you'd otherwise spend. Furthermore, practically every situation that will come up has already been asked and answered on stackexchange, so you'll almost always be able to search for what you need.
+To be clear, not only is regex another language, it's nigh on indecipherable.  You will not learn much regex, but what you do learn will save a potentially enormous amount of time you'd otherwise spend trying to do things in a more haphazard fashion. Furthermore, practically every situation that will come up has already been asked and answered on [Stack Overflow](https://stackoverflow.com/questions/tagged/regex), so you'll almost always be able to search for what you need.
 
 Here is an example:
 
-`^r(.)*shiny[0-9]$`
+`^r.*shiny[0-9]$`
 
-What is that you may ask.  Well here is an example of what it would and wouldn't match.
+What is *that* you may ask?  Well here is an example of what it would and wouldn't match.
 
 ```{r regex_intro_ex}
-grepl(c('r is the shiny1', 'r shines brightly'), pattern='^r(.)*shiny[0-9]$')
+grepl(c('r is the shiny', 'r is the shiny1', 'r shines brightly'), pattern='^r.*shiny[0-9]$')
 ```
 
-What the regex esotericly is attempting to match is any string  that starts with 'r' and ends with 'shiny_' where _ is some single digit.  None of it makes sense
+What the regex esotericly is attempting to match is any string that starts with 'r' and ends with 'shiny_' where _ is some single digit.  Specifically it breaks down as follows:
 
+- ^ : starts with, so ^r means starts with r
+- . : any character
+- * : match the preceding zero or more times
+- + : match the preceding one or more times
+- shiny : followed by 'shiny'
+- [0-9] : any digit 0-9
+- $ : ends with preceding
 
 ### Typical Uses
 
+None of it makes sense, so don't attempt to do so. Just try to remember a couple key approaches, and search the web for the rest.
+
+Along with ^ . * [0-9], a couple more common ones are:
+
+[a-z] : letters a-z
+[A-Z] : capital letters
+() : groupings
+| : logical or e.g. [a-z]|[0-9]  (a letter or a number)
+\ : escape a character, like if you actually wanted to search for a period, you'd use \., though in R you need \\, i.e. double slashes, for escape.
+
+The key functions can be found by looking at the help file for the <span class="func">grep</span> function (`?grep`).  However, the <span class="pack">stringr</span> package has the same functionality with perhaps a slightly faster processing (though that's due to the underlying <span class="pack">stringi</span> package).
+
+See if you can guess which of the following will turn up true.
+
+```{r eval=FALSE}
+grepl(c('apple', 'pear', 'banana'), pattern='a')
+grepl(c('apple', 'pear', 'banana'), pattern='^a')
+grepl(c('apple', 'pear', 'banana'), pattern='^a|a$')
+```
+
+
+Scraping the web, munging data, ... you can potentially use this all the time, and not only with text analysis, as we'll now see.
+
 ### dplyr helper functions
 
-The <span class="pack">dplyr</span> package comes with some poorly documented[^poordoc] but quite useful helper functions that essentially serve as human-readable regex, which is a good thing.  These functions allow you to select variables[^helperrows] based on their names.  They are just calling <span class="func">grep</span> in the end.
+The <span class="pack">dplyr</span> package comes with some poorly documented[^poordoc] but quite useful helper functions that essentially serve as human-readable regex, which is a very good thing.  These functions allow you to select variables[^helperrows] based on their names.  They are just calling <span class="func">grep</span> in the end.
 
 - <span class="func">starts_with</span>: starts with a prefix (same as regex '^blah')
 - <span class="func">ends_with</span>: ends with a prefix     (same as regex 'blah$')
