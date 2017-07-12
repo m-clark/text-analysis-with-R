@@ -192,13 +192,13 @@ grepl(c('r is the shiny', 'r is the shiny1', 'r shines brightly'), pattern='^r.*
 
 What the regex esotericly is attempting to match is any string that starts with 'r' and ends with 'shiny_' where _ is some single digit.  Specifically it breaks down as follows:
 
-- ^ : starts with, so ^r means starts with r
-- . : any character
-- * : match the preceding zero or more times
-- + : match the preceding one or more times
-- shiny : followed by 'shiny'
-- [0-9] : any digit 0-9
-- $ : ends with preceding
+- **^** : starts with, so ^r means starts with r
+- **.** : any character
+- **\*** : match the preceding zero or more times
+- **+** : match the preceding one or more times
+- **shiny** : followed by 'shiny'
+- **[0-9]** : any digit 0-9 (note that we are still talking about strings, not actual numbered values)
+- **$** : ends with preceding
 
 ### Typical Uses
 
@@ -206,11 +206,11 @@ None of it makes sense, so don't attempt to do so. Just try to remember a couple
 
 Along with ^ . * [0-9], a couple more common ones are:
 
-[a-z] : letters a-z
-[A-Z] : capital letters
-() : groupings
-| : logical or e.g. [a-z]|[0-9]  (a letter or a number)
-\ : escape a character, like if you actually wanted to search for a period, you'd use \., though in R you need \\, i.e. double slashes, for escape.
+- **[a-z]** : letters a-z
+- **[A-Z]** : capital letters
+- **()** : groupings
+- **|** : logical or e.g. [a-z]|[0-9]  (a letter or a number)
+- **\\\** : escape a character, like if you actually wanted to search for a period, you'd use \\., though in R you need \\\\, i.e. double slashes, for escape.
 
 The key functions can be found by looking at the help file for the <span class="func">grep</span> function (`?grep`).  However, the <span class="pack">stringr</span> package has the same functionality with perhaps a slightly faster processing (though that's due to the underlying <span class="pack">stringi</span> package).
 
