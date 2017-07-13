@@ -1442,7 +1442,7 @@ The following visualization shows a heatmap for the topic probabilities of each 
 load('data/shakespeare_classification.RData')
 
 library(dendextend)
-row_dend  = (1-textstat_simil(shakes_dtm, margin = "documents", method = "cosine")) %>%
+row_dend  = (1-quanteda::textstat_simil(shakes_dtm, margin = "documents", method = "cosine")) %>%
   as.dist() %>%
   hclust(method="complete") %>%
   as.dendrogram %>%
@@ -1462,8 +1462,9 @@ shakes_10@gamma %>%
                        fontsize_row=7,
                        fontsize_col=7, 
                        colorbar_len = 0.3,
-                       subplot_widths=750,
-                       subplot_heights=1800) %>% 
+                       subplot_widths=c(900, 50),
+                       subplot_heights=c(1800, 50)) %>% 
+  layout()
   lazerhawk::theme_plotly()
 ```
 

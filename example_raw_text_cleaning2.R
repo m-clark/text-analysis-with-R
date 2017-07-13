@@ -108,8 +108,11 @@ from_gute = mapply(function(x, y) mutate(x, id=y) %>%
                      select(-gutenberg_id), from_gute, works_not_included, SIMPLIFY=F)
 
 shakes = shakes0 %>%
-  bind_rows(from_gute) %>%
-  mutate(id = str_replace(id, '.txt', ''))
+  bind_rows(gute) %>%
+  mutate(id = str_replace_all(id, " |'", '_')) %>%
+  mutate(id = str_replace(id, '.txt', '')) %>%
+  arrange(id)
+
 
 # shakes %>% split(.$id) # inspect
 
