@@ -477,7 +477,7 @@ We can already begin to see the clusters of documents.  For example, the more hi
 
 #### Readability
 
-We can examine readablity scores for the texts, but for this we'll need them in raw form. Unfortunately the concept of <span class="emph">readabiltiy</span> is ill-defined, and as such, there are dozens of measures available.  The following is based on the Coleman-Liau grade score (higher grade = more difficult).
+We can examine readablity scores for the texts, but for this we'll need them in raw form. Unfortunately the concept of <span class="emph">readabiltiy</span> is ill-defined, and as such, there are dozens of measures available dating back nearly 75 years.  The following is based on the Coleman-Liau grade score (higher grade = more difficult).
 
 ```{r readability}
 raw_texts = data_frame(file = dir('data/texts_raw/shakes/moby/', full.names = TRUE)) %>%
@@ -493,7 +493,12 @@ shakes_read = textstat_readability(raw_text_corpus)
 shakes_read %>% 
   mutate(id=raw_texts$id) %>% 
   select(Coleman.Liau.grade) %>% 
-  heatmaply::heatmaply(Rowv=NA, Colv=NA, labRow=raw_texts$id, colors='Blues')
+  heatmaply::heatmaply(Rowv=NA, Colv=NA, 
+                       labRow=raw_texts$id, 
+                       colors='Blues',
+                       plot_method='plotly',
+                       ) %>% 
+  layout(width=500)
 # shakes_read %>% 
 #   mutate(id=raw_texts$id) %>% 
 #   gather(key=index, value=score, -id) %>% 
@@ -507,16 +512,23 @@ shakes_read %>%
 
 #### Lexical diversity
 
-There are also metrics of <span class="emph">lexical diversity</span>.  As with readibility, there is no one way to measure 'diversity'.  Here we'll go back to using the standard DTM.
+There are also metrics of <span class="emph">lexical diversity</span>.  As with readibility, there is no one way to measure 'diversity'.  Here we'll go back to using the standard DTM.  Most are variants on what is called the type-token ratio, which in our setting is the number of unique terms (types) relative to the total terms (tokens). 
+
+This visual is based on the (absolute) scaled values of several metrics, and might suggest that the poems are relatively more diverse. This certainly might be the case for *Phoenix*, but it's more of a reflection of the limitation of several of the measures, such that longer works are seen as less diverse (tokens are added more so than types).  Others are available via the <span class="pack">koRpus</span> package, which I may add at some point.
 
 ```{r lexical_diversity}
 scale(textstat_lexdiv(shakes_dtm) ) %>% 
+  abs() %>% 
   heatmaply::heatmaply(Rowv=F, 
                        Colv=F, 
-                       colors='RdBu',            # note that RCB scales will not work unless method='plotly'
+                       colors='Blues',            # note that RCB scales will not work unless method='plotly'
                        plot_method = 'plotly',
-                       labRow=shakes_10@documents)
+                       labRow=shakes_10@documents,
+                       draw_cellnote=F,
+                       hide_colorbar=T)
 ```
+
+
 
 
 ### Scene IV. Topic model
