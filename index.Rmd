@@ -14,7 +14,7 @@ output:
     hightlight: pygments
     number_sections: false
     # split_by: section
-    toc_depth: 2
+    toc_depth: 3
     config:
       # toc:
         # collapse: chapter

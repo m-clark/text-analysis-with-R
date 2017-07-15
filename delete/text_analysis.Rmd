@@ -14,7 +14,7 @@ output:
     hightlight: pygments
     number_sections: false
     # split_by: section
-    toc_depth: 2
+    toc_depth: 3
     config:
       # toc:
         # collapse: chapter
@@ -63,7 +63,7 @@ library(magrittr); library(tidyverse); library(stringr); library(pander); librar
 
 ```{r setup_heat, echo=FALSE, cache=FALSE}
 library(htmltools)
-tags$style(".d3heatmap { margin-left: auto; margin-right: auto; }")
+tags$style(".d3heatmap { margin-left: 50px; margin-right: 50px; }")
 tags$style(".heatmaplyr { margin-left: auto; margin-right: auto; }")
 tags$style(".datatable { 'dom': 'pt' }")  # this and variations do not work
 options(DT.options = list(dom='pt'))      # this doesn't either
@@ -1065,6 +1065,7 @@ DT::datatable(shakes0[1:20,], options=list(dom='tp'))
 ```
 
 
+
 ### Scene V. Add additional works 
 
 It is typical to be gathering texts from multiple sources. In this case, we'll get *The Phoenix and the Turtle* from the Gutenberger website.  There is an R package that will allow us to work directly with the site, making the process straightforward[^r4everything].  I also considered two other works, but I refrained from "The Two Noble Kinsmen" because like many other of Shakespeare's versions on Gutenberg, it's basically written in a different language.  I also refrained from  *The Passionate Pilgrim* because it's mostly not Shakespeare.
@@ -1153,7 +1154,7 @@ shakes_trim %>% filter(id=='Romeo_and_Juliet') # we'll get prologue later
 While we're at it, we can save the classical (sometimes arbitrary) classifications of Shakespeare's works for later comparison to what we'll get in our analyses. We'll save them to call as needed.
 
 ```{r shakespeare_classes, eval=FALSE}
-shakes_types = data_frame(title=titles) %>%
+shakes_types = data_frame(title=unique(shakes_trim$id)) %>%
   mutate(class = 'Comedy',
          class = if_else(grepl(title, pattern='Adonis|Lucrece|Complaint|Turtle|Pilgrim|Sonnet|Elegy'), 'Poem', class),
          class = if_else(grepl(title, pattern='Henry|Richard|John'), 'History', class),
@@ -1274,7 +1275,7 @@ Now we're ready to finally do the word counts.  Just kidding! There is *still* w
 
 
 ```{r other_fixes}
-# porter should catch remaining est
+# porter should catch remaining 'est'
 
 add_a =  c('mongst', 'gainst')  # words to add a to
 
@@ -1354,16 +1355,18 @@ The result is notably fewer columns, which will speed up any analysis, as well a
 top20 = topfeatures(shakes_dtm, 20)
 ```
 
-Let's start looking more in depth.  The following shows the 20 most common words and their respective counts. This is an easy way to find candidates to add to the stopword list.  Note that dai and prai are stems for day and pray. Love occurs `r round(top20[1]/top20[2], 2)` times as much as the most frequent word!
+#### Top features
 
-```{r top_20}
-top20 = topfeatures(shakes_dtm, 20)
-top20
+Let's start looking more in depth.  The following shows the 10 most common words and their respective counts. This is an easy way to find candidates to add to the stopword list.  Note that dai and prai are stems for day and pray. Love occurs `r round(top20[1]/top20[2], 2)` times as much as the most frequent word!
+
+```{r top_10}
+top10 = topfeatures(shakes_dtm, 10)
+top10
 ```
 
 The following is a wordcloud. They are among the most useless visual displays imaginable.  Just because you can, doesn't mean you should.
 
-```{r wordcloud}
+```{r wordcloud, echo=FALSE}
 # useless!
 textplot_wordcloud(shakes_dtm, min.freq = 400, random.order = T,
                    rot.per = .25,
@@ -1372,21 +1375,47 @@ textplot_wordcloud(shakes_dtm, min.freq = 400, random.order = T,
 
 If you want to display relative frequency do so.
 
-```{r better_cloud}
+```{r better_cloud, echo=FALSE}
 library(forcats)
-data_frame(term = names(top20), freq = top20) %>%
+# data_frame(term = names(top20), freq = top20) %>%
+#   mutate(
+#     term = fct_reorder(term, freq, .desc = TRUE),
+#     percentage = freq/ncol(shakes_dtm)
+#   ) %>% 
+#   plot_ly(x=~term, y=~percentage) %>%  # , size=~percentage
+#   add_text(text=~term, 
+#            color=I('#ff5500'),
+#            size =~ percentage,
+#            sizes = c(15,15),         # doesn't work for text, only markers
+#            showlegend = F)  %>% 
+#   theme_plotly() %>% 
+#   layout(xaxis = list(
+#   autotick = FALSE,
+#   ticks = F,
+#   showticklabels = F),
+#   yaxis = list(range=c(0,.25)))
+
+g = data_frame(term = names(top20), freq = top20) %>%
   mutate(
     term = fct_reorder(term, freq, .desc = TRUE),
     percentage = freq/ncol(shakes_dtm)
-    ) %>% 
-  ggplot() +
-  geom_text(aes(x=term, y=percentage, size=percentage, label=term), 
-            color='#ff5500',
-            show.legend = F) +
-  lazerhawk::theme_trueMinimal() +
-  theme(axis.text.x = element_blank())
+  ) %>% 
+  ggplot() + 
+  geom_text(aes(x=term, y=percentage, size=percentage, label=term, color=term),  
+            # color='#ff5500', 
+            hjust=-.1,
+            show.legend = F) + 
+  scale_size_continuous(range=c(2,8)) +
+  ylim(c(0,.25)) +
+  lazerhawk::theme_trueMinimal() + 
+  theme(axis.text.x = element_blank(),
+        axis.ticks.x= element_blank(), 
+        legend.position='none')     # for plotly's sake
+ggplotly(width='auto', hoverinfo='none') %>% 
+  lazerhawk::theme_plotly() 
 ```
 
+#### Similarity
 
 The <span class="pack">quanteda</span> package has some built in similarity measures such as [cosine similarity](https://en.wikipedia.org/wiki/Cosine_similarity), which you can treat similarly to the standard correlation (also available).  I display it visually to better get a sense of things.
 
@@ -1403,6 +1432,144 @@ textstat_simil(dfm_weight(shakes_dtm, 'relFreq'), margin = "documents", method =
 <br>
 
 We can already begin to see the clusters of documents.  For example, the more historical are the clump in the upper left.  The oddball is [*The Phoenix and the Turtle*](https://en.wikipedia.org/wiki/The_Phoenix_and_the_Turtle), though *Lover's Complaint* and the *Elegy* are also less similar than standard Shakespeare.  The Phoenix and the Turtle is about the death of ideal love, represented by the Phoenix and Turtledove, for which there is a funeral.  It actually is considered by scholars to be in stark constrast to his other output. Elegy itself is actually written for a funeral. [*A Lover's Complaint*](https://en.wikipedia.org/wiki/A_Lover%27s_Complaint) is considered an inferior work by the Bard, so perhaps what we're seeing is a reflection of that lack of quality.  In geneal, we're seeing things that we might expect.
+
+#### Readability
+
+We can examine readablity scores for the texts, but for this we'll need them in raw form. We already had them from before, I just added *Phoenix* from the Gutenberg download.
+
+```{r readability1, echo=-1}
+raw_texts = 
+  data_frame(file = dir('data/texts_raw/shakes/moby/', full.names = TRUE)) %>%
+  mutate(text = map(file, read_lines)) %>% 
+  bind_rows(data_frame(file = dir('data/texts_raw/shakes/gutenberg/', full.names = TRUE)) %>%
+              mutate(text = map(file, read_lines))) %>% 
+  mutate(file = str_extract(file, '[^/]*$')) %>% 
+  rename(id=file)
+raw_texts
+```
+
+With raw texts, we need to make them an official <span class="objclass">corpus</span> object to proceed more easily.  The <span class="func">corpus</span> function from <span class="pack">quanteda</span> won't read directly from a list column or a list at all, so we'll convert it via the <span class="pack">tm</span> package, which more or less defeats the purpose of using the <span class="pack">quanteda</span> package except that the <span class="func">textstat_readability</span> function gives us what we want, but I digress.
+
+Unfortunately the concept of <span class="emph">readability</span> is ill-defined, and as such, there are dozens of measures available dating back nearly 75 years.  The following is based on the Coleman-Liau grade score (higher grade = more difficult).  The conclusion here is first, Shakespeare isn't exactly a difficult read, and two, the poems may be more so relative to the other works.
+
+```{r readability2, echo=1:3}
+library(tm)
+raw_text_corpus = corpus(VCorpus(VectorSource(raw_texts$text)))
+shakes_read = textstat_readability(raw_text_corpus) 
+
+shakes_read_ordered = shakes_read %>% 
+  mutate(text = str_sub(raw_texts$id, end=-5)) %>% 
+  arrange(Coleman.Liau.grade) 
+
+shakes_read_ordered %>% 
+  select(Coleman.Liau.grade) %>%
+  round(1) %>% 
+  heatmaply::heatmaply(Rowv=NA, 
+                       Colv=NA, 
+                       labRow=shakes_read_ordered$text, 
+                       colors='Blues',
+                       plot_method='plotly',
+                       colorbar_len=.5,
+                       colorbar_ypos= .25,
+                       colorbar_xpos= .65,
+                       subplot_widths=.25
+                       ) %>% 
+  layout(yaxis=list(ticklen=0)) %>% 
+  theme_plotly()
+# shakes_read %>% 
+#   mutate(id=raw_texts$id) %>% 
+#   gather(key=index, value=score, -id) %>% 
+#   group_by(index) %>% 
+#   mutate(s_score=scales::rescale(score)) %>% 
+#   ungroup %>% 
+#   select(-score) %>% 
+#   spread(key = index, value=s_score) %>% 
+#   heatmaply::heatmaply(Rowv=NA, Colv=NA)
+```
+
+
+
+
+#### Lexical diversity
+
+There are also metrics of <span class="emph">lexical diversity</span>.  As with readability, there is no one way to measure 'diversity'.  Here we'll go back to using the standard DTM, as the focus is on the terms, whereas readibility is more at the sentence level.  Most standard measures of lexical diversity are variants on what is called the type-token ratio, which in our setting is the number of unique terms (types) relative to the total terms (tokens). We can use <span class="func">textstat_lexdiv</span> for our purposes here, which will provide several measures of diversity by default.
+
+```{r lexical_diversity}
+ld = textstat_lexdiv(shakes_dtm)
+```
+
+
+This visual is based on the (absolute) scaled values of those several metrics, and might suggest that the poems are relatively more diverse. This certainly might be the case for *Phoenix*, but it could also be a reflection of the limitation of several of the measures, such that longer works are seen as less diverse, as tokens are added more so than types the longer the text goes.  
+
+```{r lexical_diversity_vis, echo=FALSE}
+scaled_ld = scale(ld) %>%
+  abs() %>% 
+  data.frame() %>% 
+  mutate(text = rownames(ld)) %>% 
+  select(text, everything()) %>% 
+  arrange(rowMeans(.[,-1])) 
+
+scaled_ld %>% 
+  select(-text) %>% 
+  heatmaply::heatmaply(Rowv=F, 
+                       Colv=F, 
+                       colors='Blues',            # note that RCB scales will not work unless method='plotly'
+                       plot_method = 'plotly',
+                       labRow=scaled_ld$text,  # note: heatmaply irregularly trims/justifies, so str_pad won't work 
+                       draw_cellnote=F,
+                       hide_colorbar=T,
+                       subplot_widths=.5) %>% 
+  layout(yaxis=list(ticklen=0)) %>% 
+  theme_plotly()
+```
+
+As a comparison, the following shows the results of the 'Measure of Textual Diversity' calculated using the <span class="pack">koRpus</span> package[^noshowmtld].  It is notably less affected by text length, though the conclusions are largely the same. There is notable correlation between the MTLD and readibility as well[^correadmtld]. In general, Shakespeare tends to be more expressive in poems, and less so with comedies. 
+
+```{r MTLD, echo=FALSE, eval=FALSE}
+fnames = c(dir('data/texts_raw/shakes/moby/', full.names=T), 
+           dir('data/texts_raw/shakes/gutenberg/', full.names=T))
+library(koRpus)
+library(parallel)
+cl = makeCluster(7)
+clusterEvalQ(cl, library(koRpus))
+clusterExport(cl, 'fnames')
+
+# this actually just wraps 'lex.div'
+MTLD_results = parLapply(cl, fnames, 
+                       function(x) MTLD(txt=kRp.text.analysis(x, force.lang='en', tagger='tokenize')))
+stopCluster(cl)
+names(MTLD_results) = c(dir('data/texts_raw/shakes/moby/'), 
+           dir('data/texts_raw/shakes/gutenberg/'))
+save(MTLD_results, file='data/shakes_mtld.RData')
+
+
+# sapply(MTLD_results, function(x) x@TTR)
+
+```
+
+
+```{r MTLD_vis, echo=FALSE}
+load('data/shakes_mtld.RData')
+MTLD_df = lapply(MTLD_results, function(x) x@MTLD$MTLD) %>% 
+  data.frame() %>% 
+  gather(key=text, value=MTLD) %>% 
+  mutate(text = str_sub(text, end=-5)) %>% 
+  arrange(MTLD)
+  
+MTLD_df %>% 
+  select(MTLD) %>% 
+  heatmaply::heatmaply(Rowv=F, 
+                       Colv=F, 
+                       colors='Blues',            # note that RCB scales will not work unless method='plotly'
+                       plot_method = 'plotly',
+                       labRow=MTLD_df$text,  # note: heatmaply irregularly trims/justifies, so str_pad won't work 
+                       draw_cellnote=F,
+                       hide_colorbar=T,
+                       subplot_widths=.5) %>% 
+  layout(yaxis=list(ticklen=0)) %>% 
+  theme_plotly()
+```
+
 
 ### Scene IV. Topic model
 
@@ -1422,7 +1589,7 @@ t(topics(shakes_10, 3))
 ```{r tm10_results_pretty_terms, echo=FALSE}
 load('data/shakespeare_topic_model.RData')
 library(topicmodels)
-get_terms(shakes_10, 20) %>% DT::datatable()
+get_terms(shakes_10, 20) %>% DT::datatable(options=list(dom='pt'))
 ```
 
 <br>
@@ -1431,17 +1598,18 @@ get_terms(shakes_10, 20) %>% DT::datatable()
 t(topics(shakes_10, 3)) %>% 
   data.frame %>% 
   rename_all(str_replace, 'X', 'Topic ') %>% 
-  DT::datatable(options)
+  DT::datatable(options=list(dom='pt'))
 ```
 
 <br>
 
-The following visualization shows a heatmap for the topic probabilities of each document using <span class="pack">heatmaply</span>.  All the dark represents basically zero probability for a document expressing that topic.  The colors at the far right indicate the traditional classification of Shakespeare's works, I've also added a cluster analysis based on the previous cosine (dis)similarity matrix, and the resulting dendrogram.  
+The following visualization shows a heatmap for the topic probabilities of each document.  Darker values mean higher probability for a document expressing that topic.  I've also added a cluster analysis based on the previous cosine (dis)similarity matrix, and the resulting dendrogram.  
 
-```{r viz_topics, echo=FALSE, cache=FALSE}
+
+```{r viz_topics, echo=FALSE, cache=FALSE, fig.height=6}
 load('data/shakespeare_classification.RData')
 
-library(dendextend)
+suppressPackageStartupMessages(library(dendextend))
 row_dend  = (1-quanteda::textstat_simil(shakes_dtm, margin = "documents", method = "cosine")) %>%
   as.dist() %>%
   hclust(method="complete") %>%
@@ -1449,29 +1617,96 @@ row_dend  = (1-quanteda::textstat_simil(shakes_dtm, margin = "documents", method
   set("branches_k_color", k = 3) %>% set("branches_lwd", c(.5,.5)) %>%
   ladderize
 
+# heatmaply is barely beta use d3heatmap for now
 shakes_10@gamma %>%
   round(3) %>%
   heatmaply::heatmaply(Rowv=row_dend,
                        Colv=F,
                        labRow=shakes_10@documents,
                        labCol=paste0('topic', 1:10),
-                       colors=viridis::inferno(50),
+                       colors='Oranges',
                        k_row = 4,
                        plot_method = 'plotly',
                        row_side_colors = select(arrange(shakes_types, title), class),
                        fontsize_row=7,
-                       fontsize_col=7, 
-                       colorbar_len = 0.3,
-                       subplot_widths=c(900, 50),
-                       subplot_heights=c(1800, 50)) %>% 
-  layout()
-  lazerhawk::theme_plotly()
+                       fontsize_col=7,
+                       colorbar_len = 0.2) %>%
+  layout(width=900, height=900, showlegend=F) %>% # showing the legend will screw up the colorbar and any associated options
+  theme_plotly()
+shakes_10@gamma %>%
+  # round(3) %>%
+  # d3heatmap::d3heatmap(Rowv=row_dend,
+  #                      Colv=F,
+  #                      labRow=shakes_10@documents,
+  #                      labCol=paste0('topic', 1:10),
+  #                      # colors=viridis::inferno(500),
+  #                      colors='Blues',
+  #                      k_row = 10,
+  #                      xaxis_font_size = 12,
+  #                      yaxis_font_size=8, 
+  #                      colorbar_len = 0.2,
+  #                      show_grid = F, 
+  #                      width=800,
+  #                      height=800) #%>% 
+  # layout(width=900, height=900, showlegend=F) %>% # showing the legend will screw up the colorbar and any associated options
+  # lazerhawk::theme_plotly()
 ```
 
 
 <br>
 
-A couple things stand out.  Traditional classificiation really probably only works for the historical works.  Furthermore, tragedies and comedies might hit on the same topics, albeit from different perspecitves.  In addition, at least some works are very poetical, or at least have 
+A couple things stand out.  Traditional classificiation really probably only works for the historical works.  Furthermore, tragedies and comedies might hit on the same topics, albeit from different perspecitves.  In addition, at least some works are very poetical, or at least have topics in common with the poems.
+
+The following shows the average topic probability for each of the traditional classes. Topics are represented by their first five most probable terms.
+
+```{r avg_topic_probs_per_class, echo=FALSE}
+class_probs = shakes_10@gamma %>%
+  data.frame() %>% 
+  round(3) %>%
+  rename_all(function(x) stringr::str_replace_all(x, 'X', 'Topic ')) %>% 
+  bind_cols(doc=shakes_10@documents, arrange(shakes_types, title), .) %>% 
+  select(-title) %>% 
+  gather(key=topic, value=prob, -doc, -class, -problem, -late_romance) %>% 
+  mutate(topic = forcats::fct_reorder(topic, rep(1:10, e=n_distinct(doc)))) %>% 
+  group_by(class, topic) %>% 
+  summarise(mean_prob = mean(prob)) %>% 
+  arrange(class, topic) %>% 
+  spread(topic, mean_prob) %>% 
+  ungroup
+
+class_probs %>% 
+  select(-class) %>% 
+  d3heatmap::d3heatmap(Rowv=F,
+                       Colv=F,
+                       labRow=class_probs$class,
+                       labCol=apply(get_terms(shakes_10, 5), 2, paste0, collapse=' '),
+                       # colors=viridis::inferno(500),
+                       colors='Oranges',
+                       k_row = 10,
+                       # row_side_colors = select(arrange(shakes_types, title), class),
+                       xaxis_font_size = 8,
+                       yaxis_font_size=12, 
+                       show_grid = F, 
+                       width=800,
+                       xaxis_height = 150
+                       ) 
+class_probs %>% 
+  select(-class) %>% 
+  heatmaply::heatmaply(Rowv=F,
+                       Colv=F,
+                       labRow=class_probs$class,
+                       labCol=apply(get_terms(shakes_10, 10), 2, paste0, collapse='\n'),
+                       # colors=viridis::inferno(500),
+                       colors='Oranges',
+                       plot_method = 'plotly',
+                       xaxis_font_size = 8,
+                       yaxis_font_size=12, 
+                       xaxis_height = 250,
+                       colorbar_len=.5,
+                       column_text_angle=0
+                       ) 
+```
+
 
 ```{r ggplay, echo=F, eval=F}
 shakes_10@gamma %>%
@@ -1511,6 +1746,10 @@ shakes_10@gamma %>%
 [^tibblefail]: I found it easier to work with the entire data frame for the function, hence splitting it on id and recombining.  Some attempt was made to work within the tidyverse, but there were numerous issues to what should have been a fairly easy task.
 
 [^love]: Love might as well be a stopword for Shakespere.
+
+[^noshowmtld]: I don't show this as I actually did it in parallel due to longer works taking a notable time to calculate MTLD.
+
+[^correadmtld]: The Pearson correlation between MTLD and the Coleman Liau grade readability depicted previously was .87.
 
 <!--chapter:end:09_shakespeare.Rmd-->
 
