@@ -590,6 +590,7 @@ scaled_ld %>%
   theme_plotly()
 ```
 
+<br>
 As a comparison, the following shows the results of the 'Measure of Textual Diversity' calculated using the <span class="pack">koRpus</span> package[^noshowmtld].  It is notably less affected by text length, though the conclusions are largely the same. There is notable correlation between the MTLD and readibility as well[^correadmtld]. In general, Shakespeare tends to be more expressive in poems, and less so with comedies. 
 
 ```{r MTLD, echo=FALSE, eval=FALSE}
@@ -637,14 +638,18 @@ MTLD_df %>%
   theme_plotly()
 ```
 
+<br>
 
 ### Scene IV. Topic model
 
 I'd say we're now ready for topic model.  We'll run run one with 10 topics.  We can also see how things compare with the usual classifications for the texts.  Also, this will take a while to run depending on your machine (maybe a minute or two).
 
+
+
 ```{r topic_model, echo=1:2, eval=F}
 library(topicmodels)
 shakes_10 = LDA(convert(shakes_dtm, to = "topicmodels"), k = 10)
+shakes_10_cor = CTM(convert(shakes_dtm, to = "topicmodels"), k = 10, control=list(cg=list(iter.max=2000)))
 save(shakes_10, file='data/shakespeare_topic_model.RData')
 ```
 
@@ -670,21 +675,41 @@ t(topics(shakes_10, 3)) %>%
 
 <br>
 
-The following visualization shows a heatmap for the topic probabilities of each document.  Darker values mean higher probability for a document expressing that topic.  I've also added a cluster analysis based on the previous cosine (dis)similarity matrix, and the resulting dendrogram.  
+The following visualization shows a heatmap for the topic probabilities of each document.  Darker values mean higher probability for a document expressing that topic.  I've also added a cluster analysis based on the  cosine distance matrix, and the resulting dendrogram[^clustering]. 
 
 
 ```{r viz_topics, echo=FALSE, cache=FALSE, fig.height=6, fig.width=10}
+library(quanteda)
 load('data/shakespeare_classification.RData')
 
 suppressPackageStartupMessages(library(dendextend))
-row_dend  = (1-quanteda::textstat_simil(shakes_dtm, margin = "documents", method = "cosine")) %>%
+# see proxy::pr_DB %>% data.frame() for actual info for the metrics that
+# quanteda uses, whose functions don't bother to even tell you that's where they
+# are coming from
+# proxy::pr_DB %>% data.frame() %>% select( distance, formula, description, reference) %>% DT::datatable()
+
+# cosine distance, is not a proper distance
+row_dend  = 
+  (1-textstat_simil(dfm_weight(shakes_dtm, 'relMaxFreq'), 
+                    margin = "documents", 
+                    method = "cosine")) %>%
   as.dist() %>%
   hclust(method="complete") %>%
   as.dendrogram %>%
   set("branches_k_color", k = 3) %>% set("branches_lwd", c(.5,.5)) %>%
   ladderize
 
-# heatmaply is barely beta use d3heatmap for now
+# row_dend  = 
+#   -quanteda::textstat_dist(dfm_weight(shakes_dtm, 'tfidf'), 
+#                            margin = "documents", 
+#                           method = "kullback") %>%
+#   hclust(method="complete") %>%
+#   as.dendrogram %>%
+#   set("branches_k_color", k = 3) %>% set("branches_lwd", c(.5,.5)) %>%
+#   ladderize
+
+# heatmaply is barely beta, use d3heatmap for now?
+
 shakes_10@gamma %>%
   round(3) %>%
   heatmaply::heatmaply(Rowv=row_dend,
@@ -695,37 +720,78 @@ shakes_10@gamma %>%
                        k_row = 4,
                        plot_method = 'plotly',
                        row_side_colors = select(arrange(shakes_types, title), class),
+                       # row_side_palette = c("#39BEB1", "#ABB065", "#ACA4E2", "#CC476B", "#E495A5", "black"),
+                       seriate = 'OLO',
                        fontsize_row=7,
                        fontsize_col=7,
-                       subplot_widths=c(.75, .025, .225),
+                       subplot_widths=c(.5, .025, .225),
                        subplot_heights=1,
+                       hide_colorbar = T,
                        colorbar_len = 0.3,
                        colorbar_ypos=0) %>%
   layout(showlegend=F) %>% # showing the legend will screw up the colorbar and any associated options
   theme_plotly()
 # shakes_10@gamma %>%
-  # round(3) %>%
-  # d3heatmap::d3heatmap(Rowv=row_dend,
-  #                      Colv=F,
-  #                      labRow=shakes_10@documents,
-  #                      labCol=paste0('topic', 1:10),
-  #                      # colors=viridis::inferno(500),
-  #                      colors='Blues',
-  #                      k_row = 10,
-  #                      xaxis_font_size = 12,
-  #                      yaxis_font_size=8, 
-  #                      colorbar_len = 0.2,
-  #                      show_grid = F, 
-  #                      width=800,
-  #                      height=800) #%>% 
-  # layout(width=900, height=900, showlegend=F) %>% # showing the legend will screw up the colorbar and any associated options
-  # lazerhawk::theme_plotly()
+# round(3) %>%
+# d3heatmap::d3heatmap(Rowv=row_dend,
+#                      Colv=F,
+#                      labRow=shakes_10@documents,
+#                      labCol=paste0('topic', 1:10),
+#                      # colors=viridis::inferno(500),
+#                      colors='Blues',
+#                      k_row = 10,
+#                      xaxis_font_size = 12,
+#                      yaxis_font_size=8,
+#                      colorbar_len = 0.2,
+#                      show_grid = F,
+#                      width=800,
+#                      height=800) #%>%
+# layout(width=900, height=900, showlegend=F) %>% # showing the legend will screw up the colorbar and any associated options
+# lazerhawk::theme_plotly()
 ```
 
 
 <br>
 
-A couple things stand out.  Traditional classificiation really probably only works for the historical works.  Furthermore, tragedies and comedies might hit on the same topics, albeit from different perspecitves.  In addition, at least some works are very poetical, or at least have topics in common with the poems.
+A couple things stand out.  Traditional classificiation really probably only works for the historical works, except for Henry the VIII (possibly due to it being a collaborative work).  Furthermore, tragedies and comedies might hit on the same topics, albeit from different perspecitves.  In addition, at least some works are very poetical, or at least have topics in common with the poems (love).  If we take four clusters from it, it boils down to *Phoenix* (on its own), standard poems, a mixed bag of more love oriented works and the remaining poems, then everything else.  
+
+Alternatively, one could merely classify them based on their probable topics, which would make a more sense if classification is the goal. The following visualization attempts to order them based on their most probable topic.  The order are based on the most likely topics across all topics
+
+```{r cluster_topics, echo=FALSE}
+topic_class = shakes_10@gamma %>%
+  round(3) %>%
+  data.frame() %>% 
+  rename_all(function(x) str_replace(x, 'X', 'Topic ')) %>% 
+  mutate(text =  shakes_10@documents, 
+         class = shakes_types$class)
+order_topics = order(colSums(shakes_10@gamma), decreasing=T)
+
+topic_class = topic_class %>%
+  # select(-text, -class) %>%
+  select(order_topics, text, class)  %>%
+  arrange_at(vars(contains('Topic')), desc) 
+
+topic_class %>%
+  select(-text, -class) %>% 
+  heatmaply::heatmaply(Rowv=F, Colv=F,
+                       labRow=topic_class$text,
+                       labCol=apply(get_terms(shakes_10, 10), 2, paste0, collapse='\n')[order_topics],
+                       column_text_angle=0, 
+                       colors='Oranges',
+                       subplot_widths=c(.75),
+                       plot_method = 'plotly',
+                       fontsize_row=8,
+                       fontsize_col=8,
+                       hide_colorbar = T) %>% 
+  layout(showlegend=F, height=750) %>% # height to be deprecated, maybe heatmaply will conform to plotly by then
+  theme_plotly() 
+
+
+```
+
+<br>
+<br>
+<br>
 
 The following shows the average topic probability for each of the traditional classes. Topics are represented by their first five most probable terms.
 
@@ -744,22 +810,22 @@ class_probs = shakes_10@gamma %>%
   spread(topic, mean_prob) %>% 
   ungroup
 
-class_probs %>% 
-  select(-class) %>% 
-  d3heatmap::d3heatmap(Rowv=F,
-                       Colv=F,
-                       labRow=class_probs$class,
-                       labCol=apply(get_terms(shakes_10, 5), 2, paste0, collapse=' '),
-                       # colors=viridis::inferno(500),
-                       colors='Oranges',
-                       k_row = 10,
-                       # row_side_colors = select(arrange(shakes_types, title), class),
-                       xaxis_font_size = 8,
-                       yaxis_font_size=12, 
-                       show_grid = F, 
-                       width=800,
-                       xaxis_height = 150
-                       ) 
+# class_probs %>% 
+#   select(-class) %>% 
+#   d3heatmap::d3heatmap(Rowv=F,
+#                        Colv=F,
+#                        labRow=class_probs$class,
+#                        labCol=apply(get_terms(shakes_10, 5), 2, paste0, collapse=' '),
+#                        # colors=viridis::inferno(500),
+#                        colors='Oranges',
+#                        k_row = 10,
+#                        # row_side_colors = select(arrange(shakes_types, title), class),
+#                        xaxis_font_size = 8,
+#                        yaxis_font_size=12, 
+#                        show_grid = F, 
+#                        width=800,
+#                        xaxis_height = 150
+#                        ) 
 class_probs %>% 
   select(-class) %>% 
   heatmaply::heatmaply(Rowv=F,
@@ -771,7 +837,9 @@ class_probs %>%
                        plot_method = 'plotly',
                        xaxis_font_size = 8,
                        yaxis_font_size=12, 
-                       xaxis_height = 250,
+                       # xaxis_height = 250,
+                       subplot_widths = .75,
+                       hide_colorbar = T,
                        colorbar_len=.5,
                        column_text_angle=0
                        ) 
@@ -820,3 +888,5 @@ shakes_10@gamma %>%
 [^noshowmtld]: I don't show this as I actually did it in parallel due to longer works taking a notable time to calculate MTLD.
 
 [^correadmtld]: The Pearson correlation between MTLD and the Coleman Liau grade readability depicted previously was .87.
+
+[^clustering]: If you are actually interested in clustering the documents (or anything for that matter in my opinion), this would not be the way to do so. For one, the documents are already clustered based on most probable topic. Second, cosine distance isn't actually a proper distance. Third, as shocking as it may seem, newer methods have been developed since the hierarchical clustering approach, which basically has a dozen arbitrary choices to be made at each step.  However as a simple means to a vida
