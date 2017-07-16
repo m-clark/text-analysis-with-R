@@ -143,7 +143,7 @@ In this section I'll add some things that come to mind from time to time that mi
 
 #### Dates
 
-Dates are not character strings. Though they may start that way, if you actually want to treat them as dates you'll need to convert the string to the appropiate date class. The <span class="pack">lubridate</span> package makes dealing with dates much easier.  It comes with conversion, extraction and other functionality that will be sure to save you some time.
+Dates are not character strings. Though they may start that way, if you actually want to treat them as dates you'll need to convert the string to the appropriate date class. The <span class="pack">lubridate</span> package makes dealing with dates much easier.  It comes with conversion, extraction and other functionality that will be sure to save you some time.
 
 ```{r lubridate}
 library(lubridate)
@@ -164,7 +164,7 @@ In regression modeling with few time points, one often has to decide on whether 
 
 #### Encoding
 
-Encoding can be a sizeable PITA sometimes, and will often come up when dealing with webscraping and other languages.  The <span class="pack">rvest</span> and <span class="pack">stringr</span> packages may be able to get you past some issues at least. See their respective functions <span class="func">repair_encoding</span> and <span class="func">str_conv</span> as starting points on this issue.
+Encoding can be a sizable PITA sometimes, and will often come up when dealing with webscraping and other languages.  The <span class="pack">rvest</span> and <span class="pack">stringr</span> packages may be able to get you past some issues at least. See their respective functions <span class="func">repair_encoding</span> and <span class="func">str_conv</span> as starting points on this issue.
 
 
 ### Summary of basic text functionality
@@ -190,15 +190,15 @@ What is *that* you may ask?  Well here is an example of what it would and wouldn
 grepl(c('r is the shiny', 'r is the shiny1', 'r shines brightly'), pattern='^r.*shiny[0-9]$')
 ```
 
-What the regex esotericly is attempting to match is any string that starts with 'r' and ends with 'shiny_' where _ is some single digit.  Specifically it breaks down as follows:
+What the regex esoterically is attempting to match is any string that starts with 'r' and ends with 'shiny_' where _ is some single digit.  Specifically it breaks down as follows:
 
 - **^** : starts with, so ^r means starts with r
 - **.** : any character
 - **\*** : match the preceding zero or more times
-- **+** : match the preceding one or more times
 - **shiny** : match 'shiny'
 - **[0-9]** : any digit 0-9 (note that we are still talking about strings, not actual numbered values)
 - **$** : ends with preceding
+
 
 ### Typical Uses
 
@@ -208,11 +208,19 @@ Along with ^ . * [0-9], a couple more common ones are:
 
 - **[a-z]** : letters a-z
 - **[A-Z]** : capital letters
+- **+** : match the preceding one or more times
 - **()** : groupings
-- **|** : logical or e.g. [a-z]|[0-9]  (a letter or a number)
-- **\\\** : escape a character, like if you actually wanted to search for a period, you'd use \\., though in R you need \\\\, i.e. double slashes, for escape.
+- **|** : logical or e.g. [a-z]|[0-9]  (a lower case letter or a number)
+- **?** : preceding item is optional, and will be matched at most once. Typically used for 'look ahead' and 'look behind'
+- **\\** : escape a character, like if you actually wanted to search for a period, you'd use \\., though in R you need \\\\, i.e. double slashes, for escape.
 
-The key functions can be found by looking at the help file for the <span class="func">grep</span> function (`?grep`).  However, the <span class="pack">stringr</span> package has the same functionality with perhaps a slightly faster processing (though that's due to the underlying <span class="pack">stringi</span> package).
+In addition, there are certain predefined characters that can be called:
+
+- **[:punct:]** : punctuation
+- **[:blank:]** : spaces and tabs
+- **[:alnum:]** : alphanumeric characters
+
+Those are just a few.  The key functions can be found by looking at the help file for the <span class="func">grep</span> function (`?grep`).  However, the <span class="pack">stringr</span> package has the same functionality with perhaps a slightly faster processing (though that's due to the underlying <span class="pack">stringi</span> package).
 
 See if you can guess which of the following will turn up true.
 
@@ -223,7 +231,7 @@ grepl(c('apple', 'pear', 'banana'), pattern='^a|a$')
 ```
 
 
-Scraping the web, munging data, ... you can potentially use this all the time, and not only with text analysis, as we'll now see.
+Scraping the web, munging data, just finding things in your scripts ... you can potentially use this all the time, and not only with text analysis, as we'll now see.
 
 ### dplyr helper functions
 
@@ -249,7 +257,14 @@ df = data_frame(
   x = round(rnorm(500), 2), 
   region = sample(c('north', 'north ', 'south', 'South', ' South', 'North ', 'North'), 500, replace=T)
 )
-DT::datatable(df, options=list(dom='pt'))
+DT::datatable(df, 
+              rownames=F,
+              options=list(dom='t', 
+                           scrollX='50%',
+                           autoWidth = TRUE,
+                           columnDefs = list(list(width = '50px', targets = 0),
+                                             list(className = 'dt-center', targets = 1)))
+)
 ```
 
 
@@ -262,7 +277,7 @@ pander(table(df$region))
 
 Even if you spotted the casing issue, there is still a white space problem[^excel]. Let's say you want this to be capitalized 'North' and 'South'. How might you do it? It's actually quite easy with the <span class="pack">stringr</span> tools.
 
-```{r label_problem3}
+```{r label_problem3, eval=FALSE}
 library(stringr)
 df %>% 
   mutate(region = str_trim(region),
@@ -271,18 +286,31 @@ df %>%
 
 The <span class="func">str_trim</span> function trims white space from either side, while <span class="func">str_to_title</span> converts everything to first letter capitalized.  
 
+```{r label_problem4, echo=2, eval=1:2}
+df_corrected = df %>% 
+  mutate(region = str_trim(region),
+         region = str_to_title(region))
+table(df_corrected$region)
+pander(table(df_corrected$region))
+```
+
 ### Example 2
 
 Suppose you import a data frame, and the data was originally in wide format, where each column represented a year of data collection for the individual. Since it is bad form for data columns to have numbers for names, when you import it, the result looks like the following.
 
 ```{r rename_chunk, echo=FALSE}
 df = data.frame(id=1:20, round(matrix(rnorm(100), ncol=5), 2))
-DT::datatable(df, options=list(dom='pt'), rownames=F)
+DT::datatable(df, rownames=F,
+              options=list(dom='tp',
+                           autoWidth = TRUE,
+                           columnDefs = list(list(width = '50px', targets = 0),
+                                             list(className = 'dt-center', targets = 1)))
+              )
 ```
 
 <br>
 
-So the problem now is to change the names to be Year_1, Year_2, etc. You might think you might have to use colnames and manually create a string of names to replace the current ones.
+So the problem now is to change the names to be Year_1, Year_2, etc. You might think you might have to use <span class="func">colnames</span> and manually create a string of names to replace the current ones.
 
 
 ```{r rename_chunk2, eval=FALSE}
@@ -307,7 +335,7 @@ df %>%
   head
 ```
 
-We just have to use the <span class="func">num_range</span> helper function within the funtion that tells <span class="func">rename_at</span> what it should be renaming, and let <span class="func">str_replace</span> do the rest. 
+We just have to use the <span class="func">num_range</span> helper function within the function that tells <span class="func">rename_at</span> what it should be renaming, and let <span class="func">str_replace</span> do the rest. 
 
 
 
@@ -317,6 +345,6 @@ We just have to use the <span class="func">num_range</span> helper function with
 
 [^excel]: This is a very common issue among Excel users, and just one of the many reasons not to use it.
 
-[^helperrows]: And maybe some day, the oh so challenging rows!
+[^helperrows]: And maybe some day, the rows. For now you'll have to use a <span class="func">grepl</span>/<span class="func">str_detect</span> approach.
 
 [^str_all]: I also don't think it necessary to have separate functions for str_* functions in <span class="pack">stringr</span> depending on whether, e.g. I want 'all' matches (practically every situation) or just the first (very rarely). It could have just been an additional argument with default `all=TRUE`.

@@ -678,7 +678,7 @@ t(topics(shakes_10, 3)) %>%
 The following visualization shows a heatmap for the topic probabilities of each document.  Darker values mean higher probability for a document expressing that topic.  I've also added a cluster analysis based on the  cosine distance matrix, and the resulting dendrogram[^clustering]. 
 
 
-```{r viz_topics, echo=FALSE, cache=FALSE, fig.height=6, fig.width=10}
+```{r viz_topics, echo=FALSE}
 library(quanteda)
 load('data/shakespeare_classification.RData')
 
@@ -785,8 +785,6 @@ topic_class %>%
                        hide_colorbar = T) %>% 
   layout(showlegend=F, height=750) %>% # height to be deprecated, maybe heatmaply will conform to plotly by then
   theme_plotly() 
-
-
 ```
 
 <br>
