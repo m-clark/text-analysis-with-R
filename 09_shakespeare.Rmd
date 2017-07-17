@@ -128,7 +128,13 @@ save(shakes0, file='data/initial_shakes_dt.RData')
 
 ```{r show_shakes0, echo=F}
 load('data/initial_shakes_dt.RData')
-DT::datatable(shakes0[1:20,], options=list(dom='tp'))
+DT::datatable(shakes0[1:20,], 
+              options=list(dom='tp')) %>% 
+  DT::formatStyle(
+    0, # ignores columns, but otherwise put here
+    target='row',
+    backgroundColor = 'transparent'
+  )
 ```
 
 
@@ -661,7 +667,13 @@ t(topics(shakes_10, 3))
 ```{r tm10_results_pretty_terms, echo=FALSE}
 load('data/shakespeare_topic_model.RData')
 library(topicmodels)
-get_terms(shakes_10, 20) %>% DT::datatable(options=list(dom='pt'))
+get_terms(shakes_10, 20) %>% 
+  DT::datatable(options=list(dom='tp')) %>% 
+  DT::formatStyle(
+    0, # ignores columns, but otherwise put here
+    target='row',
+    backgroundColor = 'transparent'
+  )
 ```
 
 <br>
@@ -670,7 +682,12 @@ get_terms(shakes_10, 20) %>% DT::datatable(options=list(dom='pt'))
 t(topics(shakes_10, 3)) %>% 
   data.frame %>% 
   rename_all(str_replace, 'X', 'Topic ') %>% 
-  DT::datatable(options=list(dom='pt'))
+  DT::datatable(options=list(dom='tp')) %>% 
+  DT::formatStyle(
+    0, # ignores columns, but otherwise put here
+    target='row',
+    backgroundColor = 'transparent'
+)
 ```
 
 <br>
@@ -724,12 +741,13 @@ shakes_10@gamma %>%
                        seriate = 'OLO',
                        fontsize_row=7,
                        fontsize_col=7,
-                       subplot_widths=c(.5, .025, .225),
+                       subplot_widths=c(.75, .025, .225),
                        subplot_heights=1,
                        hide_colorbar = T,
                        colorbar_len = 0.3,
                        colorbar_ypos=0) %>%
   layout(showlegend=F) %>% # showing the legend will screw up the colorbar and any associated options
+  config(displayModeBar = F) %>% 
   theme_plotly()
 # shakes_10@gamma %>%
 # round(3) %>%
@@ -755,7 +773,7 @@ shakes_10@gamma %>%
 
 A couple things stand out.  Traditional classificiation really probably only works for the historical works, except for Henry the VIII (possibly due to it being a collaborative work).  Furthermore, tragedies and comedies might hit on the same topics, albeit from different perspecitves.  In addition, at least some works are very poetical, or at least have topics in common with the poems (love).  If we take four clusters from it, it boils down to *Phoenix* (on its own), standard poems, a mixed bag of more love oriented works and the remaining poems, then everything else.  
 
-Alternatively, one could merely classify them based on their probable topics, which would make a more sense if classification is the goal. The following visualization attempts to order them based on their most probable topic.  The order are based on the most likely topics across all topics
+Alternatively, one could merely classify them based on their probable topics, which would make more sense if classification is the goal. The following visualization attempts to order them based on their most probable topic.    The order is based on the most likely topics across all documents.
 
 ```{r cluster_topics, echo=FALSE}
 topic_class = shakes_10@gamma %>%
@@ -784,9 +802,11 @@ topic_class %>%
                        fontsize_col=8,
                        hide_colorbar = T) %>% 
   layout(showlegend=F, height=750) %>% # height to be deprecated, maybe heatmaply will conform to plotly by then
+  config(displayModeBar = F) %>% 
   theme_plotly() 
 ```
 
+<br>
 <br>
 <br>
 <br>
@@ -836,11 +856,13 @@ class_probs %>%
                        xaxis_font_size = 8,
                        yaxis_font_size=12, 
                        # xaxis_height = 250,
-                       subplot_widths = .75,
+                       # subplot_widths = .75,
                        hide_colorbar = T,
                        colorbar_len=.5,
                        column_text_angle=0
-                       ) 
+                       ) %>%
+  config(displayModeBar = F) %>% 
+  theme_plotly()
 ```
 
 
@@ -874,6 +896,15 @@ shakes_10@gamma %>%
   lazerhawk::theme_trueMinimal()
 ```
 
+Aside from the poems, the classes are a good mix of topics, and appear to have some overlap.
+
+And I grow weary...
+
+<br>
+<br>
+<br>
+
+<div style="text-align:center; font-size:500%">**FIN**</div>
 
 [^bug]: If you can think of a use case where `x<br>y<br>z` leading to `xyz` would be both expected as default behavior and desired please let me know.
 

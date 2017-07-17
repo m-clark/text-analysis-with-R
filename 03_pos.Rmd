@@ -10,7 +10,7 @@ As an initial review of parts of speech, I suggest you watch the following Schoo
 - [Lolly Lolly Lolly Get Your Adverbs Here](https://youtu.be/14fXm4FOMPM)
 - [Conjunction Junction](https://youtu.be/RPoBE-E8VOc) (personal fave)
 
-Aside from those, you can also learn how bills get passed, about being a victim of gravity, a comparison of the decimal to other numeric systems, and a host of other useful things.
+Aside from those, you can also learn how bills get passed, about being a victim of gravity, a comparison of the decimal to other numeric systems used by alien species, and a host of other useful things.
 
 ## Basic idea
 
@@ -20,8 +20,6 @@ With <span class="emph">part-of-speech</span> tagging, we classify a word with i
 rbind(c('JJ', 'JJ', 'NNS', 'VBP', 'RB'),
       c('Colorless', 'green', 'ideas', 'sleep', 'furiously.')) %>% 
   pander(justify='center')
-       
-
 ```
 
 We have two adjectives (JJ), a plural noun (NNS), a verb (VBP), and an adverb (RB).
@@ -40,44 +38,36 @@ In the following we'll compare three texts from Donald Barthelme:
 - *The First Thing The Baby Did Wrong*
 - *Some Of Us Had Been Threatening Our Friend Colby*
 
-As another comparison, I've included Raymond Carver's *What we talk about when we talk about love*, the unedited version.
+As another comparison, I've included Raymond Carver's *What we talk about when we talk about love*, the unedited version.  I process each text separately for clarity, but you could easily have just done a <span class="func">group_by</span> approach on the whole of the <span class="objclass">barth</span> object.
 
 ```{r barthelme_pos}
 balloon = barth %>% 
-  filter(id=='balloon.txt') %>% 
+  filter(work=='balloon.txt') %>% 
   mutate(sentence_id = 1:n()) %>% 
   unnest_tokens(word, sentence, drop=F) %>% 
   ungroup 
+
 colby = barth %>% 
-  filter(id=='colby.txt') %>% 
+  filter(work=='colby.txt') %>% 
   mutate(sentence_id = 1:n()) %>% 
   unnest_tokens(word, sentence, drop=F) %>% 
   ungroup 
-barthelme_pos = balloon %>% 
+
+barthelme_pos = bind_rows(baby, balloon, colby) %>% 
+  group_by(work) %>% 
   inner_join(parts_of_speech) %>% 
   count(pos) %>%
-  mutate(text='balloon',
-         prop=n/sum(n)) %>% 
-  rbind(
-    colby %>% 
-      inner_join(parts_of_speech) %>% 
-      count(pos) %>%
-      mutate(text='colby',
-             prop=n/sum(n)),
-    baby %>% 
-      inner_join(parts_of_speech) %>% 
-      count(pos) %>%
-      mutate(text='baby',
-             prop=n/sum(n))
-  )
-
+  mutate(text=work,
+         prop=n/sum(n))
 ```
+
+Next we read in and process the Carver text in the same manner.
 
 ```{r carver}
 carver_pos = 
   data_frame(file = dir('data/texts_raw/carver/', full.names = TRUE)) %>%
   mutate(text = map(file, read_lines)) %>%
-  transmute(id = basename(file), text) %>%
+  transmute(work = basename(file), text) %>%
   unnest(text) %>% 
   unnest_tokens(word, text, token='words') %>% 
   inner_join(parts_of_speech) %>% 
@@ -86,7 +76,9 @@ carver_pos =
          prop=n/sum(n))
 ```
 
-```{r barthelme_pos_vis}
+This visualization depicts the proprtion of occurrence for each part of speech across the works. It would appear Barthelme is fairly consistent, and also that relative to the Barthelme texts, Carver preferred nouns and pronouns. 
+
+```{r barthelme_pos_vis, echo=FALSE}
 carver_pos %>% 
   group_by(text) %>% 
   plot_ly() %>% 
@@ -98,16 +90,17 @@ carver_pos %>%
 
 <br>
 
-It would appear Barthelme is fairly consistent, and also that relative to the Barthelme texts, Carver preferred nouns and pronouns. 
+
 
 ### More taggin
 
-More sophisticated POS tagging would require the context of the sentence structure. Luckily there are tools to help with that here, in particular via the <span class="pack">openNLP</span>.  In addition, it will require a certain language model to be installed (English is only one of many). I don't recommend doing so unless you are really interested in this (the <span class="pack">openNLPmodels.en</span> is fairly large).
+More sophisticated POS tagging would require the context of the sentence structure. Luckily there are tools to help with that here, in particular via the <span class="pack">openNLP</span> package.  In addition, it will require a certain language model to be installed (English is only one of many available). I don't recommend doing so unless you are really interested in this (the <span class="pack">openNLPmodels.en</span> package is fairly large).
 
-This example more or less follows the help file example for `?Maxent_POS_Tag_Annotator`
+We'll reexamine the Barthelme texts above with this more involved approach. Initially we'll need to get the English-based tagger we need and load the libraries.
 
 ```{r eval=FALSE, echo=FALSE}
-# POS tagging in R with koRpus; requires installation of treeTagger
+# POS tagging in R with koRpus; requires installation of treeTagger or using its
+# own tokenizer, e.g. as used in textual diversity section
 # activate library
 library(koRpus)
 
@@ -117,6 +110,7 @@ text.tagged <- treetag("data/texts_raw/carver/beginners.txt",
                        lang="en",
                        TT.options=list(path="C:\\TreeTagger", preset="en"))
 ```
+
 ```{r, eval=F}
 # install.packages("openNLPmodels.en", repos = "http://datacube.wu.ac.at/", type = "source")
 
@@ -125,6 +119,8 @@ library(tm)  # make sure to load this prior to openNLP
 library(openNLP)
 library(openNLPmodels.en)
 ```
+
+Next comes the processing. This more or less follows the help file example for `?Maxent_POS_Tag_Annotator`. Given the several steps involved I show only the processing for one text for clarity. Ideally you'd write a function, and use a <span class="func">group_by</span> approach.
 
 
 ```{r baby_pos, eval=F}
@@ -149,7 +145,7 @@ baby_pos = data_frame(word=baby_string[word_subset], pos=tags) %>%
 
 ```{r other_pos, eval=FALSE, echo=FALSE}
 colby_string0 = barth0 %>% 
-  filter(id=='colby.txt')
+  filter(work=='colby.txt')
 
 colby_string = unlist(colby_string0$text) %>% 
   paste(collapse=' ') %>% 
@@ -167,7 +163,7 @@ colby_pos = data_frame(word=colby_string[word_subset], pos=tags) %>%
 
 
 balloon_string0 = barth0 %>% 
-  filter(id=='balloon.txt')
+  filter(work=='balloon.txt')
 
 balloon_string = unlist(balloon_string0$text) %>% 
   paste(collapse=' ') %>% 
@@ -196,7 +192,7 @@ Let's take a look. I've also done the other Barthelme texts as well for comparis
 
 ```{r examine_baby_pos, echo=F}
 load('data/POS_results.RData')
-pander(barthelme_pos %>% head(20))
+pander(barthelme_pos %>% head(15))
 ```
 
 As we can see, we have quite a few more POS to deal with here.  They come from the [Penn Treebank](https://en.wikipedia.org/wiki/Treebank). The following table notes what the acronyms stand for. I don't pretend to know all the facets to this.
@@ -205,7 +201,7 @@ As we can see, we have quite a few more POS to deal with here.  They come from t
 
 Ploting the differences, we now see a little more distinction between *The Balloon* and the other two texts. It is more likely to use the determiners, adjectives, singular nouns, and less likely to use personal pronouns and base verbs and verbs in past tense.
 
-```{r barth_pos, eval=T, echo=F, cache=FALSE}
+```{r barth_pos, eval=T, echo=F}
 load('data/POS_results.RData')
 balloon_subset = barthelme_pos %>% 
   group_by(text) %>% 
@@ -226,6 +222,7 @@ barthelme_pos %>%
                       title=F))
 ```
 
+<br>
 
 For more information, consult the following:
 

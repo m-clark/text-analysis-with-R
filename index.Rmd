@@ -62,13 +62,13 @@ library(magrittr); library(tidyverse); library(stringr); library(pander); librar
 ```
 
 ```{r setup_heat, echo=FALSE, cache=FALSE}
-library(htmltools)
-tags$style(".d3heatmap { margin-left: 50px; margin-right: 50px; }")
-tags$style(".heatmaplyr { margin-left: auto; margin-right: auto; }")
-tags$style(".datatable { 'dom': 'pt' }")  # this and variations do not work
-options(DT.options = list(dom='pt'), DT.rownames=F)      # this doesn't either
-options(datatable.options = list(dom='pt'), datatable.print.rownames=F)      # this doesn't either
-tags$style(".plotly { margin-left: auto; margin-right: auto;}") # heatmapr will awesomely override this if subplot widths = 1
+# currently using css and formatStyle for customization
+# library(htmltools)  
+# tags$style(".d3heatmap { margin-left: 50px; margin-right: 50px; }")
+# tags$style(".datatable { 'dom': 'pt' }")  # this and variations do not work
+# options(DT.options = list(dom='pt'), DT.rownames=F)      # this doesn't either
+# options(datatable.options = list(dom='pt'), datatable.print.rownames=F)      # this doesn't either
+# tags$style(".plotly { margin-left: auto; margin-right: auto;}") # heatmapr will awesomely override this if subplot widths = 1
 ```
 
 # 

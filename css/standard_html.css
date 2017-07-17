@@ -107,3 +107,17 @@ h1, h2, h3, h4, h5 {
   -webkit-columns: 3 100px;
   -moz-columns: 3 100px;
 }
+
+.plotly {
+  margin-left: 5%;
+  margin-right: 5%;
+  width: 75%;
+}
+
+.d3heatmap {
+  margin-left: 5%;
+  margin-right: 5%;
+  width: 75%;
+}
+
+

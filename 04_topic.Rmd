@@ -5,70 +5,146 @@
 
 <span class="emph">Topic modeling</span> as typically done is a tool for much more than text.  The primary technique of <span class="emph">latent dirichlet allocation</span> should be as much a part of your toolbox as principal components and factor analysis.  It can be seen merely as a dimension reduction approach, but it can also be used for its rich interpretative quality as well. The basic idea is that we'll take a whole lot of terms, loosely defined, and boil them down to a few topics.   In this sense LDA is akin to discrete PCA.  Another way to think about this is more from the  perspective of factor analysis, where we are keenly interested in interpretation of the result, and want to know both what terms are associated with which topics, and what documents are more likely to present which topics.  
 
-In the standard setting, to be able to conduct such an analysis from text one needs a <span class="emph">document-term matrix</span>, where rows represent documents, and columns terms. Each cell is a count of how many times the term occurs in the document. Terms are typically words, but could be any <span class="emph">n-gram</span> of interest. Outside of text analysis they could represent bacteria, genetic information, or who knows what. 
+In the standard setting, to be able to conduct such an analysis from text one needs a <span class="emph">document-term matrix</span>, where rows represent documents, and columns terms. Each cell is a count of how many times the term occurs in the document. Terms are typically words, but could be any <span class="emph">n-gram</span> of interest. Outside of text analysis they could represent bacterial composition, genetic information, or who knows what. 
 
 
 ## Examples
 
+Getting to the document term matrix is the hard part.  See the [Shakespeare section][Shakespeare Start to Finish], which comprises 5 acts, of which the first four and some additional scenese represent all the processing needed to get to the final scene of topic modeling.  Here we'll start at the end.
 
-```{r eval=F}
-rnj_filtered %>% 
-   count(word) %>% 
-   arrange(desc(n)) %>% data.frame
+
+We'll run run one with 10 topics.  We can also see how things compare with the usual classifications for the texts.  Also, this will take a while to run depending on your machine (maybe a minute or two).
+
+```{r tm_chapter_topic_model, echo=1:2, eval=F}
+library(topicmodels)
+shakes_10 = LDA(convert(shakes_dtm, to = "topicmodels"), k = 10)
+save(shakes_10, file='data/shakespeare_topic_model.RData')
 ```
 
-```{r rnj_remove_names, eval=F}
-rnj_names = rnj %>% 
-  slice(10:35) %>% 
-  mutate(name=str_extract(text, pattern='.+?(?=,)'),
-         name_lower = str_to_lower(name)) 
-rnj_names
-
+```{r tm_chapter_tm10_results, eval=FALSE}
+get_terms(shakes_10, 20)
+t(topics(shakes_10, 3))
 ```
 
-```{r eval=F}
-oldE = data_frame(word = c('thou', 'thee', 'thine', 'thy',
-                           'ye', 'hath', 'art', 'tis',
-                           'hast', 'ay', 'ere', 'dost'))
-rnj_filtered2 = rnj_filtered %>% 
-  filter(!word %in% pull(rnj_names, name_lower)) %>% 
-  anti_join(stop_words) %>% 
-  anti_join(oldE)
-
-rnj_filtered2 %>% 
-   count(word) %>% 
-   arrange(desc(n))
+```{r tm_chapter_tm10_results_pretty_terms, echo=FALSE}
+load('data/shakespeare_topic_model.RData')
+library(topicmodels)
+get_terms(shakes_10, 20) %>% 
+  DT::datatable(options=list(dom='tp')) %>% 
+  DT::formatStyle(
+    0, # ignores columns, but otherwise put here
+    target='row',
+    backgroundColor = 'transparent'
+  )
 ```
 
-```{r test_tm_map, eval=FALSE}
-test = rnj %>% 
-  slice(-(1:49)) %>% 
-  filter(!text == str_to_upper(text),
-         !str_detect(text, pattern='^Scene|^Act |^\\[')) %>% 
-  select(-gutenberg_id) %>% 
-  unnest_tokens(para, input=text, token='paragraphs') %>% 
-  mutate(paraID = 1:n())
+<br>
 
-skipWords <- function(x) removeWords(x, c("it", "the", pull(oldE, word)))
-funs <- list(stripWhitespace,
-             skipWords,
-             removePunctuation,
-             content_transformer(tolower),
-             stemDocument)
-test_tm = tm_map(VCorpus(DataframeSource(select(test, para))), FUN = tm_reduce, tmFuns = funs)[[1]]
-content(test_tm)
-
+```{r tm_chapter_tm10_results_pretty_topic_classification, echo=FALSE}
+t(topics(shakes_10, 3)) %>% 
+  data.frame %>% 
+  rename_all(str_replace, 'X', 'Topic ') %>% 
+  DT::datatable(options=list(dom='tp')) %>% 
+  DT::formatStyle(
+    0, # ignores columns, but otherwise put here
+    target='row',
+    backgroundColor = 'transparent'
+)
 ```
 
-```{r test_quanteda, eval=FALSE}
+<br>
+
+The following visualization shows a heatmap for the topic probabilities of each document.  Darker values mean higher probability for a document expressing that topic.  I've also added a cluster analysis based on the  cosine distance matrix, and the resulting dendrogram. 
+
+
+```{r tm_chapter_viz_topics, echo=FALSE}
 library(quanteda)
-test = rnj %>% 
-  slice(-(1:49)) %>% 
-  filter(!text == str_to_upper(text),
-         !str_detect(text, pattern='^Scene|^Act |^\\[')) %>% 
-  select(-gutenberg_id) %>% 
-  unnest_tokens(text, input=text, token='paragraphs', to_lower=F) %>% 
-  mutate(paraID = 1:n())
-testq = corpus(test)
-summary(testq)
+load('data/shakespeare_classification.RData')
+load('data/shakes_words_df.RData')
+shakes_dtm = shakes_dtm %>%
+  dfm_wordstem()
+
+suppressPackageStartupMessages(library(dendextend))
+# see proxy::pr_DB %>% data.frame() for actual info for the metrics that
+# quanteda uses, whose functions don't bother to even tell you that's where they
+# are coming from
+# proxy::pr_DB %>% data.frame() %>% select( distance, formula, description, reference) %>% DT::datatable()
+
+# cosine distance, is not a proper distance
+row_dend  = 
+  (1-textstat_simil(dfm_weight(shakes_dtm, 'relMaxFreq'), 
+                    margin = "documents", 
+                    method = "cosine")) %>%
+  as.dist() %>%
+  hclust(method="complete") %>%
+  as.dendrogram %>%
+  set("branches_k_color", k = 3) %>% set("branches_lwd", c(.5,.5)) %>%
+  ladderize
+
+
+
+shakes_10@gamma %>%
+  round(3) %>%
+  heatmaply::heatmaply(Rowv=row_dend,
+                       Colv=F,
+                       labRow=shakes_10@documents,
+                       labCol=paste0('topic', 1:10),
+                       colors='Oranges',
+                       k_row = 4,
+                       plot_method = 'plotly',
+                       row_side_colors = select(arrange(shakes_types, title), class),
+                       # row_side_palette = c("#39BEB1", "#ABB065", "#ACA4E2", "#CC476B", "#E495A5", "black"),
+                       seriate = 'OLO',
+                       fontsize_row=7,
+                       fontsize_col=7,
+                       subplot_widths=c(.75, .025, .225),
+                       subplot_heights=1,
+                       hide_colorbar = T,
+                       colorbar_len = 0.3,
+                       colorbar_ypos=0) %>%
+  layout(showlegend=F) %>% # showing the legend will screw up the colorbar and any associated options
+  config(displayModeBar = F) %>% 
+  theme_plotly()
+
 ```
+
+
+<br>
+
+A couple things stand out.  Traditional classificiation really probably only works for the historical works, except for Henry the VIII (possibly due to it being a collaborative work).  Furthermore, tragedies and comedies might hit on the same topics, albeit from different perspecitves.  In addition, at least some works are very poetical, or at least have topics in common with the poems (love).  If we take four clusters from it, it boils down to *Phoenix* (on its own), standard poems, a mixed bag of more love oriented works and the remaining poems, then everything else.  
+
+Alternatively, one could merely classify them based on their probable topics, which would make more sense if classification is the goal. The following visualization attempts to order them based on their most probable topic.  The order is based on the most likely topics across all documents.
+
+```{r tm_chapter_cluster_topics, echo=FALSE}
+topic_class = shakes_10@gamma %>%
+  round(3) %>%
+  data.frame() %>% 
+  rename_all(function(x) str_replace(x, 'X', 'Topic ')) %>% 
+  mutate(text =  shakes_10@documents, 
+         class = shakes_types$class)
+order_topics = order(colSums(shakes_10@gamma), decreasing=T)
+
+topic_class = topic_class %>%
+  # select(-text, -class) %>%
+  select(order_topics, text, class)  %>%
+  arrange_at(vars(contains('Topic')), desc) 
+
+topic_class %>%
+  select(-text, -class) %>% 
+  heatmaply::heatmaply(Rowv=F, Colv=F,
+                       labRow=topic_class$text,
+                       labCol=apply(get_terms(shakes_10, 10), 2, paste0, collapse='\n')[order_topics],
+                       column_text_angle=0, 
+                       colors='Oranges',
+                       subplot_widths=c(.75),
+                       plot_method = 'plotly',
+                       fontsize_row=8,
+                       fontsize_col=8,
+                       hide_colorbar = T) %>% 
+  layout(showlegend=F, height=750) %>% # height to be deprecated, maybe heatmaply will conform to plotly by then
+  config(displayModeBar = F) %>% 
+  theme_plotly() 
+```
+
+<br>
+<br>

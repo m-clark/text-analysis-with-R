@@ -54,7 +54,7 @@ github-repo:  m-clark/
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE, message=F, warning=F, error=F, comment=NA, R.options=list(width=220),   # code 
                       dev.args=list(bg = 'transparent'), dev='svg',                             # viz
-                      cache.rebuild=F, cache=T)                                                 # cache
+                      cache.rebuild=T, cache=T)                                                 # cache
 ```
 
 ```{r packages, include=FALSE, cache=FALSE}
@@ -62,12 +62,13 @@ library(magrittr); library(tidyverse); library(stringr); library(pander); librar
 ```
 
 ```{r setup_heat, echo=FALSE, cache=FALSE}
-library(htmltools)
-tags$style(".d3heatmap { margin-left: 50px; margin-right: 50px; }")
-tags$style(".heatmaplyr { margin-left: auto; margin-right: auto; }")
-tags$style(".datatable { 'dom': 'pt' }")  # this and variations do not work
-options(datatable.options = list(dom='pt'), datatable.print.rownames=F)      # this doesn't either
-tags$style(".plotly { margin-left: auto; margin-right: auto;}") # heatmapr will awesomely override this if subplot widths = 1
+# currently using css and formatStyle for customization
+# library(htmltools)  
+# tags$style(".d3heatmap { margin-left: 50px; margin-right: 50px; }")
+# tags$style(".datatable { 'dom': 'pt' }")  # this and variations do not work
+# options(DT.options = list(dom='pt'), DT.rownames=F)      # this doesn't either
+# options(datatable.options = list(dom='pt'), datatable.print.rownames=F)      # this doesn't either
+# tags$style(".plotly { margin-left: auto; margin-right: auto;}") # heatmapr will awesomely override this if subplot widths = 1
 ```
 
 # 
@@ -256,7 +257,7 @@ In this section I'll add some things that come to mind from time to time that mi
 
 #### Dates
 
-Dates are not character strings. Though they may start that way, if you actually want to treat them as dates you'll need to convert the string to the appropiate date class. The <span class="pack">lubridate</span> package makes dealing with dates much easier.  It comes with conversion, extraction and other functionality that will be sure to save you some time.
+Dates are not character strings. Though they may start that way, if you actually want to treat them as dates you'll need to convert the string to the appropriate date class. The <span class="pack">lubridate</span> package makes dealing with dates much easier.  It comes with conversion, extraction and other functionality that will be sure to save you some time.
 
 ```{r lubridate}
 library(lubridate)
@@ -277,7 +278,7 @@ In regression modeling with few time points, one often has to decide on whether 
 
 #### Encoding
 
-Encoding can be a sizeable PITA sometimes, and will often come up when dealing with webscraping and other languages.  The <span class="pack">rvest</span> and <span class="pack">stringr</span> packages may be able to get you past some issues at least. See their respective functions <span class="func">repair_encoding</span> and <span class="func">str_conv</span> as starting points on this issue.
+Encoding can be a sizable PITA sometimes, and will often come up when dealing with webscraping and other languages.  The <span class="pack">rvest</span> and <span class="pack">stringr</span> packages may be able to get you past some issues at least. See their respective functions <span class="func">repair_encoding</span> and <span class="func">str_conv</span> as starting points on this issue.
 
 
 ### Summary of basic text functionality
@@ -303,7 +304,7 @@ What is *that* you may ask?  Well here is an example of what it would and wouldn
 grepl(c('r is the shiny', 'r is the shiny1', 'r shines brightly'), pattern='^r.*shiny[0-9]$')
 ```
 
-What the regex esotericly is attempting to match is any string that starts with 'r' and ends with 'shiny_' where _ is some single digit.  Specifically it breaks down as follows:
+What the regex esoterically is attempting to match is any string that starts with 'r' and ends with 'shiny_' where _ is some single digit.  Specifically it breaks down as follows:
 
 - **^** : starts with, so ^r means starts with r
 - **.** : any character
@@ -372,10 +373,10 @@ df = data_frame(
 )
 DT::datatable(df, 
               rownames=F,
-              options=list(dom='tp', 
+              options=list(dom='t', 
                            scrollX='50%',
                            autoWidth = TRUE,
-                           columnDefs = list(list(width = '50pxz', targets = 0),
+                           columnDefs = list(list(width = '50px', targets = 0),
                                              list(className = 'dt-center', targets = 1)))
 )
 ```
@@ -399,7 +400,7 @@ df %>%
 
 The <span class="func">str_trim</span> function trims white space from either side, while <span class="func">str_to_title</span> converts everything to first letter capitalized.  
 
-```{r label_problem4, echo=2, eval=2}
+```{r label_problem4, echo=2, eval=1:2}
 df_corrected = df %>% 
   mutate(region = str_trim(region),
          region = str_to_title(region))
@@ -414,13 +415,16 @@ Suppose you import a data frame, and the data was originally in wide format, whe
 ```{r rename_chunk, echo=FALSE}
 df = data.frame(id=1:20, round(matrix(rnorm(100), ncol=5), 2))
 DT::datatable(df, rownames=F,
-              options=list(dom='pt'))
-DT::datatable(df)
+              options=list(dom='tp',
+                           autoWidth = TRUE,
+                           columnDefs = list(list(width = '50px', targets = 0),
+                                             list(className = 'dt-center', targets = 1)))
+              )
 ```
 
 <br>
 
-So the problem now is to change the names to be Year_1, Year_2, etc. You might think you might have to use colnames and manually create a string of names to replace the current ones.
+So the problem now is to change the names to be Year_1, Year_2, etc. You might think you might have to use <span class="func">colnames</span> and manually create a string of names to replace the current ones.
 
 
 ```{r rename_chunk2, eval=FALSE}
@@ -445,7 +449,7 @@ df %>%
   head
 ```
 
-We just have to use the <span class="func">num_range</span> helper function within the funtion that tells <span class="func">rename_at</span> what it should be renaming, and let <span class="func">str_replace</span> do the rest. 
+We just have to use the <span class="func">num_range</span> helper function within the function that tells <span class="func">rename_at</span> what it should be renaming, and let <span class="func">str_replace</span> do the rest. 
 
 
 
@@ -489,19 +493,18 @@ Now consider the following.
 sentiments %>% filter(word=='sick') 
 ```
 
-The word *sick* has been used at least since 1960s surfing culture as slang for positive.  A basic approach to sentiment analysis as described here will not be able to detect slang or other context like sarcasm.  
+The word *sick* has been used at least since 1960s surfing culture as slang for positive.  A basic approach to sentiment analysis as described here will not be able to detect slang or other context like sarcasm.  However, with lots of training data for a particular context may allow one to correctly predict such sentiment.  In addition, there are, for example, slang lexicons, or one can simply add their own complements to any available lexicon.
 
 ### Lexicons
 
 In addition, the lexicons are going to maybe be applicable to *general* usage of English in the western world.  Some might wonder where exactly these came from or who decided that the word *abacus* should be affiliated with 'trust'. You may start your path by typing `?sentiments` at the console if you have the <span class="pack">tidytext</span> package loaded.
 
-## Examples
+## Example
 
-### 
 
-### The first thing the baby did wrong.
+### The first thing the baby did wrong
 
-We demonstrate sentiment analysis with the text *The first thing the baby did wrong*, which is a very popular brief guide to parenting written by world renown psychologist Donald Barthelme who, in his spare time, also wrote postmodern literature.  This particular text talks about an issue with the baby, who likes to tear pages out of books. Attempts are made to rectify the situation, which is finally resolved at the end.
+We demonstrate sentiment analysis with the text *The first thing the baby did wrong*, which is a very popular brief guide to parenting written by world renown psychologist Donald Barthelme who, in his spare time, also wrote postmodern literature.  This particular text talks about an issue with the baby, who likes to tear pages out of books. Attempts are made to rectify the situation, without much success, but things are finally resolved at the end.  The ultimate goal will be to see how sentiment in the text evolves over time.
 
 How do we start? Let's look at the <span class="objclass">sentiments</span> data set in the <span class="pack">tidytext</span> package.
 
@@ -511,92 +514,138 @@ library(tidytext)
 sentiments %>% slice(sample(1:nrow(sentiments)))
 ```
 
-The <span class="objclass">bing</span> lexicon is just *positive* or *negative*. The AFINN is numerical, with ratings -5:5 that are in the <span class="objclass">score</span> column. The others get more imaginative, but also more problematic. Why *assimilate* is *superfluous* is beyond me. It clearly should be negative given the Borg connotations.
+The <span class="objclass">bing</span> lexicon is just *positive* or *negative*. The AFINN is numerical, with ratings -5:5 that are in the <span class="objclass">score</span> column. The others get more imaginative, but also more problematic. Why *assimilate* is *superfluous* is beyond me. It clearly should be negative given the [Borg](https://en.wikipedia.org/wiki/Borg_%28Star_Trek%29) connotations.
 
 ```{r superfluous}
 sentiments %>% 
   filter(sentiment=='superfluous')
 ```
 
-But I digress.
+But I digress.  We start with the raw text, reading it in line by line.  In what follows we read in all the texts (three) in a given directory, such that each element of 'text' is the work itself, i.e. `text` is a list column[^text]. The <span class="func">unnest</span> function will more or less unravel the work to paragraph form.
 
 ```{r baby_sentiment_importraw, echo=FALSE}
 library(tidytext)
 barth0 = 
   data_frame(file = dir('data/texts_raw/barthelme/', full.names = TRUE)) %>%
   mutate(text = map(file, read_lines)) %>%
-  transmute(id = basename(file), text) %>%
+  transmute(work = basename(file), text) %>%
   unnest(text) 
+```
 
+One of the things stressed in this document is the iterative nature of text analysis.  You will consistently take two steps forward, and then one or two back as you find issues that need to be addressed. For example in a subsequent step I found there were encoding issues[^encoding], so the following attempts to fix them.  In addition we want to tokenize <span class="emph">tokenize</span> the documents such that our <span class="emph">tokens</span> are sentences (e.g. as opposed to words or paragraphs). The reason for this is that I will be summarizing the sentiment at sentence level.
+
+
+```{r barth_fix_encoding}
 # Fix encoding, convert to sentences
 barth = barth0 %>% 
   mutate(text = sapply(text, stringi::stri_enc_toutf8, is_unknown_8bit=TRUE, validate=T)) %>% 
   unnest_tokens(sentence, text, token='sentences')
+```
 
+The next step is to drill down to just the document we want, and tokenize to the word level.  However, I create a sentence id so that we can group on it later.
+
+```{r get_the_baby}
 # get baby doc, convert to words
 baby = barth %>% 
-  filter(id=='baby.txt') %>% 
+  filter(work=='baby.txt') %>% 
   mutate(sentence_id = 1:n()) %>% 
   unnest_tokens(word, sentence, drop=F) %>% 
   ungroup 
+```
 
+Now that the data has been prepped, getting the sentiments is ridiculously easy.  But that is how it is with text analysis.  All the hard work is spent with the data processing.  Here all we need is an <span class="emph">inner join</span> of our words with a sentiment lexicon of choice. This process will only retain words that are also in the lexicon.  I use the numeric-based lexion here. At that point we get a sum score of sentiment by sentence.
+
+
+```{r baby_sentiment}
 # get sentiment via inner join
 baby_sentiment = baby %>% 
   inner_join(get_sentiments("afinn")) %>% 
-  group_by( sentence_id, sentence) %>% 
+  group_by(sentence_id, sentence) %>% 
   summarise(score=sum(score)) %>% 
   ungroup
 
-# plot sentiment over
+```
+
+The following plots sentiment over sentence (note that not every sentence will receive a sentiment score). You can read the sentence by hovering over the dot.
+
+```{r plot_sentiment, echo=FALSE}
+# plot sentiment over sentences
 baby_sentiment %>%
-  plot_ly() %>% 
+  plot_ly(width='50%') %>% 
   add_paths(x=~sentence_id, y=~score,
             color=I('#00aaff')) %>%
   add_markers(x=~sentence_id, y=~score, 
               color=I('#ff5500'),
-              size=I(10),
+              size=I(15),
               hoverinfo=~ 'text', 
               text=~str_wrap(sentence),
               showlegend=F) %>% 
   theme_plotly()
 ```
 
-inner join
+In general the sentiment starts out negative as the problem is explained. It bounces back and forth a bit but ends on a positive note.  You'll see that some sentences' context are not captured.  For example, sentence 16 is 'But it didn't do any good'.  However *good* is going to be marked as a positive sentiment in any lexicon by default. In addition, the token length will matter.  Longer sentences are more likely to have some sentiment, for example.
 
-return all rows from x where there are matching values in y, and all columns from x and y. If there are multiple matches between x and y, all combination of the matches are returned.
 
 
 ## Exercises
 
 ### Romeo & Juliet
 
+For this exercise I'll invite you to more or less follow along, as there is notable pre-processing that must be done.  We'll look at sentiment in Shakespeare's Romeo and Juliet.  I have a cleaner version in the raw texts folder, but we can take the opportunity to use the <span class="pack">gutenbergr</span> package to download it directly from Project Gutenberg, a storehouse for works that have entered the public domain.
 
-```{r rnj_load}
+```{r rnj_load, echo=-c(3,5)}
 library(gutenbergr)
 gw0 = gutenberg_works(title == "Romeo and Juliet")  # look for something with this title
-gw0
+gw0[,1:4]
 rnj = gutenberg_download(gw0$gutenberg_id)
-DT::datatable(rnj, options(scrollX=T))
+DT::datatable(rnj, 
+              rownames=F, 
+              options=list(dom='tp',
+                           autoWidth = TRUE,
+                           columnDefs = list(list(width = '50px', targets = 0))))
 ```
 
-```{r rnj_clean}
+<br> 
+
+We've got the text now, but there is still work to be done.  The following is a quick and dirty approach, but see the [Shakespeare section][Shakespeare Start to Finish] to see a more deliberate one.
+
+We first slice off the initial parts we don't want like title, author etc. Then we get rid of other tidbits that would interfere, using a little regex as well to aid the process.
+
+```{r rnj_clean, echo=-2}
 rnj_filtered = rnj %>% 
   slice(-(1:49)) %>% 
-  filter(!text == str_to_upper(text),
-         !str_detect(text, pattern='^Scene|^Act |^\\[')) %>% 
+  filter(!text==str_to_upper(text),            # will remove THE PROLOGUE etc.
+         !text==str_to_title(text),            # will remove names/single word lines
+         !str_detect(text, pattern='^(Scene|SCENE)|^(Act|ACT)|^\\[')) %>% 
   select(-gutenberg_id) %>% 
   unnest_tokens(sentence, input=text, token='sentences') %>% 
   mutate(sentenceID = 1:n())
-DT::datatable(rnj_filtered, rownames=F, options=list(dom='pt'))
+DT::datatable(select(rnj_filtered, sentenceID, sentence), 
+              rownames=F, 
+              options=list(dom='tp',
+                           autoWidth = TRUE,
+                           columnDefs = list(list(width = '50px', targets = 0)))
+)
 ```
+
+<br> 
+
+
+The following unnests the data to word tokens.  In addition, you can remove stopwords like a, an, the etc. However, some of the stopwords have sentiments, so you would get a bit of a different result if you retain them.  As Black Sheep once said, the choice is yours, and you can deal with this, or you can deal with that.
 
 
 ```{r rnj_stopwords}
+# show some of the matches
+stop_words$word[which(stop_words$word %in% sentiments$word)] %>% head(20)
+
+
+# remember to call output 'word' or antijoin won't work without a 'by' argument
 rnj_filtered = rnj_filtered %>% 
-  unnest_tokens(word, sentence, token='words') %>%   # remember to call it word or antijoin won't work
+  unnest_tokens(output=word, input=sentence, token='words') %>%   
   anti_join(stop_words)
 ```
 
+Now we add the sentiments via the inner_join.  Here I use 'bing', but you can use another, and you might get a different result.
 
 ```{r rnj_sentiment}
 rnj_filtered %>% 
@@ -614,6 +663,10 @@ rnj_sentiment_bing = rnj_sentiment %>%
 table(rnj_sentiment_bing$sentiment)
 ```
 
+
+
+The following visualizes (via <span class="pack">plotly</span>) the positive and negative sentiment scores as one progresses sentence by sentence through the work.
+
 ```{r rnj_sentiment_as_game}
 rnj_sentiment_bing %>% 
   arrange(sentenceID) %>% 
@@ -621,21 +674,37 @@ rnj_sentiment_bing %>%
          negativity = cumsum(sentiment=='negative')) %>% 
   plot_ly() %>% 
   add_lines(x=~sentenceID, y=~positivity, name='positive') %>% 
-  add_lines(x=~sentenceID, y=~negativity, name='negative')
-  
+  add_lines(x=~sentenceID, y=~negativity, name='negative') %>% 
+  layout(yaxis = list(title='sentiment')) %>% 
+  theme_plotly()
 ```
 
-```{r rnj_sentiment_diff}
+<br>
+
+In general it's a close game until the end, when negativity takes over as despair sets in with the story.
+
+Here is the same information expressed as a difference.
+
+```{r rnj_sentiment_diff, echo=F}
 rnj_sentiment_bing %>% 
   arrange(sentenceID) %>% 
   mutate(positivity = cumsum(sentiment=='positive'),
          negativity = cumsum(sentiment=='negative')) %>% 
   plot_ly() %>% 
-  add_lines(x=~sentenceID, y=~positivity-negativity)
+  add_lines(x=~sentenceID, y=~positivity-negativity) %>% 
+  theme_plotly()
 ```
 
+<br>
+
+## Summary
+
+In general, sentiment analysis can be a useful exploration of data, but it is highly dependent on the context and tools used.  Note also that 'sentiment' can be anything, it doesn't have to be positive vs. negative.  Any vocabulary may be applied, and so it has more utility than the usual implementation. 
 
 
+[^text]: Don't name your column 'text' in practice. It is a base function in R, and the tidyverse will have problems with distinguishing the function from the column name.  I only do so for pedagogical reasons.
+
+[^encoding]: There are almost always encoding issues in my experience.
 
 <!--chapter:end:02_sentiment.Rmd-->
 
@@ -1619,7 +1688,13 @@ t(topics(shakes_10, 3))
 ```{r tm10_results_pretty_terms, echo=FALSE}
 load('data/shakespeare_topic_model.RData')
 library(topicmodels)
-get_terms(shakes_10, 20) %>% DT::datatable(options=list(dom='pt'))
+get_terms(shakes_10, 20) %>% 
+  DT::datatable(options=list(dom='tp')) %>% 
+  DT::formatStyle(
+    0, # ignores columns, but otherwise put here
+    target='row',
+    backgroundColor = 'transparent'
+  )
 ```
 
 <br>
@@ -1628,7 +1703,12 @@ get_terms(shakes_10, 20) %>% DT::datatable(options=list(dom='pt'))
 t(topics(shakes_10, 3)) %>% 
   data.frame %>% 
   rename_all(str_replace, 'X', 'Topic ') %>% 
-  DT::datatable(options=list(dom='pt'))
+  DT::datatable(options=list(dom='tp')) %>% 
+  DT::formatStyle(
+    0, # ignores columns, but otherwise put here
+    target='row',
+    backgroundColor = 'transparent'
+)
 ```
 
 <br>
@@ -1682,7 +1762,7 @@ shakes_10@gamma %>%
                        seriate = 'OLO',
                        fontsize_row=7,
                        fontsize_col=7,
-                       subplot_widths=c(.5, .025, .225),
+                       subplot_widths=c(.75, .025, .225),
                        subplot_heights=1,
                        hide_colorbar = T,
                        colorbar_len = 0.3,
@@ -1748,6 +1828,7 @@ topic_class %>%
 <br>
 <br>
 <br>
+<br>
 
 The following shows the average topic probability for each of the traditional classes. Topics are represented by their first five most probable terms.
 
@@ -1798,7 +1879,8 @@ class_probs %>%
                        hide_colorbar = T,
                        colorbar_len=.5,
                        column_text_angle=0
-                       ) 
+                       ) %>% 
+  theme_plotly()
 ```
 
 
