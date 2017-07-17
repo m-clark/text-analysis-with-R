@@ -117,14 +117,14 @@ Alternatively, one could merely classify them based on their probable topics, wh
 
 ```{r}
 library(LDAvis)
-json <- createJSON(phi = shakes_10@beta/rowSums(shakes_10@beta), 
+json <- createJSON(phi = exp(shakes_10@beta), 
                    theta = shakes_10@gamma, 
                    # doc.length = rowSums(shakes_dtm), 
                    doc.length = rowSums(shakes_dtm>0), 
                    vocab = shakes_10@terms, 
                    term.frequency = colSums(shakes_dtm),
                    R=10)
-serVis(json, out.dir = 'vis')
+serVis(json, out.dir = 'vis', open.browser = F)
 ```
 
 
