@@ -405,7 +405,9 @@ Now things are looking like Shakespeare, with love for everyone[^love].  You'll 
 
 ### Scene II. Stemming
 
-Now we'll stem the words.  This will make words like eye and eyes just *ey*, or war, wars and warring to *war*. In other words it will reduce variations of a word to a common root form, or 'word stem'.  We could have done this in a step prior to counting the terms, but then you only have the stemmed result to work with for the document term matrix from then on.  Depending on your situation, you may or may not want to stem, or maybe you'd want to compare results.  The <span class="pack">quanteda</span> package will actually stem with the DTM and collapse the word counts accordingly.   I note the difference in words before and after.
+Now we'll <span class="emph"></span> the words.  While this is actually a pre-processing step, one that we'd do along with (typically after) stopword removal.  I do it here to mostly demonstrate how to use <span class="pack">quanteda</span> to do it, as it can also be used to remove stopwords and do many of the other things we did with <span class="pack">tidytext</span>.
+
+Stemming will make words like eye and eyes just *ey*, or convert war, wars and warring to *war*. In other words it will reduce variations of a word to a common root form, or 'word stem'.  We could have done this in a step prior to counting the terms, but then you only have the stemmed result to work with for the document term matrix from then on.  Depending on your situation, you may or may not want to stem, or maybe you'd want to compare results.  The <span class="pack">quanteda</span> package will actually stem with the DTM and collapse the word counts accordingly.   I note the difference in words before and after.
 
 ```{r stem, echo=-(1:4), results='hold'}
 load('data/shakes_words_df.RData')
@@ -651,8 +653,11 @@ MTLD_df %>%
 
 ### Scene IV. Topic model
 
-I'd say we're now ready for topic model.  We'll run run one with 10 topics.  We can also see how things compare with the usual classifications for the texts.  Also, this will take a while to run depending on your machine (maybe a minute or two).
+I'd say we're now ready for topic model.  That didn't take too much did it?
 
+#### Running the model and exploring the topics
+
+We'll run run one with 10 topics.  We can also see how things compare with the usual classifications for the texts.  Also, this will take a while to run depending on your machine (maybe a minute or two).
 
 
 ```{r topic_model, echo=1:2, eval=F}
@@ -683,25 +688,32 @@ get_terms(shakes_10, 20) %>%
 
 <br>
 
-We can see there is a lot of overlap in these topics for top terms.  Just looking at the top 10, *love* occurs in all of them, god and heart as well, but we could have guessed this just looking at how often they occur in general. Other measures can be used to assess term importance, such as those that seek to balance probability and term *exclusivity*, or how likely a term is to occur in only one particular topic.  See the <span class="pack">stm</span> package and corresponding <span class="func">labelTopics</span> function as a way to get several alternatives.  As an example I show the results of their version of the FREX (**fr**equency and **ex**clusivity), lift, and the usefully named 'score' metric. Note that 'prob' is just the raw probability result we saw earlier.
+We can see there is a lot of overlap in these topics for top terms.  Just looking at the top 10, *love* occurs in all of them, god and heart as well, but we could have guessed this just looking at how often they occur in general. Other measures can be used to assess term importance, such as those that seek to balance the term's probability of occurrence within a document, and term *exclusivity*, or how likely a term is to occur in only one particular topic.  See the <span class="pack">stm</span> package and corresponding <span class="func">labelTopics</span> function as a way to get several alternatives.  As an example I show the results of their version of the following[^scoredefs]:
 
-```{r label_topics, eval=T, echo=FALSE}
+- <span class="emph">FREX</span>: **fr**equency and **ex**clusivity, it is a weighted harmonic mean of a term's rank within a topic in terms of frequency and exclusivity
+- <span class="emph">lift</span>: ratio of the termn='s probability within a topic to its probability of occurrence across all documents.  Overly sensitive to rare words.
+- <span class="emph">score</span>: another approach that will give more weight to exclusive terms
+- <span class="emph">prob</span>: This is just the raw probability of the term within a given topic.
+
+
+```{r label_topics_stm, eval=F, echo=FALSE}
 # as stm topics won't be exactly the same, it might through them off
-topic_labels = stm::labelTopics(shakes_10_stm, n=10)
-sapply(topic_labels[1:4], function(e) apply(e, 1, paste, collapse=', ')) %>%
-  as_tibble() %>%
-  mutate(Topic = 1:10) %>%
-  gather(key=Score, value=Terms, -Topic) %>%
-  arrange(Topic, Score) %>%
-  DT::datatable(options=list(dom='t', scrollY=T, pageLength=40), rownames=F) %>%
-  DT::formatStyle(
-    0, # ignores columns, but otherwise put here
-    target='row',
-    backgroundColor = 'transparent'
-  )
+# topic_labels = stm::labelTopics(shakes_10_stm, n=10)
+# sapply(topic_labels[1:4], function(e) apply(e, 1, paste, collapse=', ')) %>%
+#   as_tibble() %>%
+#   mutate(Topic = 1:10) %>%
+#   gather(key=Score, value=Terms, -Topic) %>%
+#   arrange(Topic, Score) %>%
+#   DT::datatable(options=list(dom='t', scrollY=T, pageLength=40), rownames=F) %>%
+#   DT::formatStyle(
+#     0, # ignores columns, but otherwise put here
+#     target='row',
+#     backgroundColor = 'transparent'
+#   )
 ```
 
-```{r lable_topics_df, echo=FALSE}
+```{r lable_topics, echo=FALSE}
+library(stm)
 frex_res = calcfrex(shakes_10@beta, wordcounts=colSums(shakes_dtm))[1:10,] %>% 
   shakes_10@terms[.] %>% 
   matrix(., 10, 10)
@@ -709,19 +721,32 @@ frex_res = calcfrex(shakes_10@beta, wordcounts=colSums(shakes_dtm))[1:10,] %>%
 lift_res = calclift(shakes_10@beta, wordcounts=colSums(shakes_dtm))[1:10,] %>%
   shakes_10@terms[.] %>%
   matrix(., 10, 10)
-score_res = calcscore(shakes_10@beta)[1:10,] %>% 
+score_res = calcscore(shakes_10@beta)[1:10,] %>%
+  shakes_10@terms[.] %>%
+  matrix(., 10, 10)
+prob_res = apply(shakes_10@beta, 1, order, decreasing = TRUE)[1:10,] %>% 
   shakes_10@terms[.] %>% 
   matrix(., 10, 10)
 
+score_list = list(FREX = frex_res, LIFT=lift_res, SCORE=score_res, PROB=prob_res)
 
+sapply(score_list, function(e) apply(e, 2, paste, collapse=', ')) %>%
+  as_tibble() %>%
+  mutate(Topic = 1:10) %>%
+  gather(key=Score, value=Terms, -Topic) %>%
+  arrange(Topic, Score) %>%
+  DT::datatable(options=list(dom='t', scrollY='400px', scrollCollapse=T, pageLength=40), rownames=F) %>%
+  DT::formatStyle(
+    0, # ignores columns, but otherwise put here
+    target='row',
+    backgroundColor = 'transparent'
+  )
 ```
 
+<br>
 
+As another approach, consider the <span class="emph">saliency</span> and <span class="emph">relevance</span> of term via the <span class="pack">LDAvis</span> package.
 
-
-```{r tm10_results_topic_classification, eval=FALSE}
-t(topics(shakes_10, 3))
-```
 
 ```{r ldavis, eval=FALSE, echo=FALSE}
 library(LDAvis)
@@ -735,18 +760,26 @@ json <- createJSON(phi = exp(shakes_10@beta),
 serVis(json, out.dir = 'vis', open.browser = F)
 ```
 
-<iframe src="../vis/index.html" width="900" height="700" frameborder="0"
+<iframe src="../vis/index.html" width="1200" height="700" frameborder="0"
     scrolling="no"
     marginheight="0"
     marginwidth="0">
   <p>Your browser does not support iframes.</p>
 </iframe>
 
+<br> 
+
+Given all these measures, one can now see how well they match what the topics the documents would be most associated with.  For example, Hamlet is most associated with `r t(topicmodels::topics(shakes_10, 3))['Hamlet',1]`.
+
+
+```{r tm10_results_topic_classification, eval=FALSE}
+t(topics(shakes_10, 3))
+```
 
 ```{r tm10_results_pretty_topic_classification, echo=FALSE}
-t(topics(shakes_10, 3)) %>% 
+t(topics(shakes_10, 2)) %>% 
   data.frame %>% 
-  rename_all(str_replace, 'X', 'Topic ') %>% 
+  rename_all(str_replace, 'X', 'Top Topic ') %>% 
   DT::datatable(options=list(dom='tp')) %>% 
   DT::formatStyle(
     0, # ignores columns, but otherwise put here
@@ -983,4 +1016,6 @@ And I grow weary...
 
 [^correadmtld]: The Pearson correlation between MTLD and the Coleman Liau grade readability depicted previously was .87.
 
-[^clustering]: If you are actually interested in clustering the documents (or anything for that matter in my opinion), this would not be the way to do so. For one, the documents are already clustered based on most probable topic. Second, cosine distance isn't actually a proper distance. Third, as shocking as it may seem, newer methods have been developed since the hierarchical clustering approach, which basically has a dozen arbitrary choices to be made at each step.  However as a simple means to a vida
+[^clustering]: If you are actually interested in clustering the documents (or anything for that matter in my opinion), this would not be the way to do so. For one, the documents are already clustered based on most probable topic. Second, cosine distance isn't actually a proper distance. Third, as shocking as it may seem, newer methods have been developed since the hierarchical clustering approach, which basically has a dozen arbitrary choices to be made at each step.  However, as a simple means to a visualization, the method is valuable if it helps with understanding the data.
+
+[^scoredefs]: These descriptions are from Sievert and Shirley 2014.

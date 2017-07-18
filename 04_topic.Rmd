@@ -8,17 +8,20 @@
 In the standard setting, to be able to conduct such an analysis from text one needs a <span class="emph">document-term matrix</span>, where rows represent documents, and columns terms. Each cell is a count of how many times the term occurs in the document. Terms are typically words, but could be any <span class="emph">n-gram</span> of interest. Outside of text analysis they could represent bacterial composition, genetic information, or who knows what. 
 
 
+## Steps
+
+Most of the time is spent on processing the text.  Importing/scraping it, dealing with capitalization, punctuation, removing stopwords, dealing wtih encoding issues, removing other miscellaneous common words.  It is a highly iteratitive process such that once you get to the document term matrix, you're just going to find the stuff that was missed before and repeat the process with new 'cleaning parameters' in place.  So getting to the document term matrix is the hard part.  See the [Shakespeare section][Shakespeare Start to Finish], which comprises 5 acts, of which the first four and some additional scenes represent all the processing needed to get to the final scene of topic modeling.  In what follows we'll start at the end of that journey.
+
 ## Examples
 
-Getting to the document term matrix is the hard part.  See the [Shakespeare section][Shakespeare Start to Finish], which comprises 5 acts, of which the first four and some additional scenese represent all the processing needed to get to the final scene of topic modeling.  Here we'll start at the end.
+### Shakespeare
 
+We'll look at Shakespeare's plays and   We'll run run one with 10 topics.  We can also see how things compare with the usual classifications for the texts.  Also, this will take a while to run depending on your machine (maybe a minute or two).
 
-We'll run run one with 10 topics.  We can also see how things compare with the usual classifications for the texts.  Also, this will take a while to run depending on your machine (maybe a minute or two).
-
-```{r tm_chapter_topic_model, echo=1:2, eval=F}
+```{r tm_chapter_topic_model, eval=F}
+load('Data/shakes_dtm_stemmed.RData')
 library(topicmodels)
 shakes_10 = LDA(convert(shakes_dtm, to = "topicmodels"), k = 10)
-save(shakes_10, file='data/shakespeare_topic_model.RData')
 ```
 
 ```{r tm_chapter_tm10_results, eval=FALSE}
