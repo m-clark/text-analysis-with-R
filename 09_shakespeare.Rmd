@@ -193,6 +193,7 @@ shakes %>% filter(id=='Romeo_and_Juliet') %>% head
 shakes_trim %>% filter(id=='Romeo_and_Juliet') %>% head
 ```
 
+
 ### Scene II. Miscellaneous removal
 
 Next, we'll want to remove empty rows, any remaining titles, lines that denote the act or scene, and other stuff.  I'm going to remove the word *prologue* and *epilogue* as a stopword later. While some texts have a line that just says that (`PROLOGUE`), others have text that describes the scene (`Prologue. Blah blah`) and which I've decided to keep. As such, we just need the word itself gone.
@@ -274,7 +275,7 @@ chars = str_split(chars, ' ') %>%
 chars_other = c('enobarbus', 'marcius', 'katharina', 'clarence','pyramus',
                 'andrew', 'arcite', 'perithous', 'hippolita', 'schoolmaster',
                 'cressid', 'diomed', 'kate', 'titinius', 'Palamon', 'Tarquin',
-                'Lucrece', 'isidore', 'tom')
+                'lucrece', 'isidore', 'tom', 'thisbe', 'thisbi', 'paul', 'aemelia')
 
 chars = unique(c(chars, chars_other))
 
@@ -326,6 +327,7 @@ source('r/st_stem.R')
 shakes_words = shakes_words %>%
   mutate(word = str_trim(word),    # remove possible whitespace
          word = str_replace(word, "'er$|'d$|'t$|'ld$|'rt$|'st$|'dst$", ''),    # remove me style endings
+         word = str_replace_all(word, "[0-9]", ''),    # remove sonnet numbers
          word = vapply(word, me_st_stem, 'a')) %>%
   anti_join(em_stops) %>%
   anti_join(me_stops) %>%
@@ -430,7 +432,7 @@ top20 = topfeatures(shakes_dtm, 20)
 
 #### Top features
 
-Let's start looking more in depth.  The following shows the 10 most common words and their respective counts. This is an easy way to find candidates to add to the stopword list.  Note that dai and prai are stems for day and pray. Love occurs `r round(top20[1]/top20[2], 2)` times as much as the most frequent word!
+Let's start looking more in depth.  The following shows the 10 most common words and their respective counts. This is also an easy way to find candidates to add to the stopword list.  Note that dai and prai are stems for day and pray. Love occurs `r round(top20[1]/top20[2], 2)` times as much as the most frequent word!
 
 ```{r top_10}
 top10 = topfeatures(shakes_dtm, 10)
@@ -454,14 +456,14 @@ library(forcats)
 #   mutate(
 #     term = fct_reorder(term, freq, .desc = TRUE),
 #     percentage = freq/ncol(shakes_dtm)
-#   ) %>% 
+#   ) %>%
 #   plot_ly(x=~term, y=~percentage) %>%  # , size=~percentage
-#   add_text(text=~term, 
+#   add_text(text=~term,
 #            color=I('#ff5500'),
 #            size =~ percentage,
 #            sizes = c(15,15),         # doesn't work for text, only markers
-#            showlegend = F)  %>% 
-#   theme_plotly() %>% 
+#            showlegend = F)  %>%
+#   theme_plotly() %>%
 #   layout(xaxis = list(
 #   autotick = FALSE,
 #   ticks = F,
@@ -487,6 +489,7 @@ g = data_frame(term = names(top20), freq = top20) %>%
 ggplotly(width='auto', hoverinfo='none') %>% 
   lazerhawk::theme_plotly() 
 ```
+
 
 #### Similarity
 
@@ -654,14 +657,16 @@ I'd say we're now ready for topic model.  We'll run run one with 10 topics.  We 
 
 ```{r topic_model, echo=1:2, eval=F}
 library(topicmodels)
-shakes_10 = LDA(convert(shakes_dtm, to = "topicmodels"), k = 10)
-shakes_10_cor = CTM(convert(shakes_dtm, to = "topicmodels"), k = 10, control=list(cg=list(iter.max=2000)))
-save(shakes_10, file='data/shakespeare_topic_model.RData')
+shakes_10 = LDA(convert(shakes_dtm, to = "topicmodels"), k = 10, control=list(seed=1234))
+
+library(stm)
+shakes_10_stm = stm(shakes_dtm, K = 10, seed=1234)  # can take quanteda
+# shakes_10_cor = CTM(convert(shakes_dtm, to = "topicmodels"), k = 10, control=list(cg=list(iter.max=2000)))
+save(shakes_10, shakes_10_stm, file='data/shakespeare_topic_model.RData')
 ```
 
 ```{r tm10_results, eval=FALSE}
 get_terms(shakes_10, 20)
-t(topics(shakes_10, 3))
 ```
 
 ```{r tm10_results_pretty_terms, echo=FALSE}
@@ -677,6 +682,66 @@ get_terms(shakes_10, 20) %>%
 ```
 
 <br>
+
+We can see there is a lot of overlap in these topics for top terms.  Just looking at the top 10, *love* occurs in all of them, god and heart as well, but we could have guessed this just looking at how often they occur in general. Other measures can be used to assess term importance, such as those that seek to balance probability and term *exclusivity*, or how likely a term is to occur in only one particular topic.  See the <span class="pack">stm</span> package and corresponding <span class="func">labelTopics</span> function as a way to get several alternatives.  As an example I show the results of their version of the FREX (**fr**equency and **ex**clusivity), lift, and the usefully named 'score' metric. Note that 'prob' is just the raw probability result we saw earlier.
+
+```{r label_topics, eval=T, echo=FALSE}
+# as stm topics won't be exactly the same, it might through them off
+topic_labels = stm::labelTopics(shakes_10_stm, n=10)
+sapply(topic_labels[1:4], function(e) apply(e, 1, paste, collapse=', ')) %>%
+  as_tibble() %>%
+  mutate(Topic = 1:10) %>%
+  gather(key=Score, value=Terms, -Topic) %>%
+  arrange(Topic, Score) %>%
+  DT::datatable(options=list(dom='t', scrollY=T, pageLength=40), rownames=F) %>%
+  DT::formatStyle(
+    0, # ignores columns, but otherwise put here
+    target='row',
+    backgroundColor = 'transparent'
+  )
+```
+
+```{r lable_topics_df, echo=FALSE}
+frex_res = calcfrex(shakes_10@beta, wordcounts=colSums(shakes_dtm))[1:10,] %>% 
+  shakes_10@terms[.] %>% 
+  matrix(., 10, 10)
+# lift is definitely bugged, will just flag singletons
+lift_res = calclift(shakes_10@beta, wordcounts=colSums(shakes_dtm))[1:10,] %>%
+  shakes_10@terms[.] %>%
+  matrix(., 10, 10)
+score_res = calcscore(shakes_10@beta)[1:10,] %>% 
+  shakes_10@terms[.] %>% 
+  matrix(., 10, 10)
+
+
+```
+
+
+
+
+```{r tm10_results_topic_classification, eval=FALSE}
+t(topics(shakes_10, 3))
+```
+
+```{r ldavis, eval=FALSE, echo=FALSE}
+library(LDAvis)
+json <- createJSON(phi = exp(shakes_10@beta), 
+                   theta = shakes_10@gamma, 
+                   # doc.length = rowSums(shakes_dtm), 
+                   doc.length = rowSums(shakes_dtm>0), 
+                   vocab = shakes_10@terms, 
+                   term.frequency = colSums(shakes_dtm),
+                   R=10)
+serVis(json, out.dir = 'vis', open.browser = F)
+```
+
+<iframe src="../vis/index.html" width="900" height="700" frameborder="0"
+    scrolling="no"
+    marginheight="0"
+    marginwidth="0">
+  <p>Your browser does not support iframes.</p>
+</iframe>
+
 
 ```{r tm10_results_pretty_topic_classification, echo=FALSE}
 t(topics(shakes_10, 3)) %>% 

@@ -115,17 +115,6 @@ A couple things stand out.  Traditional classificiation really probably only wor
 
 Alternatively, one could merely classify them based on their probable topics, which would make more sense if classification is the goal. The following visualization attempts to order them based on their most probable topic.  The order is based on the most likely topics across all documents.
 
-```{r}
-library(LDAvis)
-json <- createJSON(phi = exp(shakes_10@beta), 
-                   theta = shakes_10@gamma, 
-                   # doc.length = rowSums(shakes_dtm), 
-                   doc.length = rowSums(shakes_dtm>0), 
-                   vocab = shakes_10@terms, 
-                   term.frequency = colSums(shakes_dtm),
-                   R=10)
-serVis(json, out.dir = 'vis', open.browser = F)
-```
 
 
 ```{r tm_chapter_cluster_topics, echo=FALSE}
