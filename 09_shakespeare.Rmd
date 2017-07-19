@@ -790,7 +790,7 @@ t(topics(shakes_10, 2)) %>%
 
 <br>
 
-The following visualization shows a heatmap for the topic probabilities of each document.  Darker values mean higher probability for a document expressing that topic.  I've also added a cluster analysis based on the  cosine distance matrix, and the resulting dendrogram[^clustering]. 
+The following visualization shows a heatmap for the topic probabilities of each document.  Darker values mean higher probability for a document expressing that topic.  I've also added a cluster analysis based on the cosine distance matrix, and the resulting dendrogram[^clustering].  The colored bar on the right represents the given classification of a work as history, tragedy, comedy, or poem.
 
 
 ```{r viz_topics, echo=FALSE}
@@ -869,9 +869,9 @@ shakes_10@gamma %>%
 
 <br>
 
-A couple things stand out.  Traditional classificiation really probably only works for the historical works, except for Henry the VIII (possibly due to it being a collaborative work).  Furthermore, tragedies and comedies might hit on the same topics, albeit from different perspecitves.  In addition, at least some works are very poetical, or at least have topics in common with the poems (love).  If we take four clusters from it, it boils down to *Phoenix* (on its own), standard poems, a mixed bag of more love oriented works and the remaining poems, then everything else.  
+A couple things stand out.  To begin with, most works are associated with one topic.  In terms of the discovered topics, traditional classificiation really probably only works for the historical works, as they cluster together as expected (except for Henry the VIII, possibly due to it being a collaborative work).  Furthermore, tragedies and comedies might hit on the same topics, albeit from different perspecitves.  In addition, at least some works are very poetical, or at least have topics in common with the poems (love).  If we take four clusters, the result boils down to *Phoenix* (on its own), standard poems, a mixed bag of more love oriented works and the remaining poems, then everything else.  
 
-Alternatively, one could merely classify them based on their probable topics, which would make more sense if classification is the goal. The following visualization attempts to order them based on their most probable topic.    The order is based on the most likely topics across all documents.
+Alternatively, one could merely classify the works based on their probable topics, which would make more sense if clustering of the works is in fact the goal. The following visualization attempts to order them based on their most probable topic.  The order is based on the most likely topics across all documents.
 
 ```{r cluster_topics, echo=FALSE}
 topic_class = shakes_10@gamma %>%

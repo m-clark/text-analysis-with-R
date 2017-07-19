@@ -950,9 +950,9 @@ For more natural language processing tools in R, consult the corresponding [task
 
 ## Basic idea
 
-<span class="emph">Topic modeling</span> as typically done is a tool for much more than text.  The primary technique of <span class="emph">latent dirichlet allocation</span> should be as much a part of your toolbox as principal components and factor analysis.  It can be seen merely as a dimension reduction approach, but it can also be used for its rich interpretative quality as well. The basic idea is that we'll take a whole lot of terms, loosely defined, and boil them down to a few topics.   In this sense LDA is akin to discrete PCA.  Another way to think about this is more from the  perspective of factor analysis, where we are keenly interested in interpretation of the result, and want to know both what terms are associated with which topics, and what documents are more likely to present which topics.  
+<span class="emph">Topic modeling</span> as typically conducted is a tool for much more than text.  The primary technique of <span class="emph">latent dirichlet allocation</span> should be as much a part of your toolbox as principal components and factor analysis.  It can be seen merely as a dimension reduction approach, but it can also be used for its rich interpretative quality as well. The basic idea is that we'll take a whole lot of features and boil them down to a few 'topics'.   In this sense LDA is akin to discrete PCA.  Another way to think about this is more from the  perspective of factor analysis, where we are keenly interested in interpretation of the result, and want to know both what terms are associated with which topics, and what documents are more likely to present which topics.  
 
-In the standard setting, to be able to conduct such an analysis from text one needs a <span class="emph">document-term matrix</span>, where rows represent documents, and columns terms. Each cell is a count of how many times the term occurs in the document. Terms are typically words, but could be any <span class="emph">n-gram</span> of interest. Outside of text analysis they could represent bacterial composition, genetic information, or who knows what. 
+In the standard setting, to be able to conduct such an analysis from text one needs a <span class="emph">document-term matrix</span>, where rows represent documents, and columns terms. Each cell is a count of how many times the term occurs in the document. Terms are typically words, but could be any <span class="emph">n-gram</span> of interest. Outside of text analysis they could represent bacterial composition, genetic information, or whatever the researcher is interested in. 
 
 
 ## Steps
@@ -963,7 +963,7 @@ Most of the time is spent on processing the text.  Importing/scraping it, dealin
 
 ### Shakespeare
 
-We'll look at Shakespeare's plays and   We'll run run one with 10 topics.  We can also see how things compare with the usual classifications for the texts.  Also, this will take a while to run depending on your machine (maybe a minute or two).
+For our example, we'll look at Shakespeare's plays and poems, using a topic model with 10 topics.  For our needs we'll use the <span class="pack">topicModels</span> package for the analysis, and mostly others for post-processing.  Due to the large number of terms, this will take a while to run depending on your machine (maybe a minute or two).  We can also see how things compare with the academic classifications for the texts.
 
 ```{r tm_chapter_topic_model, eval=F}
 load('Data/shakes_dtm_stemmed.RData')
@@ -1004,7 +1004,7 @@ t(topics(shakes_10, 3)) %>%
 
 <br>
 
-The following visualization shows a heatmap for the topic probabilities of each document.  Darker values mean higher probability for a document expressing that topic.  I've also added a cluster analysis based on the  cosine distance matrix, and the resulting dendrogram. 
+The following visualization shows a heatmap for the topic probabilities of each document.  Darker values mean higher probability for a document expressing that topic.  I've also added a cluster analysis based on the  cosine distance matrix, and the resulting dendrogram. The colored bar on the right represents the given classification of a work as history, tragedy, comedy, or poem.
 
 
 ```{r tm_chapter_viz_topics, echo=FALSE}
@@ -1031,39 +1031,70 @@ row_dend  =
   set("branches_k_color", k = 3) %>% set("branches_lwd", c(.5,.5)) %>%
   ladderize
 
-
-
-shakes_10@gamma %>%
+# the amount of bugs is staggering
+fix_heatmaply = shakes_10@gamma %>%
   round(3) %>%
-  heatmaply::heatmaply(Rowv=row_dend,
-                       Colv=F,
-                       labRow=shakes_10@documents,
-                       labCol=paste0('topic', 1:10),
-                       colors='Oranges',
-                       k_row = 4,
-                       plot_method = 'plotly',
-                       row_side_colors = select(arrange(shakes_types, title), class),
-                       # row_side_palette = c("#39BEB1", "#ABB065", "#ACA4E2", "#CC476B", "#E495A5", "black"),
-                       seriate = 'OLO',
-                       fontsize_row=7,
-                       fontsize_col=7,
-                       subplot_widths=c(.75, .025, .225),
-                       subplot_heights=1,
-                       hide_colorbar = T,
-                       colorbar_len = 0.3,
-                       colorbar_ypos=0) %>%
-  layout(showlegend=F) %>% # showing the legend will screw up the colorbar and any associated options
+  heatmaply::heatmapr(Rowv=row_dend,
+           Colv=F,
+           labRow=shakes_10@documents,
+           labCol=paste0('Topic ', 1:10),
+           k_row = 4,
+           row_side_colors = pull(arrange(shakes_types, title), class), # ignored by heatmaply
+           # row_side_palette = c("#39BEB1", "#ABB065", "#ACA4E2", "#CC476B", "#E495A5", "black"),
+           seriate = 'OLO',
+           fontsize_row=8,
+           fontsize_col=7,
+           subplot_widths=c(.75, .025, .225),
+           # subplot_heights=1,
+           width=750,
+           height=650)
+
+
+heatmaply::heatmaply(fix_heatmaply,
+                     # labRow=shakes_10@documents,
+                     colors='Oranges',
+                     plot_method = 'plotly',
+                     grid_gap=5,
+                     hide_colorbar = T,
+                     colorbar_len = 0.3,
+                     colorbar_ypos=0) %>%
+  # layout(showlegend=F, width=750, height=650) %>% # showing the legend will screw up the colorbar and any associated options
   config(displayModeBar = F) %>% 
   theme_plotly()
 
+
+fix_heatmaply = shakes_10@gamma %>%
+  round(3) %>%
+  heatmaply::heatmapr(Rowv=row_dend,
+           Colv=F,
+                                           labRow=shakes_10@documents,
+           labCol=paste0('Topic ', 1:10),
+           # subplot_heights=1,
+           width=750,
+           height=650)
+
+
+heatmaply::heatmaply(fix_heatmaply,
+                     # labRow=shakes_10@documents,
+
+           k_row = 5,
+                     colors='Oranges',
+                     plot_method = 'plotly',
+                     grid_gap=5,
+                     hide_colorbar = T,
+                     colorbar_len = 0.3,
+                     colorbar_ypos=0) %>%
+  # layout(showlegend=F, width=750, height=650) %>% # showing the legend will screw up the colorbar and any associated options
+  config(displayModeBar = F) %>% 
+  theme_plotly()
 ```
 
 
 <br>
 
-A couple things stand out.  Traditional classificiation really probably only works for the historical works, except for Henry the VIII (possibly due to it being a collaborative work).  Furthermore, tragedies and comedies might hit on the same topics, albeit from different perspecitves.  In addition, at least some works are very poetical, or at least have topics in common with the poems (love).  If we take four clusters from it, it boils down to *Phoenix* (on its own), standard poems, a mixed bag of more love oriented works and the remaining poems, then everything else.  
+A couple things stand out.  To begin with, most works are associated with one topic.  In terms of the discovered topics, traditional classificiation really probably only works for the historical works, as they cluster together as expected (except for Henry the VIII, possibly due to it being a collaborative work).  Furthermore, tragedies and comedies might hit on the same topics, albeit from different perspecitves.  In addition, at least some works are very poetical, or at least have topics in common with the poems (love).  If we take four clusters, the result boils down to *Phoenix* (on its own), standard poems, a mixed bag of more love oriented works and the remaining poems, then everything else.  
 
-Alternatively, one could merely classify them based on their probable topics, which would make more sense if classification is the goal. The following visualization attempts to order them based on their most probable topic.  The order is based on the most likely topics across all documents.
+Alternatively, one could merely classify the works based on their probable topics, which would make more sense if clustering of the works is in fact the goal. The following visualization attempts to order them based on their most probable topic.  The order is based on the most likely topics across all documents.
 
 
 
@@ -1878,7 +1909,7 @@ serVis(json, out.dir = 'vis', open.browser = F)
 
 <br> 
 
-Given all these measures, one can now see how well they match what the topics the documents would be most associated with.  For example, Hamlet is most associated with `r t(topics(shakes_10, 3))['Hamlet',1]`.
+Given all these measures, one can now see how well they match what the topics the documents would be most associated with.  For example, Hamlet is most associated with `r t(topicmodels::topics(shakes_10, 3))['Hamlet',1]`.
 
 
 ```{r tm10_results_topic_classification, eval=FALSE}
@@ -1899,7 +1930,7 @@ t(topics(shakes_10, 2)) %>%
 
 <br>
 
-The following visualization shows a heatmap for the topic probabilities of each document.  Darker values mean higher probability for a document expressing that topic.  I've also added a cluster analysis based on the  cosine distance matrix, and the resulting dendrogram[^clustering]. 
+The following visualization shows a heatmap for the topic probabilities of each document.  Darker values mean higher probability for a document expressing that topic.  I've also added a cluster analysis based on the cosine distance matrix, and the resulting dendrogram[^clustering].  The colored bar on the right represents the given classification of a work as history, tragedy, comedy, or poem.
 
 
 ```{r viz_topics, echo=FALSE}
@@ -1978,9 +2009,9 @@ shakes_10@gamma %>%
 
 <br>
 
-A couple things stand out.  Traditional classificiation really probably only works for the historical works, except for Henry the VIII (possibly due to it being a collaborative work).  Furthermore, tragedies and comedies might hit on the same topics, albeit from different perspecitves.  In addition, at least some works are very poetical, or at least have topics in common with the poems (love).  If we take four clusters from it, it boils down to *Phoenix* (on its own), standard poems, a mixed bag of more love oriented works and the remaining poems, then everything else.  
+A couple things stand out.  To begin with, most works are associated with one topic.  In terms of the discovered topics, traditional classificiation really probably only works for the historical works, as they cluster together as expected (except for Henry the VIII, possibly due to it being a collaborative work).  Furthermore, tragedies and comedies might hit on the same topics, albeit from different perspecitves.  In addition, at least some works are very poetical, or at least have topics in common with the poems (love).  If we take four clusters, the result boils down to *Phoenix* (on its own), standard poems, a mixed bag of more love oriented works and the remaining poems, then everything else.  
 
-Alternatively, one could merely classify them based on their probable topics, which would make more sense if classification is the goal. The following visualization attempts to order them based on their most probable topic.    The order is based on the most likely topics across all documents.
+Alternatively, one could merely classify the works based on their probable topics, which would make more sense if clustering of the works is in fact the goal. The following visualization attempts to order them based on their most probable topic.  The order is based on the most likely topics across all documents.
 
 ```{r cluster_topics, echo=FALSE}
 topic_class = shakes_10@gamma %>%
