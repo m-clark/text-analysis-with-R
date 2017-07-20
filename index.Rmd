@@ -53,7 +53,7 @@ github-repo:  m-clark/
 
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE, message=F, warning=F, error=F, comment=NA, R.options=list(width=220),   # code 
-                      dev.args=list(bg = 'transparent'), dev='svg',                             # viz
+                      dev.args=list(bg = 'transparent'), dev='svg', fig.align='center',     # viz
                       cache.rebuild=F, cache=T)                                                 # cache
 ```
 

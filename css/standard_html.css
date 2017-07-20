@@ -111,8 +111,11 @@ h1, h2, h3, h4, h5 {
 .plotly {
   margin-left: 5%;
   margin-right: 5%;
-  width: 75%;
 }
+
+/*.plotly html-widget {
+  width: 100%;
+}*/
 
 .d3heatmap {
   margin-left: 5%;
@@ -121,3 +124,7 @@ h1, h2, h3, h4, h5 {
 }
 
 
+div.datatables {
+    margin-left: auto;     /* to center them when full is not necessary. */
+    margin-right: auto;
+}

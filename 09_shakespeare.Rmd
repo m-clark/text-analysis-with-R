@@ -670,6 +670,8 @@ shakes_10_stm = stm(shakes_dtm, K = 10, seed=1234)  # can take quanteda
 save(shakes_10, shakes_10_stm, file='data/shakespeare_topic_model.RData')
 ```
 
+One of the first things to do is interpret the topics, and we can start by seeing which terms are most probable for each topic.
+
 ```{r tm10_results, eval=FALSE}
 get_terms(shakes_10, 20)
 ```
@@ -769,18 +771,24 @@ serVis(json, out.dir = 'vis', open.browser = F)
 
 <br> 
 
-Given all these measures, one can now see how well they match what the topics the documents would be most associated with.  For example, Hamlet is most associated with `r t(topicmodels::topics(shakes_10, 3))['Hamlet',1]`.
-
+Given all these measures, one can now see how well they match what the topics the documents would be most associated with.  
 
 ```{r tm10_results_topic_classification, eval=FALSE}
 t(topics(shakes_10, 3))
 ```
 
+
 ```{r tm10_results_pretty_topic_classification, echo=FALSE}
 t(topics(shakes_10, 2)) %>% 
   data.frame %>% 
   rename_all(str_replace, 'X', 'Top Topic ') %>% 
-  DT::datatable(options=list(dom='tp')) %>% 
+  DT::datatable(options=list(dom='tp',
+                             autoWidth=T, 
+                             align='center',
+                             columnDefs=list(list(width='150px', targets=0),
+                                             list(width='100px', targets=1:2),
+                                             list(className = 'dt-center', targets = 1:2))), 
+                width='500') %>% 
   DT::formatStyle(
     0, # ignores columns, but otherwise put here
     target='row',
@@ -790,10 +798,12 @@ t(topics(shakes_10, 2)) %>%
 
 <br>
 
+For example, Hamlet is most associated with `r t(topicmodels::topics(shakes_10, 3))['Hamlet',1]`. That topic is associated with the (stemmed words) `r topicmodels::get_terms(shakes_10, 20)[, t(topicmodels::topics(shakes_10, 3))['Hamlet',1]]`.  Sounds about right.
+
 The following visualization shows a heatmap for the topic probabilities of each document.  Darker values mean higher probability for a document expressing that topic.  I've also added a cluster analysis based on the cosine distance matrix, and the resulting dendrogram[^clustering].  The colored bar on the right represents the given classification of a work as history, tragedy, comedy, or poem.
 
 
-```{r viz_topics, echo=FALSE}
+```{r viz_topics, echo=FALSE, out.height='400px', fig.width=8.5, fig.height=8.5, fig.align='center'}
 library(quanteda)
 load('data/shakespeare_classification.RData')
 
@@ -825,45 +835,45 @@ row_dend  =
 
 # heatmaply is barely beta, use d3heatmap for now?
 
+# shakes_10@gamma %>%
+#   round(3) %>%
+#   heatmaply::heatmaply(Rowv=row_dend,
+#                        Colv=F,
+#                        labRow=shakes_10@documents,
+#                        labCol=paste0('topic', 1:10),
+#                        colors='Oranges',
+#                        k_row = 4,
+#                        plot_method = 'plotly',
+#                        row_side_colors = select(arrange(shakes_types, title), class),
+#                        # row_side_palette = c("#39BEB1", "#ABB065", "#ACA4E2", "#CC476B", "#E495A5", "black"),
+#                        seriate = 'OLO',
+#                        fontsize_row=7,
+#                        fontsize_col=7,
+#                        subplot_widths=c(.75, .025, .225),
+#                        subplot_heights=1,
+#                        hide_colorbar = T,
+#                        colorbar_len = 0.3,
+#                        colorbar_ypos=0) %>%
+#   layout(showlegend=F) %>% # showing the legend will screw up the colorbar and any associated options
+#   config(displayModeBar = F) %>% 
+#   theme_plotly()
+
 shakes_10@gamma %>%
   round(3) %>%
   heatmaply::heatmaply(Rowv=row_dend,
                        Colv=F,
-                       labRow=shakes_10@documents,
-                       labCol=paste0('topic', 1:10),
                        colors='Oranges',
-                       k_row = 4,
-                       plot_method = 'plotly',
-                       row_side_colors = select(arrange(shakes_types, title), class),
-                       # row_side_palette = c("#39BEB1", "#ABB065", "#ACA4E2", "#CC476B", "#E495A5", "black"),
-                       seriate = 'OLO',
-                       fontsize_row=7,
-                       fontsize_col=7,
-                       subplot_widths=c(.75, .025, .225),
-                       subplot_heights=1,
-                       hide_colorbar = T,
-                       colorbar_len = 0.3,
-                       colorbar_ypos=0) %>%
+                       row_side_colors = data.frame(shakes_types$class),
+                       # RowSideColors = shakes_types$class,
+                       labRow=shakes_10@documents,
+                       labCol=paste0('Topic ', 1:10),
+                       hide_colorbar=T,
+                       grid_gap=2,
+                       plot_method='plotly'
+                       ) %>%
   layout(showlegend=F) %>% # showing the legend will screw up the colorbar and any associated options
-  config(displayModeBar = F) %>% 
+  config(displayModeBar = F) %>%
   theme_plotly()
-# shakes_10@gamma %>%
-# round(3) %>%
-# d3heatmap::d3heatmap(Rowv=row_dend,
-#                      Colv=F,
-#                      labRow=shakes_10@documents,
-#                      labCol=paste0('topic', 1:10),
-#                      # colors=viridis::inferno(500),
-#                      colors='Blues',
-#                      k_row = 10,
-#                      xaxis_font_size = 12,
-#                      yaxis_font_size=8,
-#                      colorbar_len = 0.2,
-#                      show_grid = F,
-#                      width=800,
-#                      height=800) #%>%
-# layout(width=900, height=900, showlegend=F) %>% # showing the legend will screw up the colorbar and any associated options
-# lazerhawk::theme_plotly()
 ```
 
 
