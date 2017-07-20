@@ -63,7 +63,7 @@ However, if memory is really a concern, it's probably not that using factors wil
 
 ### Analysis
 
-It is important to know that raw text cannot be analyzed quantitatively. There is no magic that takes a categorical variable with text labels and estimates correlations among words and other words or numeric data. *Everything* that can be analyzed must have some numeric representation first, and this is where factors come in. For example, here is a data frame with two categorical predictors (`factor*`), a numeric predictor (`x`), and a numeric target (`y`).  What follows is what it looks like if you wanted to run a regression model.
+It is important to know that raw text cannot be analyzed quantitatively. There is no magic that takes a categorical variable with text labels and estimates correlations among words and other words or numeric data. *Everything* that can be analyzed must have some numeric representation first, and this is where factors come in. For example, here is a data frame with two categorical predictors (`factor*`), a numeric predictor (`x`), and a numeric target (`y`).  What follows is what it looks like if you wanted to run a regression model in that setting.
 
 ```{r dummy, eval=-3}
 df = 
@@ -112,6 +112,7 @@ A lot of folks new to R are not aware of just how much basic text processing R c
 - <span class="func">strsplit</span>: split strings
 - <span class="func">nchar</span>: how many characters in a string
 - <span class="func">as.numeric</span>: convert a string to numeric if it can be
+- <span class="func">strtoi</span>: convert a string to integer if it can be (faster than as.integer)
 - <span class="func">adist</span>: string distances
 
 I probably use paste/paste0 more than most things when dealing with text, as string concatenation comes up so often.
@@ -131,15 +132,15 @@ Beyond that, use of regular expression and functionality included in the <span c
 
 A couple packages will probably take care of the vast majority of your standard text processing needs.  Note that even if they aren't adding anything to the functionality of the base R functions, they typically will have been optimized in some fashion
 
-- <span class="pack">stringr</span>/<span class="pack">stringi</span>: more or less the same stuff you'll find with <span class="func">substr</span>, <span class="func">grep</span> etc. except easier to use or faster
+- <span class="pack">stringr</span>/<span class="pack">stringi</span>: more or less the same stuff you'll find with <span class="func">substr</span>, <span class="func">grep</span> etc. except easier to use or faster. Also add useful functionality not in base R (e.g. <span class="func">str_to_title</span>)
 - <span class="pack">tidyr</span>: has functions such as <span class="func">unite</span>, <span class="func">separate</span>, <span class="func">replace_na</span> that can often come in handy when working with data frames
-- <span class="pack">glue</span>: a newer package that can be seen as a fancier <span class="func">paste</span>. Most likely will be useful when creating functions or shiny apps in which variable text output is desired.
+- <span class="pack">glue</span>: a newer package that can be seen as a fancier <span class="func">paste</span>. Most likely will be useful when creating functions or shiny apps in which variable text output is desired
 
-One issue I have with both packages and base R is that often they return a list object, when it should be simplifying to the vector format it was initially fed.  This sometimes requires an additional step or two of further processing that shouldn't be necessary, but be prepared for it[^str_all]. 
+One issue I have with both packages and base R is that often they return a list object, when it should be simplifying to the vector format it was initially fed.  This sometimes requires an additional step or two of further processing that shouldn't be necessary, so be prepared for it[^str_all]. 
 
 ### Other
 
-In this section I'll add some things that come to mind from time to time that might come into play when you're dealing with text.
+In this section I'll add some things that come to mind that might come into play when you're dealing with text.
 
 #### Dates
 
@@ -184,7 +185,7 @@ Here is an example:
 
 `^r.*shiny[0-9]$`
 
-What is *that* you may ask?  Well here is an example of what it would and wouldn't match.
+What is *that* you may ask?  Well here is an example of strings it would and wouldn't match.
 
 ```{r regex_intro_ex}
 grepl(c('r is the shiny', 'r is the shiny1', 'r shines brightly'), pattern='^r.*shiny[0-9]$')
@@ -204,7 +205,7 @@ What the regex esoterically is attempting to match is any string that starts wit
 
 None of it makes sense, so don't attempt to do so. Just try to remember a couple key approaches, and search the web for the rest.
 
-Along with ^ . * [0-9], a couple more common ones are:
+Along with ^ . * [0-9] $, a couple more common ones are:
 
 - **[a-z]** : letters a-z
 - **[A-Z]** : capital letters
@@ -222,7 +223,7 @@ In addition, there are certain predefined characters that can be called:
 
 Those are just a few.  The key functions can be found by looking at the help file for the <span class="func">grep</span> function (`?grep`).  However, the <span class="pack">stringr</span> package has the same functionality with perhaps a slightly faster processing (though that's due to the underlying <span class="pack">stringi</span> package).
 
-See if you can guess which of the following will turn up true.
+See if you can guess which of the following will turn up `TRUE`.
 
 ```{r eval=FALSE}
 grepl(c('apple', 'pear', 'banana'), pattern='a')
@@ -260,13 +261,15 @@ df = data_frame(
 DT::datatable(df, 
               rownames=F,
               options=list(dom='t', 
-                           scrollX='50%',
                            autoWidth = TRUE,
                            columnDefs = list(list(width = '50px', targets = 0),
-                                             list(className = 'dt-center', targets = 1)))
+                                             list(className = 'dt-center', targets = 0:1),
+                                             list(className = 'dt-right', targets = 2))),
+              width='300px'
 )
 ```
 
+<br>
 
 It might seem okay until...
 

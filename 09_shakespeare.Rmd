@@ -670,7 +670,7 @@ shakes_10_stm = stm(shakes_dtm, K = 10, seed=1234)  # can take quanteda
 save(shakes_10, shakes_10_stm, file='data/shakespeare_topic_model.RData')
 ```
 
-One of the first things to do is interpret the topics, and we can start by seeing which terms are most probable for each topic.
+One of the first things to do is to interpret the topics, and we can start by seeing which terms are most probable for each topic.
 
 ```{r tm10_results, eval=FALSE}
 get_terms(shakes_10, 20)
@@ -690,12 +690,25 @@ get_terms(shakes_10, 20) %>%
 
 <br>
 
-We can see there is a lot of overlap in these topics for top terms.  Just looking at the top 10, *love* occurs in all of them, god and heart as well, but we could have guessed this just looking at how often they occur in general. Other measures can be used to assess term importance, such as those that seek to balance the term's probability of occurrence within a document, and term *exclusivity*, or how likely a term is to occur in only one particular topic.  See the <span class="pack">stm</span> package and corresponding <span class="func">labelTopics</span> function as a way to get several alternatives.  As an example I show the results of their version of the following[^scoredefs]:
+We can see there is a lot of overlap in these topics for top terms.  Just looking at the top 10, *love* occurs in all of them, *god* and *heart* as well, but we could have guessed this just looking at how often they occur in general. Other measures can be used to assess term importance, such as those that seek to balance the term's probability of occurrence within a document, and term *exclusivity*, or how likely a term is to occur in only one particular topic.  See the <span class="pack">stm</span> package and corresponding <span class="func">labelTopics</span> function as a way to get several alternatives.  As an example I show the results of their version of the following[^scoredefs]:
 
 - <span class="emph">FREX</span>: **fr**equency and **ex**clusivity, it is a weighted harmonic mean of a term's rank within a topic in terms of frequency and exclusivity
 - <span class="emph">lift</span>: ratio of the termn='s probability within a topic to its probability of occurrence across all documents.  Overly sensitive to rare words.
 - <span class="emph">score</span>: another approach that will give more weight to exclusive terms
 - <span class="emph">prob</span>: This is just the raw probability of the term within a given topic.
+
+```{r coherence, eval=FALSE, echo=FALSE}
+library(stm)
+docs = apply(shakes_dtm, 1, function(x) rbind((1:ncol(shakes_dtm))[x>0], x[x>0]))  # bow for stemmed terms
+tq = topicQuality(model=shakes_10_stm, documents=docs)
+sc = semanticCoherence(model=shakes_10_stm, documents=docs, M=20)
+ex = exclusivity(model=shakes_10_stm, M=20)
+plot_ly(x=~sc, y=~ex, data=data_frame(sc, ex, topic=paste('Topic', 1:10))) %>% 
+  add_text(text=~topic, color=I('#ff5500')) %>% 
+  theme_plotly() %>% 
+  layout(xaxis = list(title='Semantic Coherence'),
+         yaxis = list(title='Exclusivity'))
+```
 
 
 ```{r label_topics_stm, eval=F, echo=FALSE}
@@ -747,7 +760,7 @@ sapply(score_list, function(e) apply(e, 2, paste, collapse=', ')) %>%
 
 <br>
 
-As another approach, consider the <span class="emph">saliency</span> and <span class="emph">relevance</span> of term via the <span class="pack">LDAvis</span> package.
+As another approach, consider the <span class="emph">saliency</span> and <span class="emph">relevance</span> of term via the <span class="pack">LDAvis</span> package. While you can play with it here, it's probably easier to [open it separately](vis/index.html).
 
 
 ```{r ldavis, eval=FALSE, echo=FALSE}
@@ -759,10 +772,10 @@ json <- createJSON(phi = exp(shakes_10@beta),
                    vocab = shakes_10@terms, 
                    term.frequency = colSums(shakes_dtm),
                    R=10)
-serVis(json, out.dir = 'vis', open.browser = F)
+serVis(json, out.dir = '_book/vis', open.browser = F)
 ```
 
-<iframe src="../vis/index.html" width="1200" height="700" frameborder="0"
+<iframe src="vis/index.html" width="1200" height="700" frameborder="0"
     scrolling="no"
     marginheight="0"
     marginwidth="0">
@@ -798,7 +811,7 @@ t(topics(shakes_10, 2)) %>%
 
 <br>
 
-For example, Hamlet is most associated with `r t(topicmodels::topics(shakes_10, 3))['Hamlet',1]`. That topic is associated with the (stemmed words) `r topicmodels::get_terms(shakes_10, 20)[, t(topicmodels::topics(shakes_10, 3))['Hamlet',1]]`.  Sounds about right.
+For example, base just on term frequency, Hamlet is most likely to be associated with Topic `r t(topicmodels::topics(shakes_10, 3))['Hamlet',1]`. That topic is associated with the (stemmed words) `r topicmodels::get_terms(shakes_10, 20)[, t(topicmodels::topics(shakes_10, 3))['Hamlet',1]]`.  Hamlet is also one that is actually a decent mix, with its second topic expressed being Topic `r t(topicmodels::topics(shakes_10, 3))['Hamlet', 2]`, with common terms `r topicmodels::get_terms(shakes_10, 20)[, t(topicmodels::topics(shakes_10, 3))['Hamlet', 2]]`. They both have `r intersect(topicmodels::get_terms(shakes_10, 20)[, t(topicmodels::topics(shakes_10, 3))['Hamlet',1]], topicmodels::get_terms(shakes_10, 20)[, t(topicmodels::topics(shakes_10, 3))['Hamlet', 2]])` among their top 20 terms. Sounds about right for Hamlet.  The other measures pick up on things like Dane and Denmark.
 
 The following visualization shows a heatmap for the topic probabilities of each document.  Darker values mean higher probability for a document expressing that topic.  I've also added a cluster analysis based on the cosine distance matrix, and the resulting dendrogram[^clustering].  The colored bar on the right represents the given classification of a work as history, tragedy, comedy, or poem.
 

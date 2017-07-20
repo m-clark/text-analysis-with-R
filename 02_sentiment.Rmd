@@ -3,9 +3,9 @@
 
 ## Basic idea
 
-A common and intuitive approach to text is <span class="emph">sentiment analysis</span>.  In a grand sense we are interested in the emotional content of some text, e.g. posts on Facebook, tweets, or movie reviews.  Most of the time, this is obvious when one reads it, but if you have hundreds of thousands or millions of strings to analyze, we'd like to be able to do so efficiently.
+A common and intuitive approach to text is <span class="emph">sentiment analysis</span>.  In a grand sense we are interested in the emotional content of some text, e.g. posts on Facebook, tweets, or movie reviews.  Most of the time, this is obvious when one reads it, but if you have hundreds of thousands or millions of strings to analyze, you'd like to be able to do so efficiently.
 
-We will use the <span class="pack">tidytext</span> package for our demonstration.  It comes with a lexicon of positive and negative words that is actually a combination of multiple sources, one of which provides numeric ratings, while the others suggest different classses of sentiment.
+We will use the <span class="pack">tidytext</span> package for our demonstration.  It comes with a lexicon of positive and negative words that is actually a combination of multiple sources, one of which provides numeric ratings, while the others suggest different classes of sentiment.
 
 
 ```{r lexicon, echo=-1}
@@ -14,7 +14,7 @@ library(tidytext)
 sentiments %>% slice(sample(1:nrow(sentiments)))
 ```
 
-The gist is that we are dealing with a specific, pre-defined vocabulary.  Of course, any analysis will only be as good as the lexicon. The goal is usually to assign a sentiment score to a text, possibly an overall score or specifically positive or negative. Given that, other analyses may be implemented to predict sentiment via standard regression or machine learning.
+The gist is that we are dealing with a specific, pre-defined vocabulary.  Of course, any analysis will only be as good as the lexicon. The goal is usually to assign a sentiment score to a text, possibly an overall score, or a generally positive or negative grade. Given that, other analyses may be implemented to predict sentiment via standard regression tools or machine learning approaches.
 
 ## Issues
 
@@ -26,7 +26,7 @@ Now consider the following.
 sentiments %>% filter(word=='sick') 
 ```
 
-The word *sick* has been used at least since 1960s surfing culture as slang for positive.  A basic approach to sentiment analysis as described here will not be able to detect slang or other context like sarcasm.  However, with lots of training data for a particular context may allow one to correctly predict such sentiment.  In addition, there are, for example, slang lexicons, or one can simply add their own complements to any available lexicon.
+Despite the above assigned sentiments, the word *sick* has been used at least since 1960s surfing culture as slang for positive.  A basic approach to sentiment analysis as described here will not be able to detect slang or other context like sarcasm.  However, with lots of training data for a particular context may allow one to correctly predict such sentiment.  In addition, there are, for example, slang lexicons, or one can simply add their own complements to any available lexicon.
 
 ### Lexicons
 
@@ -37,7 +37,7 @@ In addition, the lexicons are going to maybe be applicable to *general* usage of
 
 ### The first thing the baby did wrong
 
-We demonstrate sentiment analysis with the text *The first thing the baby did wrong*, which is a very popular brief guide to parenting written by world renown psychologist Donald Barthelme who, in his spare time, also wrote postmodern literature.  This particular text talks about an issue with the baby, who likes to tear pages out of books. Attempts are made to rectify the situation, without much success, but things are finally resolved at the end.  The ultimate goal will be to see how sentiment in the text evolves over time.
+We demonstrate sentiment analysis with the text *The first thing the baby did wrong*, which is a very popular brief guide to parenting written by world renown psychologist [Donald Barthelme][Donald Barthelme] who, in his spare time, also wrote postmodern literature.  This particular text talks about an issue with the baby, whose name is Born Dancin', who likes to tear pages out of books. Attempts are made by her parents to rectify the situation, without much success, but things are finally resolved at the end.  The ultimate goal will be to see how sentiment in the text evolves over time.
 
 How do we start? Let's look at the <span class="objclass">sentiments</span> data set in the <span class="pack">tidytext</span> package.
 
@@ -56,7 +56,7 @@ sentiments %>%
 
 But I digress.  We start with the raw text, reading it in line by line.  In what follows we read in all the texts (three) in a given directory, such that each element of 'text' is the work itself, i.e. `text` is a list column[^text]. The <span class="func">unnest</span> function will more or less unravel the work to paragraph form.
 
-```{r baby_sentiment_importraw, echo=FALSE}
+```{r baby_sentiment_importraw, echo=T}
 library(tidytext)
 barth0 = 
   data_frame(file = dir('data/texts_raw/barthelme/', full.names = TRUE)) %>%
@@ -65,7 +65,7 @@ barth0 =
   unnest(text) 
 ```
 
-One of the things stressed in this document is the iterative nature of text analysis.  You will consistently take two steps forward, and then one or two back as you find issues that need to be addressed. For example in a subsequent step I found there were encoding issues[^encoding], so the following attempts to fix them.  In addition we want to tokenize <span class="emph">tokenize</span> the documents such that our <span class="emph">tokens</span> are sentences (e.g. as opposed to words or paragraphs). The reason for this is that I will be summarizing the sentiment at sentence level.
+One of the things stressed in this document is the iterative nature of text analysis.  You will consistently take two steps forward, and then one or two back as you find issues that need to be addressed. For example in a subsequent step I found there were encoding issues[^encoding], so the following attempts to fix them.  In addition we want to <span class="emph">tokenize</span> the documents such that our <span class="emph">tokens</span> are sentences (e.g. as opposed to words or paragraphs). The reason for this is that I will be summarizing the sentiment at sentence level.
 
 
 ```{r barth_fix_encoding}
@@ -86,7 +86,7 @@ baby = barth %>%
   ungroup 
 ```
 
-Now that the data has been prepped, getting the sentiments is ridiculously easy.  But that is how it is with text analysis.  All the hard work is spent with the data processing.  Here all we need is an <span class="emph">inner join</span> of our words with a sentiment lexicon of choice. This process will only retain words that are also in the lexicon.  I use the numeric-based lexion here. At that point we get a sum score of sentiment by sentence.
+Now that the data has been prepped, getting the sentiments is ridiculously easy.  But that is how it is with text analysis.  All the hard work is spent with the data processing.  Here all we need is an <span class="emph">inner join</span> of our words with a sentiment lexicon of choice. This process will only retain words that are also in the lexicon.  I use the numeric-based lexicon here. At that point we get a sum score of sentiment by sentence.
 
 
 ```{r baby_sentiment}
@@ -178,7 +178,7 @@ rnj_filtered = rnj_filtered %>%
   anti_join(stop_words)
 ```
 
-Now we add the sentiments via the inner_join.  Here I use 'bing', but you can use another, and you might get a different result.
+Now we add the sentiments via the <span class="func">inner_join</span> function.  Here I use 'bing', but you can use another, and you might get a different result.
 
 ```{r rnj_sentiment}
 rnj_filtered %>% 
@@ -198,7 +198,7 @@ table(rnj_sentiment_bing$sentiment)
 
 
 
-The following visualizes (via <span class="pack">plotly</span>) the positive and negative sentiment scores as one progresses sentence by sentence through the work.
+Looks like this one is going to be a downer. The following visualizes (via <span class="pack">plotly</span>) the positive and negative sentiment scores as one progresses sentence by sentence through the work.
 
 ```{r rnj_sentiment_as_game}
 rnj_sentiment_bing %>% 
@@ -214,7 +214,7 @@ rnj_sentiment_bing %>%
 
 <br>
 
-In general it's a close game until the end, when negativity takes over as despair sets in with the story.
+In general it's a close game until perhaps the midway point, when negativity takes over and despair sets in with the story.  By the end [[:SPOILER ALERT:]] Sean Bean is beheaded, Darth Vader reveals himself to be Luke's father, and Number One is *you*.
 
 Here is the same information expressed as a difference.
 

@@ -1,0 +1,2320 @@
+---
+title: "In the beginning was the word.."
+subtitle: 'An Introduction to Text Processing and Analysis with R'
+author:  |
+  <div class="title"><span style="font-size:125%; font-variant:small-caps; ">Michael Clark</span><br><br>
+  <span class="" style="font-size:75%">http://m-clark.github.io/workshops/</span><br><br>
+  <img src="img/signature-acronym.png" style="width:30%; padding:10px 0;"> <br>
+  <img src="img/ARC-acronym-signature.png" style="width:21%; padding:10px 0;"> </div>
+date: "`r Sys.Date()`"
+site: bookdown::bookdown_site
+output:
+  bookdown::gitbook:
+    css: [css/standard_html.css, css/book.css]
+    hightlight: pygments
+    number_sections: false
+    # split_by: section
+    toc_depth: 3
+    config:
+      # toc:
+        # collapse: chapter
+      #   scroll_highlight: yes
+      #   before: null
+      #   after: null
+      # toolbar:
+      #   position: fixed
+      edit : null
+      download: null
+      search: yes
+      # fontsettings:
+      #   theme: white
+      #   family: sans
+      #   size: 2
+      sharing:
+        facebook: yes
+        twitter: yes
+        google: no
+        weibo: no
+        instapper: no
+        vk: no
+        all: ['facebook', 'google', 'twitter', 'weibo', 'instapaper']
+always_allow_html: yes
+font-import: http://fonts.googleapis.com/css?family=Roboto|Open+Sans
+font-family: 'Roboto'
+documentclass: book
+# bibliography: refs.bib
+biblio-style: apalike
+link-citations: yes
+description: "An Introduction to  Text Analysis with R"
+cover-image: img/nineteeneightyR.png
+url: 'https\://m-clark.github.io/Workshops/'  # evidently the \: is required or you'll get text in the title/toc area
+github-repo:  m-clark/
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE, message=F, warning=F, error=F, comment=NA, R.options=list(width=220),   # code 
+                      dev.args=list(bg = 'transparent'), dev='svg', fig.align='center',     # viz
+                      cache.rebuild=F, cache=T)                                                 # cache
+```
+
+```{r packages, include=FALSE, cache=FALSE}
+library(magrittr); library(tidyverse); library(stringr); library(pander); library(plotly); library(lazerhawk)
+```
+
+```{r setup_heat, echo=FALSE, cache=FALSE}
+# currently using css and formatStyle for customization
+# library(htmltools)  
+# tags$style(".d3heatmap { margin-left: 50px; margin-right: 50px; }")
+# tags$style(".datatable { 'dom': 'pt' }")  # this and variations do not work
+# options(DT.options = list(dom='pt'), DT.rownames=F)      # this doesn't either
+# options(datatable.options = list(dom='pt'), datatable.print.rownames=F)      # this doesn't either
+# tags$style(".plotly { margin-left: auto; margin-right: auto;}") # heatmapr will awesomely override this if subplot widths = 1
+```
+
+# 
+
+<!--chapter:end:index.Rmd-->
+
+# Introduction
+
+This work is in progress. Until this sentence is deleted you should probably ignore everything in it.
+
+## Overview
+
+Dealing with text is typically not even considered in the applied statistical training of most disciplines.  This is in direct conflict with how often it has to be dealt with prior to analysis, or how interesting it might be to have text be the focus of analysis.  This document and corresponding workshop will aim to provide a sense of the things one can do with text, and the sorts of analyses that might be useful.  It must be stressed that this is only a starting point.
+
+### Goals
+
+The goal of this workshop is primarily to provide a sense of common tasks related to dealing with text as part of the data or the focus of analysis, and provide some relatively easy to use tools.  Additionally, we'll have exercises to practice, but those comfortable enough to do so should follow along with the in-text examples.  Note that there is more content here than will be covered in a 2 hour workshop.
+
+
+### Prerequisites
+
+The document is for the most part very applied in nature, and doesn't assume much beyond familiarity with the R statistical computing environment.
+
+Note the following color coding used in this document:
+
+- <span class="emph">emphasis</span>
+- <span class="pack">package</span>
+- <span class="func">function</span>
+- <span class="objclass">object/class</span>
+- [link]()
+
+
+## Initial Steps
+
+0. Download the zip file at . Be mindful of where you put it.
+1. Unzip it. Be mindful of where you put the resulting folder.
+2. Open RStudio.
+3. File/Open Project and click on the blue icon in the folder you just created.
+4. File/Open Click on the ReadMe file and do what it says.
+
+
+<!--chapter:end:00_intro.Rmd-->
+
+# String Theory
+
+
+## Basic data types
+
+R has several core data structures:
+  
+- Vectors
+- Factors
+- Lists
+- Matrices/arrays
+- Data frames
+
+
+<span class="objclass">Vectors</span> form the basis of R data structures. There are two main types- <span class="objclass">atomic</span> and <span class="objclass">lists</span>. All elements of an atomic vector are the same type. 
+
+Examples include:
+  
+- character
+- numeric (double)
+- integer
+- logical
+
+### Character strings
+
+When dealing with text, objects of class character are what you'd typically be dealing with.  
+
+```{r create_a_char, eval=F}
+x = c('... Of Your Fake Dimension', 'Ephemeron', 'Dryswch', 'Isotasy', 'Memory')
+x
+```
+
+Not much to it, but be aware there is no real limit to what is represented as a character vector. For example, in a data frame, you could have a column where each entry is one of the works of Shakespeare.
+
+### Factors
+
+Although not exactly precise, one can think of factors as integers with labels.  So the underlying representation of a variable for <span class="objclass">sex</span> is 1:2 with labels 'Male' and 'Female'.  They are a special class with attributes, or metadata, that contains the information about the <span class="objclass">levels</span>.
+
+```{r factor_atts}
+x = factor(rep(letters[1:3], e=10))
+attributes(x)
+```
+
+While the underlying representation is numeric, it is important to remember that factors are *categorical*. They can't be used as numbers would be, as the following demonstrates.
+
+```{r factor_sum, eval=TRUE, error=TRUE}
+as.numeric(x)
+sum(x)
+```
+
+
+Because of the integer+metadata representation, factors are actually smaller than character strings, often notably so.
+
+```{r size_comparison}
+x = sample(state.name, 10000, replace=T)
+format(object.size(x), units='Kb')
+format(object.size(factor(x)), units='Kb')
+format(object.size(as.integer(factor(x))), units='Kb')
+```
+
+However, if memory is really a concern, it's probably not that using factors will help, but rather better hardware.
+
+
+### Analysis
+
+It is important to know that raw text cannot be analyzed quantitatively. There is no magic that takes a categorical variable with text labels and estimates correlations among words and other words or numeric data. *Everything* that can be analyzed must have some numeric representation first, and this is where factors come in. For example, here is a data frame with two categorical predictors (`factor*`), a numeric predictor (`x`), and a numeric target (`y`).  What follows is what it looks like if you wanted to run a regression model in that setting.
+
+```{r dummy, eval=-3}
+df = 
+  crossing(factor_1 = c('A', 'B'),
+           factor_2 = c('Q', 'X', 'J')) %>% 
+  mutate(x=rnorm(6),
+         y=rnorm(6))
+df
+model.matrix(lm(y ~ x + factor_1 + factor_2, data=df))
+```
+```{r dummy_pretty, echo=FALSE}
+model.matrix(lm(y ~ x + factor_1 + factor_2, data=df)) %>% 
+  pander()
+```
+
+The <span class="func">model.matrix</span> function exposes the underlying matrix that is actually used in the regression analysis.  You'd get a coefficient for each column of that matrix. As such, even the intercept must be represented in some fashion. For categorical data, the default coding scheme is <span class="emph">dummy coding</span>. A reference category is arbitrarily chosen (it doesn't matter which, and you can always change it), while the other categories are represented by indicator variables, where a 1 represents the corresponding label and everything else is zero.  For details on this coding scheme or others, consult any basic statistical modeling book.
+
+
+### Characters vs. Factors
+
+The main thing to note is that factors are generally a statistical phenomenon, and are required to do statistical things with data that would otherwise be a simple character string.  If you know the relatively few levels the data can take, you'll generally want to use factors, or at least know that statistical packages and methods will require them.  In addition, factors allow you to easily overcome the sometimes silly default alphabetical ordering of category levels in some very popular visualization packages.
+
+For other things, such as text analysis, you'll almost certainly want character strings instead, and in many cases it will be required.  It's also worth noting that a lot of base R and other behavior will coerce strings to factors.  This made a lot more sense in the early days of R, but is not really necessary these days.
+
+
+For more on this stuff see the following:
+
+- http://adv-r.had.co.nz/Data-structures.html
+- http://forcats.tidyverse.org/
+- http://r4ds.had.co.nz/factors.html
+- https://simplystatistics.org/2015/07/24/stringsasfactors-an-unauthorized-biography/
+- http://notstatschat.tumblr.com/post/124987394001/stringsasfactors-sigh
+
+
+
+
+## Basic Text Functionality
+
+### Base R
+
+A lot of folks new to R are not aware of just how much basic text processing R comes with out of the box.  Here are examples of note.
+
+- <span class="func">paste</span>: glue text/numeric values together
+- <span class="func">substr</span>: extract or replace substrings in a character vector
+- <span class="func">grep</span> family: use regular expressions to deal with patterns of text
+- <span class="func">strsplit</span>: split strings
+- <span class="func">nchar</span>: how many characters in a string
+- <span class="func">as.numeric</span>: convert a string to numeric if it can be
+- <span class="func">strtoi</span>: convert a string to integer if it can be (faster than as.integer)
+- <span class="func">adist</span>: string distances
+
+I probably use paste/paste0 more than most things when dealing with text, as string concatenation comes up so often.
+
+```{r paste}
+paste(c('a', 'b', 'cd'), collapse='|')
+paste(c('a', 'b', 'cd'), collapse='')
+paste0('a', 'b', 'cd')  # shortcut to collapse=''
+paste0('x', 1:3)
+```
+
+Beyond that, use of regular expression and functionality included in the <span class="func">grep</span> family is a major way to save a lot of time during data processing.  I leave that to its own section later.
+
+
+
+### Packages
+
+A couple packages will probably take care of the vast majority of your standard text processing needs.  Note that even if they aren't adding anything to the functionality of the base R functions, they typically will have been optimized in some fashion
+
+- <span class="pack">stringr</span>/<span class="pack">stringi</span>: more or less the same stuff you'll find with <span class="func">substr</span>, <span class="func">grep</span> etc. except easier to use or faster. Also add useful functionality not in base R (e.g. <span class="func">str_to_title</span>)
+- <span class="pack">tidyr</span>: has functions such as <span class="func">unite</span>, <span class="func">separate</span>, <span class="func">replace_na</span> that can often come in handy when working with data frames
+- <span class="pack">glue</span>: a newer package that can be seen as a fancier <span class="func">paste</span>. Most likely will be useful when creating functions or shiny apps in which variable text output is desired
+
+One issue I have with both packages and base R is that often they return a list object, when it should be simplifying to the vector format it was initially fed.  This sometimes requires an additional step or two of further processing that shouldn't be necessary, so be prepared for it[^str_all]. 
+
+### Other
+
+In this section I'll add some things that come to mind that might come into play when you're dealing with text.
+
+#### Dates
+
+Dates are not character strings. Though they may start that way, if you actually want to treat them as dates you'll need to convert the string to the appropriate date class. The <span class="pack">lubridate</span> package makes dealing with dates much easier.  It comes with conversion, extraction and other functionality that will be sure to save you some time.
+
+```{r lubridate}
+library(lubridate)
+today()
+today() + 1
+today() + dyears(1)
+leap_year(2016)
+span = interval(ymd("2017-07-01"), ymd("2017-07-04"))
+span
+as.duration(span)
+```
+
+This package makes dates so much easier, you should always use it when dealing with them.
+
+#### Categorical Time
+
+In regression modeling with few time points, one often has to decide on whether to treat the year as categorical (factor) or numeric (continuous).  This greatly depends on how you want to tell your data story or other practical concerns.  For example, if you have five years in your data, treating <span class="objclass">year</span> as categorical means you are interested in accounting for unspecified things that go on in a given year.  If you treat it as numeric, you are more interested in trends. Either is fine.
+
+#### Encoding
+
+Encoding can be a sizable PITA sometimes, and will often come up when dealing with webscraping and other languages.  The <span class="pack">rvest</span> and <span class="pack">stringr</span> packages may be able to get you past some issues at least. See their respective functions <span class="func">repair_encoding</span> and <span class="func">str_conv</span> as starting points on this issue.
+
+
+### Summary of basic text functionality
+
+Being familiar with commonly used string functionality in base R and packages like <span class="pack">stringr</span> can save a ridiculous amount of time in your data processing.  The more familiar you are with them the easier time you'll have with text.
+
+
+
+
+## Regular Expressions
+
+A <span class="emph">regular expression</span>, regex for short, is a sequence of characters that can be used as a search pattern for a string. Common operations are to merely detect, extract, or replace the matching string.  There are actually many different flavors of regex for different programming languages, which are all flavors that originate with the Perl approach, or can enable the Perl approach to be used.  However, knowing one means you pretty much know the others with only minor modifications if any.
+
+To be clear, not only is regex another language, it's nigh on indecipherable.  You will not learn much regex, but what you do learn will save a potentially enormous amount of time you'd otherwise spend trying to do things in a more haphazard fashion. Furthermore, practically every situation that will come up has already been asked and answered on [Stack Overflow](https://stackoverflow.com/questions/tagged/regex), so you'll almost always be able to search for what you need.
+
+Here is an example:
+
+`^r.*shiny[0-9]$`
+
+What is *that* you may ask?  Well here is an example of strings it would and wouldn't match.
+
+```{r regex_intro_ex}
+grepl(c('r is the shiny', 'r is the shiny1', 'r shines brightly'), pattern='^r.*shiny[0-9]$')
+```
+
+What the regex esoterically is attempting to match is any string that starts with 'r' and ends with 'shiny_' where _ is some single digit.  Specifically it breaks down as follows:
+
+- **^** : starts with, so ^r means starts with r
+- **.** : any character
+- **\*** : match the preceding zero or more times
+- **shiny** : match 'shiny'
+- **[0-9]** : any digit 0-9 (note that we are still talking about strings, not actual numbered values)
+- **$** : ends with preceding
+
+
+### Typical Uses
+
+None of it makes sense, so don't attempt to do so. Just try to remember a couple key approaches, and search the web for the rest.
+
+Along with ^ . * [0-9] $, a couple more common ones are:
+
+- **[a-z]** : letters a-z
+- **[A-Z]** : capital letters
+- **+** : match the preceding one or more times
+- **()** : groupings
+- **|** : logical or e.g. [a-z]|[0-9]  (a lower case letter or a number)
+- **?** : preceding item is optional, and will be matched at most once. Typically used for 'look ahead' and 'look behind'
+- **\\** : escape a character, like if you actually wanted to search for a period, you'd use \\., though in R you need \\\\, i.e. double slashes, for escape.
+
+In addition, there are certain predefined characters that can be called:
+
+- **[:punct:]** : punctuation
+- **[:blank:]** : spaces and tabs
+- **[:alnum:]** : alphanumeric characters
+
+Those are just a few.  The key functions can be found by looking at the help file for the <span class="func">grep</span> function (`?grep`).  However, the <span class="pack">stringr</span> package has the same functionality with perhaps a slightly faster processing (though that's due to the underlying <span class="pack">stringi</span> package).
+
+See if you can guess which of the following will turn up `TRUE`.
+
+```{r eval=FALSE}
+grepl(c('apple', 'pear', 'banana'), pattern='a')
+grepl(c('apple', 'pear', 'banana'), pattern='^a')
+grepl(c('apple', 'pear', 'banana'), pattern='^a|a$')
+```
+
+
+Scraping the web, munging data, just finding things in your scripts ... you can potentially use this all the time, and not only with text analysis, as we'll now see.
+
+### dplyr helper functions
+
+The <span class="pack">dplyr</span> package comes with some poorly documented[^poordoc] but quite useful helper functions that essentially serve as human-readable regex, which is a very good thing.  These functions allow you to select variables[^helperrows] based on their names.  They are just calling <span class="func">grep</span> in the end.
+
+- <span class="func">starts_with</span>: starts with a prefix (same as regex '^blah')
+- <span class="func">ends_with</span>: ends with a prefix     (same as regex 'blah$')
+- <span class="func">contains</span>: contains a literal string  (same as regex 'blah')
+- <span class="func">matches</span>: matches a regular expression (put your regex here)
+- <span class="func">num_range</span>: a numerical range like x01, x02, x03.  (same as regex 'x[0-9][0-9]')
+- <span class="func">one_of</span>: variables in character vector. (if you need to quote variable names, e.g. within a function)
+- <span class="func">everything</span>: all variables.  (a good way to spend time doing something only to accomplish what you would have by doing nothing, or a way to reorder variables)
+
+## Examples
+
+### Example 1
+
+Let's say you're dealing with some data that has been handled typically, that is to say, poorly. For example, you have a variable in your data representing whether something is from the north or south region.
+
+```{r label_problem, echo=FALSE}
+df = data_frame(
+  id = 1:500,
+  x = round(rnorm(500), 2), 
+  region = sample(c('north', 'north ', 'south', 'South', ' South', 'North ', 'North'), 500, replace=T)
+)
+DT::datatable(df, 
+              rownames=F,
+              options=list(dom='t', 
+                           autoWidth = TRUE,
+                           columnDefs = list(list(width = '50px', targets = 0),
+                                             list(className = 'dt-center', targets = 0:1),
+                                             list(className = 'dt-right', targets = 2))),
+              width='300px'
+)
+```
+
+<br>
+
+It might seem okay until...
+
+```{r label_problem2, echo=1, eval=2}
+table(df$region)
+pander(table(df$region))
+```
+
+Even if you spotted the casing issue, there is still a white space problem[^excel]. Let's say you want this to be capitalized 'North' and 'South'. How might you do it? It's actually quite easy with the <span class="pack">stringr</span> tools.
+
+```{r label_problem3, eval=FALSE}
+library(stringr)
+df %>% 
+  mutate(region = str_trim(region),
+         region = str_to_title(region))
+```
+
+The <span class="func">str_trim</span> function trims white space from either side, while <span class="func">str_to_title</span> converts everything to first letter capitalized.  
+
+```{r label_problem4, echo=2, eval=1:2}
+df_corrected = df %>% 
+  mutate(region = str_trim(region),
+         region = str_to_title(region))
+table(df_corrected$region)
+pander(table(df_corrected$region))
+```
+
+### Example 2
+
+Suppose you import a data frame, and the data was originally in wide format, where each column represented a year of data collection for the individual. Since it is bad form for data columns to have numbers for names, when you import it, the result looks like the following.
+
+```{r rename_chunk, echo=FALSE}
+df = data.frame(id=1:20, round(matrix(rnorm(100), ncol=5), 2))
+DT::datatable(df, rownames=F,
+              options=list(dom='tp',
+                           autoWidth = TRUE,
+                           columnDefs = list(list(width = '50px', targets = 0),
+                                             list(className = 'dt-center', targets = 1)))
+              )
+```
+
+<br>
+
+So the problem now is to change the names to be Year_1, Year_2, etc. You might think you might have to use <span class="func">colnames</span> and manually create a string of names to replace the current ones.
+
+
+```{r rename_chunk2, eval=FALSE}
+colnames(df)[-1] = c('Year_1', 'Year_2', 'Year_3', 'Year_4', 'Year_5')
+```
+
+Or perhaps you're thinking of the paste0 function, which works fine and saves some typing.
+
+```{r rename_chunk3, eval=FALSE}
+colnames(df)[-1] = paste0('Year_', 1:5)
+```
+
+However, data sets may be hundreds of columns, and the columns of data may have the same pattern but not be next to one another.  For example, the first few dozen columns are all data that belongs to the first wave, etc. It is tedious to figure out which columns you don't want, but even then you're resulting to using magic numbers with the above approach, and one column change to data will mean that redoing the name change will fail.
+
+However, the following accomplishes what we want, and is reproducible regardless of where the columns are in the data set.
+
+
+```{r rename_chunk4}
+df %>% 
+  rename_at(vars(num_range('X', 1:5)), 
+            str_replace, pattern='X', replacement='Year_') %>% 
+  head
+```
+
+We just have to use the <span class="func">num_range</span> helper function within the function that tells <span class="func">rename_at</span> what it should be renaming, and let <span class="func">str_replace</span> do the rest. 
+
+
+
+## Exercises
+
+[^poordoc]: At least they're exposed now.
+
+[^excel]: This is a very common issue among Excel users, and just one of the many reasons not to use it.
+
+[^helperrows]: And maybe some day, the rows. For now you'll have to use a <span class="func">grepl</span>/<span class="func">str_detect</span> approach.
+
+[^str_all]: I also don't think it necessary to have separate functions for str_* functions in <span class="pack">stringr</span> depending on whether, e.g. I want 'all' matches (practically every situation) or just the first (very rarely). It could have just been an additional argument with default `all=TRUE`.
+
+<!--chapter:end:01_strings.Rmd-->
+
+# Sentiment Analysis is Sick Yo
+
+
+## Basic idea
+
+A common and intuitive approach to text is <span class="emph">sentiment analysis</span>.  In a grand sense we are interested in the emotional content of some text, e.g. posts on Facebook, tweets, or movie reviews.  Most of the time, this is obvious when one reads it, but if you have hundreds of thousands or millions of strings to analyze, you'd like to be able to do so efficiently.
+
+We will use the <span class="pack">tidytext</span> package for our demonstration.  It comes with a lexicon of positive and negative words that is actually a combination of multiple sources, one of which provides numeric ratings, while the others suggest different classes of sentiment.
+
+
+```{r lexicon, echo=-1}
+set.seed(1234)
+library(tidytext)
+sentiments %>% slice(sample(1:nrow(sentiments)))
+```
+
+The gist is that we are dealing with a specific, pre-defined vocabulary.  Of course, any analysis will only be as good as the lexicon. The goal is usually to assign a sentiment score to a text, possibly an overall score, or a generally positive or negative grade. Given that, other analyses may be implemented to predict sentiment via standard regression tools or machine learning approaches.
+
+## Issues
+
+### Context, sarcasm, etc.
+
+Now consider the following.
+
+```{r sent_is_sick}
+sentiments %>% filter(word=='sick') 
+```
+
+Despite the above assigned sentiments, the word *sick* has been used at least since 1960s surfing culture as slang for positive.  A basic approach to sentiment analysis as described here will not be able to detect slang or other context like sarcasm.  However, with lots of training data for a particular context may allow one to correctly predict such sentiment.  In addition, there are, for example, slang lexicons, or one can simply add their own complements to any available lexicon.
+
+### Lexicons
+
+In addition, the lexicons are going to maybe be applicable to *general* usage of English in the western world.  Some might wonder where exactly these came from or who decided that the word *abacus* should be affiliated with 'trust'. You may start your path by typing `?sentiments` at the console if you have the <span class="pack">tidytext</span> package loaded.
+
+## Example
+
+
+### The first thing the baby did wrong
+
+We demonstrate sentiment analysis with the text *The first thing the baby did wrong*, which is a very popular brief guide to parenting written by world renown psychologist [Donald Barthelme][Donald Barthelme] who, in his spare time, also wrote postmodern literature.  This particular text talks about an issue with the baby, whose name is Born Dancin', who likes to tear pages out of books. Attempts are made by her parents to rectify the situation, without much success, but things are finally resolved at the end.  The ultimate goal will be to see how sentiment in the text evolves over time.
+
+How do we start? Let's look at the <span class="objclass">sentiments</span> data set in the <span class="pack">tidytext</span> package.
+
+
+```{r inspect_sentiments}
+library(tidytext)
+sentiments %>% slice(sample(1:nrow(sentiments)))
+```
+
+The <span class="objclass">bing</span> lexicon is just *positive* or *negative*. The AFINN is numerical, with ratings -5:5 that are in the <span class="objclass">score</span> column. The others get more imaginative, but also more problematic. Why *assimilate* is *superfluous* is beyond me. It clearly should be negative given the [Borg](https://en.wikipedia.org/wiki/Borg_%28Star_Trek%29) connotations.
+
+```{r superfluous}
+sentiments %>% 
+  filter(sentiment=='superfluous')
+```
+
+But I digress.  We start with the raw text, reading it in line by line.  In what follows we read in all the texts (three) in a given directory, such that each element of 'text' is the work itself, i.e. `text` is a list column[^text]. The <span class="func">unnest</span> function will more or less unravel the work to paragraph form.
+
+```{r baby_sentiment_importraw, echo=T}
+library(tidytext)
+barth0 = 
+  data_frame(file = dir('data/texts_raw/barthelme/', full.names = TRUE)) %>%
+  mutate(text = map(file, read_lines)) %>%
+  transmute(work = basename(file), text) %>%
+  unnest(text) 
+```
+
+One of the things stressed in this document is the iterative nature of text analysis.  You will consistently take two steps forward, and then one or two back as you find issues that need to be addressed. For example in a subsequent step I found there were encoding issues[^encoding], so the following attempts to fix them.  In addition we want to <span class="emph">tokenize</span> the documents such that our <span class="emph">tokens</span> are sentences (e.g. as opposed to words or paragraphs). The reason for this is that I will be summarizing the sentiment at sentence level.
+
+
+```{r barth_fix_encoding}
+# Fix encoding, convert to sentences
+barth = barth0 %>% 
+  mutate(text = sapply(text, stringi::stri_enc_toutf8, is_unknown_8bit=TRUE, validate=T)) %>% 
+  unnest_tokens(sentence, text, token='sentences')
+```
+
+The next step is to drill down to just the document we want, and tokenize to the word level.  However, I create a sentence id so that we can group on it later.
+
+```{r get_the_baby}
+# get baby doc, convert to words
+baby = barth %>% 
+  filter(work=='baby.txt') %>% 
+  mutate(sentence_id = 1:n()) %>% 
+  unnest_tokens(word, sentence, drop=F) %>% 
+  ungroup 
+```
+
+Now that the data has been prepped, getting the sentiments is ridiculously easy.  But that is how it is with text analysis.  All the hard work is spent with the data processing.  Here all we need is an <span class="emph">inner join</span> of our words with a sentiment lexicon of choice. This process will only retain words that are also in the lexicon.  I use the numeric-based lexicon here. At that point we get a sum score of sentiment by sentence.
+
+
+```{r baby_sentiment}
+# get sentiment via inner join
+baby_sentiment = baby %>% 
+  inner_join(get_sentiments("afinn")) %>% 
+  group_by(sentence_id, sentence) %>% 
+  summarise(score=sum(score)) %>% 
+  ungroup
+
+```
+
+The following plots sentiment over sentence (note that not every sentence will receive a sentiment score). You can read the sentence by hovering over the dot.
+
+```{r plot_sentiment, echo=FALSE}
+# plot sentiment over sentences
+baby_sentiment %>%
+  plot_ly(width='50%') %>% 
+  add_paths(x=~sentence_id, y=~score,
+            color=I('#00aaff')) %>%
+  add_markers(x=~sentence_id, y=~score, 
+              color=I('#ff5500'),
+              size=I(15),
+              hoverinfo=~ 'text', 
+              text=~str_wrap(sentence),
+              showlegend=F) %>% 
+  theme_plotly()
+```
+
+In general the sentiment starts out negative as the problem is explained. It bounces back and forth a bit but ends on a positive note.  You'll see that some sentences' context are not captured.  For example, sentence 16 is 'But it didn't do any good'.  However *good* is going to be marked as a positive sentiment in any lexicon by default. In addition, the token length will matter.  Longer sentences are more likely to have some sentiment, for example.
+
+
+
+## Exercises
+
+### Romeo & Juliet
+
+For this exercise I'll invite you to more or less follow along, as there is notable pre-processing that must be done.  We'll look at sentiment in Shakespeare's Romeo and Juliet.  I have a cleaner version in the raw texts folder, but we can take the opportunity to use the <span class="pack">gutenbergr</span> package to download it directly from Project Gutenberg, a storehouse for works that have entered the public domain.
+
+```{r rnj_load, echo=-c(3,5)}
+library(gutenbergr)
+gw0 = gutenberg_works(title == "Romeo and Juliet")  # look for something with this title
+gw0[,1:4]
+rnj = gutenberg_download(gw0$gutenberg_id)
+DT::datatable(rnj, 
+              rownames=F, 
+              options=list(dom='tp',
+                           autoWidth = TRUE,
+                           columnDefs = list(list(width = '50px', targets = 0))))
+```
+
+<br> 
+
+We've got the text now, but there is still work to be done.  The following is a quick and dirty approach, but see the [Shakespeare section][Shakespeare Start to Finish] to see a more deliberate one.
+
+We first slice off the initial parts we don't want like title, author etc. Then we get rid of other tidbits that would interfere, using a little regex as well to aid the process.
+
+```{r rnj_clean, echo=-2}
+rnj_filtered = rnj %>% 
+  slice(-(1:49)) %>% 
+  filter(!text==str_to_upper(text),            # will remove THE PROLOGUE etc.
+         !text==str_to_title(text),            # will remove names/single word lines
+         !str_detect(text, pattern='^(Scene|SCENE)|^(Act|ACT)|^\\[')) %>% 
+  select(-gutenberg_id) %>% 
+  unnest_tokens(sentence, input=text, token='sentences') %>% 
+  mutate(sentenceID = 1:n())
+DT::datatable(select(rnj_filtered, sentenceID, sentence), 
+              rownames=F, 
+              options=list(dom='tp',
+                           autoWidth = TRUE,
+                           columnDefs = list(list(width = '50px', targets = 0)))
+)
+```
+
+<br> 
+
+
+The following unnests the data to word tokens.  In addition, you can remove stopwords like a, an, the etc. However, some of the stopwords have sentiments, so you would get a bit of a different result if you retain them.  As Black Sheep once said, the choice is yours, and you can deal with this, or you can deal with that.
+
+
+```{r rnj_stopwords}
+# show some of the matches
+stop_words$word[which(stop_words$word %in% sentiments$word)] %>% head(20)
+
+
+# remember to call output 'word' or antijoin won't work without a 'by' argument
+rnj_filtered = rnj_filtered %>% 
+  unnest_tokens(output=word, input=sentence, token='words') %>%   
+  anti_join(stop_words)
+```
+
+Now we add the sentiments via the <span class="func">inner_join</span> function.  Here I use 'bing', but you can use another, and you might get a different result.
+
+```{r rnj_sentiment}
+rnj_filtered %>% 
+  count(word) %>% 
+  arrange(desc(n))
+
+rnj_sentiment = rnj_filtered %>% 
+  inner_join(sentiments)
+rnj_sentiment
+```
+
+```{r rnj_bing}
+rnj_sentiment_bing = rnj_sentiment %>% 
+  filter(lexicon=='bing')
+table(rnj_sentiment_bing$sentiment)
+```
+
+
+
+Looks like this one is going to be a downer. The following visualizes (via <span class="pack">plotly</span>) the positive and negative sentiment scores as one progresses sentence by sentence through the work.
+
+```{r rnj_sentiment_as_game}
+rnj_sentiment_bing %>% 
+  arrange(sentenceID) %>% 
+  mutate(positivity = cumsum(sentiment=='positive'),
+         negativity = cumsum(sentiment=='negative')) %>% 
+  plot_ly() %>% 
+  add_lines(x=~sentenceID, y=~positivity, name='positive') %>% 
+  add_lines(x=~sentenceID, y=~negativity, name='negative') %>% 
+  layout(yaxis = list(title='sentiment')) %>% 
+  theme_plotly()
+```
+
+<br>
+
+In general it's a close game until perhaps the midway point, when negativity takes over and despair sets in with the story.  By the end [[:SPOILER ALERT:]] Sean Bean is beheaded, Darth Vader reveals himself to be Luke's father, and Number One is *you*.
+
+Here is the same information expressed as a difference.
+
+```{r rnj_sentiment_diff, echo=F}
+rnj_sentiment_bing %>% 
+  arrange(sentenceID) %>% 
+  mutate(positivity = cumsum(sentiment=='positive'),
+         negativity = cumsum(sentiment=='negative')) %>% 
+  plot_ly() %>% 
+  add_lines(x=~sentenceID, y=~positivity-negativity) %>% 
+  theme_plotly()
+```
+
+<br>
+
+## Summary
+
+In general, sentiment analysis can be a useful exploration of data, but it is highly dependent on the context and tools used.  Note also that 'sentiment' can be anything, it doesn't have to be positive vs. negative.  Any vocabulary may be applied, and so it has more utility than the usual implementation. 
+
+
+[^text]: Don't name your column 'text' in practice. It is a base function in R, and the tidyverse will have problems with distinguishing the function from the column name.  I only do so for pedagogical reasons.
+
+[^encoding]: There are almost always encoding issues in my experience.
+
+<!--chapter:end:02_sentiment.Rmd-->
+
+# POS tagging
+
+As an initial review of parts of speech, I suggest you watch the following Schoolhouse Rocks videos:
+
+- [A noun is a person, place, or thing.](https://youtu.be/h0m89e9oZko)
+- [Interjections](https://youtu.be/YkAX7Vk3JEw)
+- [Pronouns](https://youtu.be/Eu1ciVFbecw)
+- [Verbs](https://youtu.be/US8mGU1MzYw)
+- [Unpack your adjectives](https://youtu.be/NkuuZEey_bs)
+- [Lolly Lolly Lolly Get Your Adverbs Here](https://youtu.be/14fXm4FOMPM)
+- [Conjunction Junction](https://youtu.be/RPoBE-E8VOc) (personal fave)
+
+Aside from those, you can also learn how bills get passed, about being a victim of gravity, a comparison of the decimal to other numeric systems used by alien species, and a host of other useful things.
+
+## Basic idea
+
+With <span class="emph">part-of-speech</span> tagging, we classify a word with its corresponding part of speech. The following provides an example.
+
+```{r pos_example, echo=FALSE}
+rbind(c('JJ', 'JJ', 'NNS', 'VBP', 'RB'),
+      c('Colorless', 'green', 'ideas', 'sleep', 'furiously.')) %>% 
+  pander(justify='center')
+```
+
+We have two adjectives (JJ), a plural noun (NNS), a verb (VBP), and an adverb (RB).
+
+Common analysis may then be used to predict POS given the current state of the text, comparing the grammar of different texts, human-computer interaction, or translation from one language to another.
+
+## Examples
+
+The following approach to POS-tagging is very similar to what we did for sentiment analysis as depicted previously. We have a POS dictionary, and can use an inner join to attach the words to their POS.  Unfortunately this approach is unrealistically simplistic, as additional steps would need to be taken to ensure words are correctly classified.  For example, without more information, we are unable to tell if some words are being used as nouns or verbs (human being vs. being a problematic part of speech).  However, this example can serve as a starting point.
+
+### Barthelme & Carver
+
+In the following we'll compare three texts from Donald Barthelme:
+
+- *The Balloon*
+- *The First Thing The Baby Did Wrong*
+- *Some Of Us Had Been Threatening Our Friend Colby*
+
+As another comparison, I've included Raymond Carver's *What we talk about when we talk about love*, the unedited version.  I process each text separately for clarity, but you could easily have just done a <span class="func">group_by</span> approach on the whole of the <span class="objclass">barth</span> object.
+
+```{r barthelme_pos}
+balloon = barth %>% 
+  filter(work=='balloon.txt') %>% 
+  mutate(sentence_id = 1:n()) %>% 
+  unnest_tokens(word, sentence, drop=F) %>% 
+  ungroup 
+
+colby = barth %>% 
+  filter(work=='colby.txt') %>% 
+  mutate(sentence_id = 1:n()) %>% 
+  unnest_tokens(word, sentence, drop=F) %>% 
+  ungroup 
+
+barthelme_pos = bind_rows(baby, balloon, colby) %>% 
+  group_by(work) %>% 
+  inner_join(parts_of_speech) %>% 
+  count(pos) %>%
+  mutate(text=work,
+         prop=n/sum(n))
+```
+
+Next we read in and process the Carver text in the same manner.
+
+```{r carver}
+carver_pos = 
+  data_frame(file = dir('data/texts_raw/carver/', full.names = TRUE)) %>%
+  mutate(text = map(file, read_lines)) %>%
+  transmute(work = basename(file), text) %>%
+  unnest(text) %>% 
+  unnest_tokens(word, text, token='words') %>% 
+  inner_join(parts_of_speech) %>% 
+  count(pos) %>%
+  mutate(text='baby',
+         prop=n/sum(n))
+```
+
+This visualization depicts the proprtion of occurrence for each part of speech across the works. It would appear Barthelme is fairly consistent, and also that relative to the Barthelme texts, Carver preferred nouns and pronouns. 
+
+```{r barthelme_pos_vis, echo=FALSE}
+carver_pos %>% 
+  group_by(text) %>% 
+  plot_ly() %>% 
+  add_markers(x=~pos, y=~prop, color=I('gray50'), opacity=.5, size=I(20), name='Carver') %>% 
+  add_markers(x=~pos, y=~prop, color=~text, size=I(10), data=barthelme_pos) %>% 
+  theme_plotly() %>% 
+  layout(xaxis = list(title=F))
+```
+
+<br>
+
+
+
+### More taggin
+
+More sophisticated POS tagging would require the context of the sentence structure. Luckily there are tools to help with that here, in particular via the <span class="pack">openNLP</span> package.  In addition, it will require a certain language model to be installed (English is only one of many available). I don't recommend doing so unless you are really interested in this (the <span class="pack">openNLPmodels.en</span> package is fairly large).
+
+We'll reexamine the Barthelme texts above with this more involved approach. Initially we'll need to get the English-based tagger we need and load the libraries.
+
+```{r eval=FALSE, echo=FALSE}
+# POS tagging in R with koRpus; requires installation of treeTagger or using its
+# own tokenizer, e.g. as used in textual diversity section
+# activate library
+library(koRpus)
+
+# perform POS tagging
+text.tagged <- treetag("data/texts_raw/carver/beginners.txt", 
+                       treetagger="manual", 
+                       lang="en",
+                       TT.options=list(path="C:\\TreeTagger", preset="en"))
+```
+
+```{r, eval=F}
+# install.packages("openNLPmodels.en", repos = "http://datacube.wu.ac.at/", type = "source")
+
+library(NLP)
+library(tm)  # make sure to load this prior to openNLP
+library(openNLP)
+library(openNLPmodels.en)
+```
+
+Next comes the processing. This more or less follows the help file example for `?Maxent_POS_Tag_Annotator`. Given the several steps involved I show only the processing for one text for clarity. Ideally you'd write a function, and use a <span class="func">group_by</span> approach.
+
+
+```{r baby_pos, eval=F}
+load('data/barthelme_start.RData')
+
+baby_string0 = barth0 %>% 
+  filter(id=='baby.txt')
+
+baby_string = unlist(baby_string0$text) %>% 
+  paste(collapse=' ') %>% 
+  as.String
+
+init_s_w = annotate(baby_string, list(Maxent_Sent_Token_Annotator(),
+                                      Maxent_Word_Token_Annotator()))
+pos_res = annotate(baby_string, Maxent_POS_Tag_Annotator(), init_s_w)
+word_subset = subset(pos_res, type=='word')
+tags = sapply(word_subset$features , '[[', "POS")
+
+baby_pos = data_frame(word=baby_string[word_subset], pos=tags) %>% 
+  filter(!str_detect(pos, pattern='[[:punct:]]'))
+```
+
+```{r other_pos, eval=FALSE, echo=FALSE}
+colby_string0 = barth0 %>% 
+  filter(work=='colby.txt')
+
+colby_string = unlist(colby_string0$text) %>% 
+  paste(collapse=' ') %>% 
+  as.String
+
+init_s_w = annotate(colby_string, list(Maxent_Sent_Token_Annotator(),
+                                      Maxent_Word_Token_Annotator()))
+pos_res = annotate(colby_string, Maxent_POS_Tag_Annotator(), init_s_w)
+word_subset = subset(pos_res, type=='word')
+tags = sapply(word_subset$features , '[[', "POS")
+
+colby_pos = data_frame(word=colby_string[word_subset], pos=tags) %>% 
+  filter(!str_detect(pos, pattern='[[:punct:]]')) %>% 
+  mutate(text='colby')
+
+
+balloon_string0 = barth0 %>% 
+  filter(work=='balloon.txt')
+
+balloon_string = unlist(balloon_string0$text) %>% 
+  paste(collapse=' ') %>% 
+  as.String
+
+init_s_w = annotate(balloon_string, list(Maxent_Sent_Token_Annotator(),
+                                      Maxent_Word_Token_Annotator()))
+pos_res = annotate(balloon_string, Maxent_POS_Tag_Annotator(), init_s_w)
+word_subset = subset(pos_res, type=='word')
+tags = sapply(word_subset$features , '[[', "POS")
+
+balloon_pos = data_frame(word=balloon_string[word_subset], pos=tags) %>% 
+  filter(!str_detect(pos, pattern='[[:punct:]]')) %>% 
+  mutate(text='balloon')
+
+barthelme_pos = baby_pos %>% 
+  mutate(text='baby') %>% 
+  bind_rows(colby_pos, balloon_pos) %>% 
+  filter(pos != '``') %>% 
+  data.frame  # because pander/dplyr issue
+save(barthelme_pos, file='data/POS_results.RData')
+```
+
+
+Let's take a look. I've also done the other Barthelme texts as well for comparison.
+
+```{r examine_baby_pos, echo=F}
+load('data/POS_results.RData')
+pander(barthelme_pos %>% head(15))
+```
+
+As we can see, we have quite a few more POS to deal with here.  They come from the [Penn Treebank](https://en.wikipedia.org/wiki/Treebank). The following table notes what the acronyms stand for. I don't pretend to know all the facets to this.
+
+<img src="img/POS-Tags.png" style="display:block; margin: 0 auto;">
+
+Ploting the differences, we now see a little more distinction between *The Balloon* and the other two texts. It is more likely to use the determiners, adjectives, singular nouns, and less likely to use personal pronouns and base verbs and verbs in past tense.
+
+```{r barth_pos, eval=T, echo=F}
+load('data/POS_results.RData')
+balloon_subset = barthelme_pos %>% 
+  group_by(text) %>% 
+  count(pos) %>%
+  mutate(prop = n/sum(n)) %>% 
+  filter(text=='balloon', pos %in% c('DT', 'JJ', 'NN', 'PRP', 'VB', 'VBD'))
+barthelme_pos %>%
+  group_by(text) %>%
+  count(pos) %>%
+  mutate(prop = n/sum(n)) %>%
+  plot_ly(width=800) %>%
+  add_markers(x=~pos, y=~prop, color=~text) %>%
+  add_markers(x=~pos, y=~prop, color=~text, size=I(15),
+              opacity=.5, data=balloon_subset, showlegend=F) %>%
+  theme_plotly() %>%
+  layout(xaxis = list(showgrid=T, 
+                      gridcolor='#0000000D', 
+                      title=F))
+```
+
+<br>
+
+For more information, consult the following:
+
+- [Penn Treebank](http://repository.upenn.edu/cgi/viewcontent.cgi?article=1603&context=cis_reports) 
+- [Maxent function](http://maxent.sourceforge.net/about.html) Note that this 'maximum entropy' approach is just one way to go about things. Other models include hidden markov models, conditional random fields, and more recently, deep learning techniques.
+
+
+
+For more natural language processing tools in R, consult the corresponding [task view](https://www.r-pkg.org/ctv/NaturalLanguageProcessing).  Much natural language processing is done with deep learning techniques, which generally requires a lot of data, notable computing resources, fine tunining, and often involves optimization towards a specific task.  Most of the cutting edge work there is done in Python, but as a starting point for more common approaches, you can check out the [Natural Language Toolkit](http://www.nltk.org/book/).
+
+<!--chapter:end:03_pos.Rmd-->
+
+# Topic modeling
+
+
+## Basic idea
+
+<span class="emph">Topic modeling</span> as typically conducted is a tool for much more than text.  The primary technique of <span class="emph">latent dirichlet allocation</span> should be as much a part of your toolbox as principal components and factor analysis.  It can be seen merely as a dimension reduction approach, but it can also be used for its rich interpretative quality as well. The basic idea is that we'll take a whole lot of features and boil them down to a few 'topics'.   In this sense LDA is akin to discrete PCA.  Another way to think about this is more from the  perspective of factor analysis, where we are keenly interested in interpretation of the result, and want to know both what terms are associated with which topics, and what documents are more likely to present which topics.  
+
+In the standard setting, to be able to conduct such an analysis from text one needs a <span class="emph">document-term matrix</span>, where rows represent documents, and columns terms. Each cell is a count of how many times the term occurs in the document. Terms are typically words, but could be any <span class="emph">n-gram</span> of interest. Outside of text analysis they could represent bacterial composition, genetic information, or whatever the researcher is interested in. 
+
+
+## Steps
+
+Most of the time in topic modeling is spent on processing the text.  Importing/scraping it, dealing with capitalization, punctuation, removing stopwords, dealing with encoding issues, removing other miscellaneous common words.  It is a highly iteratitive process such that once you get to the document-term matrix, you're just going to find the stuff that was missed before and repeat the process with new 'cleaning parameters' in place.  So getting to the document-term matrix is the hard part.  See the [Shakespeare section][Shakespeare Start to Finish], which comprises 5 acts, of which the first four and some additional scenes represent all the processing needed to get to the final scene of topic modeling.  In what follows we'll start at the end of that journey.
+
+## Examples
+
+### Shakespeare
+
+For our example, we'll look at Shakespeare's plays and poems, using a topic model with 10 topics.  For our needs we'll use the <span class="pack">topicModels</span> package for the analysis, and mostly others for post-processing.  Due to the large number of terms, this will take a while to run depending on your machine (maybe a minute or two).  We can also see how things compare with the academic classifications for the texts.
+
+```{r tm_chapter_topic_model, eval=F}
+load('Data/shakes_dtm_stemmed.RData')
+library(topicmodels)
+shakes_10 = LDA(convert(shakes_dtm, to = "topicmodels"), k = 10)
+```
+
+One of the first things to do is attempt to interpret the topics, and we can start by seeing which terms are most probable for each topic.
+
+```{r tm_chapter_tm10_results, eval=FALSE}
+get_terms(shakes_10, 20)
+t(topics(shakes_10, 3))
+```
+
+```{r tm_chapter_tm10_results_pretty_terms, echo=FALSE}
+load('data/shakespeare_topic_model.RData')
+library(topicmodels)
+get_terms(shakes_10, 20) %>% 
+  DT::datatable(options=list(dom='tp')) %>% 
+  DT::formatStyle(
+    0, # ignores columns, but otherwise put here
+    target='row',
+    backgroundColor = 'transparent'
+  )
+```
+
+<br>
+
+We can see there is a lot of overlap in these topics for top terms.  Just looking at the top 10, *love* occurs in all of them, *god* and *heart* as well, but we could have guessed this just looking at how often they occur in general. Other measures can be used to assess term importance, such as those that seek to balance the term's probability of occurrence within a document, and term *exclusivity*, or how likely a term is to occur in only one particular topic.  See the [Shakespeare section][Shakespeare Start to Finish] for some of those.
+
+Next we can look at which documents are more likely to express each topic. 
+
+
+```{r tm_chapter_tm10_results_pretty_topic_classification, echo=FALSE}
+t(topics(shakes_10, 2)) %>% 
+  data.frame %>% 
+  rename_all(str_replace, 'X', 'Top Topic ') %>% 
+  DT::datatable(options=list(dom='tp',
+                             autoWidth=T, 
+                             align='center',
+                             columnDefs=list(list(width='150px', targets=0),
+                                             list(width='100px', targets=1:2),
+                                             list(className = 'dt-center', targets = 1:2))), 
+                width='500') %>% 
+  DT::formatStyle(
+    0, # ignores columns, but otherwise put here
+    target='row',
+    backgroundColor = 'transparent'
+)
+```
+
+<br>
+
+For example, Hamlet is most likely to be associated with Topic `r t(topicmodels::topics(shakes_10, 3))['Hamlet',1]`. That topic is associated with the (stemmed words) `r topicmodels::get_terms(shakes_10, 20)[, t(topicmodels::topics(shakes_10, 3))['Hamlet',1]]`.  Hamlet is also one that is actually a decent mix, with its second topic expressed being Topic `r t(topicmodels::topics(shakes_10, 3))['Hamlet', 2]`, with common terms `r topicmodels::get_terms(shakes_10, 20)[, t(topicmodels::topics(shakes_10, 3))['Hamlet', 2]]`. They both have `r intersect(topicmodels::get_terms(shakes_10, 20)[, t(topicmodels::topics(shakes_10, 3))['Hamlet',1]], topicmodels::get_terms(shakes_10, 20)[, t(topicmodels::topics(shakes_10, 3))['Hamlet', 2]])` among their top 20 terms. Sounds about right for Hamlet.
+
+The following visualization shows a heatmap for the topic probabilities of each document.  Darker values mean higher probability for a document expressing that topic.  I've also added a cluster analysis based on the  cosine distance matrix, and the resulting dendrogram. The colored bar on the right represents the given classification of a work as history, tragedy, comedy, or poem.
+
+
+
+```{r tm_chapter_viz_topics, echo=FALSE, out.height='400px', fig.width=8.5, fig.height=8.5, fig.align='center'}
+# Note the latex figure settings can actually limit the plot size; so basically
+# you have several chunk options, possibly multiple package options, and css all working against
+# each other for single visual (wtf)
+# assumption, fig.width=8.5 will be whatever the width of the div is.
+
+library(quanteda)
+load('data/shakespeare_classification.RData')
+load('data/shakes_words_df.RData')
+shakes_dtm = shakes_dtm %>%
+  dfm_wordstem()
+
+suppressPackageStartupMessages(library(dendextend))
+# see proxy::pr_DB %>% data.frame() for actual info for the metrics that
+# quanteda uses, whose functions don't bother to even tell you that's where they
+# are coming from
+# proxy::pr_DB %>% data.frame() %>% select( distance, formula, description, reference) %>% DT::datatable()
+
+suppressPackageStartupMessages(library(heatmaply))
+
+# cosine distance, is not a proper distance
+row_dend  = 
+  (1-textstat_simil(dfm_weight(shakes_dtm, 'relMaxFreq'), 
+                    margin = "documents", 
+                    method = "cosine")) %>%
+  as.dist() %>%
+  hclust(method="complete") %>%
+  as.dendrogram %>%
+  set("branches_k_color", k = 3) %>% set("branches_lwd", c(.5,.5)) %>%
+  ladderize
+
+# the amount of bugs is staggering
+# summary jhfc!
+# you can't use width and height except with heatmapr (layout() from plotly is deprecated or otherwise would be an option, but causes overflow problem anyway)
+# row_side_colors needed in heatmapr, but it can't be the factor label itself, or it will give an error
+# wtf knows what row_side_palette is for
+
+# for the heatmaply part, row_side_colors is required again, or nothing will be displayed; what you actually provide is superfluous and ignored, even NULL
+# rowSideColors is now required, but whatever you put there is ignored
+# AND AFTER ALL THAT, it literally gets you back to square one, because the width and height are ignored
+colvec = c(palettes$orange$orange, palettes$orange$tetradic)[as.integer(factor(shakes_types$class))]
+# fix_heatmaply = shakes_10@gamma %>%
+#   round(3) %>%
+#   heatmapr(Rowv=row_dend,
+#            Colv=F,
+#            labRow=shakes_10@documents,
+#            labCol=paste0('Topic ', 1:10),
+#            k_row = 4,
+#            row_side_colors = colvec,
+#            # row_side_colors = data.frame(class=pull(arrange(shakes_types, title), class)),
+#            rowSideColors = data.frame(class= shakes_types$class),#data.frame(class=pull(arrange(shakes_types, title), class)), # ignored by heatmaply
+#            # row_side_palette = c("#39BEB1", "#ABB065", "#ACA4E2", "#CC476B", "#E495A5", "black"),
+#            seriate = 'OLO',
+#            fontsize_row=8,
+#            fontsize_col=7,
+#            subplot_widths=c(.75, .025, .225),
+#            # subplot_heights=1,
+#            width=1750,
+#            height=650)
+# 
+# 
+# heatmaply(fix_heatmaply,
+#                      labRow=shakes_10@documents,
+#                      colors='Oranges',
+#                      plot_method = 'plotly',
+#                      row_side_colors = shakes_types$class,
+#                      # row_side_palette = shakes_types$class,
+#                      RowSideColors = shakes_types$class,
+#                      label_names = 'Stupid_heatmaply',
+#                      grid_gap=5,
+#                      hide_colorbar = T,
+#                      colorbar_len = 0.3,
+#                      colorbar_ypos=0) %>%
+#   layout(showlegend=F) %>% # showing the legend will screw up the colorbar and any associated options
+#   config(displayModeBar = F) %>%
+#   theme_plotly()
+
+shakes_10@gamma %>%
+  round(3) %>%
+  heatmaply::heatmaply(Rowv=row_dend,
+                       Colv=F,
+                       colors='Oranges',
+                       row_side_colors = data.frame(shakes_types$class),
+                       # RowSideColors = shakes_types$class,
+                       labRow=shakes_10@documents,
+                       labCol=paste0('Topic ', 1:10),
+                       hide_colorbar=T,
+                       grid_gap=2,
+                       plot_method='plotly'
+                       ) %>%
+  layout(showlegend=F) %>% # showing the legend will screw up the colorbar and any associated options
+  config(displayModeBar = F) %>%
+  theme_plotly()
+
+```
+
+
+
+<br>
+
+A couple things stand out.  To begin with, most works are associated with one topic[^howmanytopics].  In terms of the discovered topics, traditional classificiation really probably only works for the historical works, as they cluster together as expected (except for Henry the VIII, possibly due to it being a collaborative work).  Furthermore, tragedies and comedies might hit on the same topics, albeit from different perspecitves.  In addition, at least some works are very poetical, or at least have topics in common with the poems (love).  If we take four clusters, the result boils down to *Phoenix* (on its own), standard poems, a mixed bag of more love oriented works and the remaining poems, then everything else.  
+
+Alternatively, one could merely classify the works based on their probable topics, which would make more sense if clustering of the works is in fact the goal. The following visualization attempts to order them based on their most probable topic.  The order is based on the most likely topics across all documents.
+
+
+
+```{r tm_chapter_cluster_topics, echo=FALSE, fig.align='center', fig.width=6, fig.height=5, out.height='800px'}
+topic_class = shakes_10@gamma %>%
+  round(3) %>%
+  data.frame() %>% 
+  rename_all(function(x) str_replace(x, 'X', 'Topic ')) %>% 
+  mutate(text =  shakes_10@documents, 
+         class = shakes_types$class)
+order_topics = order(colSums(shakes_10@gamma), decreasing=T)
+
+topic_class = topic_class %>%
+  # select(-text, -class) %>%
+  select(order_topics, text, class)  %>%
+  arrange_at(vars(contains('Topic')), desc) 
+
+topic_class %>%
+  select(-text, -class) %>% 
+  heatmaply::heatmaply(Rowv=NA,
+                       Colv=NA,
+                       labRow=topic_class$text,
+                       labCol=apply(get_terms(shakes_10, 10), 2, paste0, collapse='\n')[order_topics],
+                       column_text_angle=0, 
+                       colors='Oranges',
+                       subplot_widths=c(1),
+                       plot_method = 'plotly',
+                       fontsize_row=8,
+                       fontsize_col=8,
+                       hide_colorbar = T) %>% 
+  layout(showlegend=F) %>% # height to be deprecated, maybe heatmaply will conform to plotly by then
+  config(displayModeBar = F) %>% 
+  theme_plotly() 
+```
+
+So we can see that topic modeling can be use to classify the documents themselves into groups of documents most likely to express the same sorts of topics.
+
+## Extensions
+
+There extensions of LDA used in topic modeling that will allow your analysis to go even further.
+ 
+- Correlated Topic Models: the standard LDA does not estimate the topic correlation as part of the process.
+- Supervised LDA: In this scenario, topics can be used for prediction, e.g. the classification of tragedy, comedy etc. (similar to PC regression)
+- Structured Topic Models: Here we want to find the relevant covariates that can explain the topics (e.g. year written, author sex, etc.)
+- Other: There are still other ways to examine topics.
+
+
+## Exercise
+
+https://ldavis.cpsievert.me/reviews/reviews.html
+
+
+[^howmanytopics]: There isn't a lot to work with in this realm, but I investigated the 'optimal' number of topics via a measure called <span class="emph">perplexity</span>.  It bottomed out at around 50 topics.
+
+<!--chapter:end:04_topic.Rmd-->
+
+# Shakespeare Start to Finish
+
+The following attempts to demonstrate the usual difficulties in dealing with text by procuring and processing the works of Shakespeare.  The source is [MIT](http://shakespeare.mit.edu/) which has made the 'complete' works available on the web since 1993, plus one other from Gutenberg.  The initial issue is simply getting the works from the web.  Subsequently there is metadata, character names, stopwords etc. to be removed. At that point we can stem and count the words in each work, which, when complete, puts us at the point we are ready for analysis.
+
+The primary packages used are <span class="pack">tidytext</span>, <span class="pack">stringr</span>, and when things are ready for analysis, <span class="pack">quanteda.</span>
+
+
+
+## ACT I. Scrape Moby and Gutenberg Shakespeare
+
+### Scene I. Scrape main works
+
+Initially we must scrape the web to get the documents we need.  The <span class="pack">rvest</span> package will be used as follows.
+
+- Start with the url of the site
+- Get the links off that page to serve as base urls for the works
+- Scrape the document for each url
+- Deal with the collection of Sonnets separately
+- Write out results
+
+
+```{r shakes_urls, eval=FALSE}
+library(rvest); library(tidyverse); library(stringr)
+
+page0 = read_html('http://shakespeare.mit.edu/')
+
+works_urls0 = page0 %>%
+  html_nodes('a') %>%
+  html_attr('href')
+
+main = works_urls0 %>%
+  grep(pattern='index', value=T) %>%
+  str_replace_all(pattern='index', replacement='full')
+
+other = works_urls0[!grepl(works_urls0, pattern='index|edu|org|news')]
+
+works_urls = c(main, other)
+works_urls[1:3]
+```
+
+Now we just paste the main site url to the work urls and download them.  Here is where we come across our first snag.  The <span class="func">html_text</span> function has what I would call a bug but what the author feels is a feature.  [Basically it ignores line breaks of the form <br> in certain situations](https://github.com/hadley/rvest/issues/175).  This means it will smash text together that shouldn't be, thereby making *any* analysis of it fairly useless[^bug].  Luckily, [\@rentrop](https://github.com/rentrop) provided a solution, which is in `r/fix_read_html.R`.
+
+```{r scrape_shakes, eval=FALSE}
+works0 = lapply(works_urls, function(x) read_html(paste0('http://shakespeare.mit.edu/', x)))
+
+source('r/fix_read_html.R')
+
+html_text_collapse(works0[[1]]) #works
+works = lapply(works0, html_text_collapse)
+
+
+names(works) = c("All's Well That Ends Well" "As You Like It" "Comedy of Errors"
+                 "Cymbeline" "Love's Labour's Lost" "Measure for Measure"
+                 "The Merry Wives of Windsor" "The Merchant of Venice" "A Midsummer Night's Dream"
+                 "Much Ado about Nothing" "Pericles Prince of Tyre" "The Taming of the Shrew"
+                 "The Tempest" "Troilus and Cressida" "Twelfth Night"
+                 "The Two Gentlemen of Verona" "The Winter's Tale" "King Henry IV Part 1"
+                 "King Henry IV Part 2" "Henry V" "Henry VI Part 1"
+                 "Henry VI Part 2" "Henry VI Part 3" "Henry VIII"
+                 "King John" "Richard II" "Richard III"
+                 "Antony and Cleopatra" "Coriolanus" "Hamlet"
+                 "Julius Caesar" "King Lear" "Macbeth"
+                 "Othello" "Romeo and Juliet" "Timon of Athens"
+                 "Titus Andronicus" "Sonnets" "A Lover's Complaint"
+                 "The Rape of Lucrece" "Venus and Adonis" "Elegy")
+```
+
+
+### Scene II. Sonnets 
+
+We hit a slight nuisance with the Sonnets. The Sonnets have a bit of a different structure than the plays. All links are in a single page, with a different form for the url, and each sonnet has its own page.
+
+```{r scrape_sonnets, eval=F}
+sonnet_urls = paste0('http://shakespeare.mit.edu/', grep(works_urls0, pattern='sonnet', value=T)) %>%
+  read_html() %>%
+  html_nodes('a') %>%
+  html_attr('href')
+
+sonnet_urls = grep(sonnet_urls, pattern = 'sonnet', value=T)  # remove amazon link
+
+# read the texts
+sonnet0 = purrr::map(sonnet_urls, function(x) read_html(paste0('http://shakespeare.mit.edu/Poetry/', x)))
+
+# collapse to one 'Sonnets' work
+sonnet = sapply(sonnet0, html_text_collapse)
+works$Sonnets = sonnet
+```
+
+
+### Scene III. Save and write out 
+
+Now we can save our results so we won't have to repeat any of the previous scraping.  We want to save the main text object as an RData file, and write out the texts to their own file.  When dealing with text, you'll regularly want to save stages so you can avoid repeating what you don't have to, as often you will need to go back after discovering new issues further down the line.
+
+```{r initial_save, eval=F}
+save(works, file='data/texts_raw/shakes/moby_from_web.RData')
+
+# This will spit the text to the console unfortunately
+
+purrr::map2(works,
+            paste0('data/texts_raw/shakes/moby/', str_replace_all(names(works), " |'", '_'), '.txt'),
+            function(x, nam) write_lines(x, path=nam))
+```
+
+### Scene IV. Read text from files
+
+After the above is done, it's not required to redo, so we can always get what we need.  I'll start with the raw text as files, as that is one of the more common ways one deals with documents.  When text is nice and clean, this can be fairly straightforward.
+
+The  function at the end comes from the <span class="pack">tidyr</span> package. Up to that line, each element in the <span class="objclass">text</span> column is the entire text, while the column itself is thus a 'list-column'. In other words we have a 42 x 2 matrix. But to do what we need, we'll want to have access to each line, and the <span class="func">unnest</span> function unpacks each line within the title. The first few lines of the result is shown after.
+
+```{r read_shakes_works, echo=-5, eval=FALSE}
+library(tidyverse); library(stringr)
+
+shakes0 =
+  data_frame(file = dir('data/texts_raw/shakes/moby/', full.names = TRUE)) %>%
+  mutate(text = map(file, read_lines)) %>%
+  transmute(id = basename(file), text) %>%
+  unnest(text)
+
+save(shakes0, file='data/initial_shakes_dt.RData')
+
+# Alternate that provides for more options
+# library(readtext)
+# shakes0 =
+#   data_frame(file = dir('data/texts_raw/shakes/moby/', full.names = TRUE)) %>%
+#   mutate(text = map(file, readtext, encoding='UTF8')) %>%
+#   unnest(text)
+```
+
+```{r show_shakes0, echo=F}
+load('data/initial_shakes_dt.RData')
+DT::datatable(shakes0[1:20,], 
+              options=list(dom='tp')) %>% 
+  DT::formatStyle(
+    0, # ignores columns, but otherwise put here
+    target='row',
+    backgroundColor = 'transparent'
+  )
+```
+
+
+
+### Scene V. Add additional works 
+
+It is typical to be gathering texts from multiple sources. In this case, we'll get *The Phoenix and the Turtle* from the Gutenberger website.  There is an R package that will allow us to work directly with the site, making the process straightforward[^r4everything].  I also considered two other works, but I refrained from "The Two Noble Kinsmen" because like many other of Shakespeare's versions on Gutenberg, it's basically written in a different language.  I also refrained from  *The Passionate Pilgrim* because it's mostly not Shakespeare.
+
+When first doing this project, I actually started with Gutenberg, but it became a notable PITA. The texts were inconsistent in source, and sometimes reproduced printing errors purposely, which would have compounded typical problems.  I thought it could have been solved by using the *Complete Works of Shakespeare* but the download only came with that title, meaning one would have to hunt for and delineate each separate work.  This might not have been too big of an issue, except that there is no table of contents, nor consistent naming of titles across different printings.  The MIT approach, on the other hand, was a few lines of code. This represents a common issue in text analysis when dealing with sources, a different option may save a lot of time in the end.
+
+The following code could be more succinct to deal with one text, but I initially was dealing with multiple works, so I've left it in that mode.  In the end we'll have a <span class="objclass">tibble</span> with an id column for the file/work name, and another column that contains the lines of text.
+
+```{r phoenix_turtle, eval=FALSE}
+library(gutenbergr)
+
+works_not_included = c("The Phoenix and the Turtle")   # add others if desired
+
+gute0 = gutenberg_works(title %in% works_not_included)
+gute = lapply(gute0$gutenberg_id, gutenberg_download)
+gute = mapply(function(x, y) mutate(x, id=y) %>% select(-gutenberg_id), 
+              gute, works_not_included, 
+              SIMPLIFY=F)
+
+shakes = shakes0 %>%
+  bind_rows(gute) %>%
+  mutate(id = str_replace_all(id, " |'", '_')) %>% 
+  mutate(id = str_replace(id, '.txt', '')) %>% 
+  arrange(id)
+
+# shakes %>% split(.$id) # inspect
+
+save(shakes, file='data/texts_raw/shakes/shakes_df.RData')
+```
+
+## ACT II. Preliminary Cleaning
+
+If you think we're even remotely getting close to being ready for analysis, I say Ha! to you. Our journey has only just begun (cue the Carpenters). 
+
+Now we can start thinking about prepping the data for eventual analysis. One of the nice things about having the data in a tidy format is that we can use string functionality over the column of text in a simple fashion.
+
+### Scene I. Remove initial text/metadata
+
+First on our todo list is to get rid of all the prelimnary text of titles, authorship etc.  This is fairly easy when you think that every text will start with ACT I, or in the case of the Sonnets, the word 'Sonnet'.  We want to drop all text up to those points.  I've created a [function](https://github.com/m-clark/text-analysis-with-R/blob/master/r/detect_first_act.R) that will do that, and then just apply it to each works tibble[^tibblefail].  For the poems and *A Funeral Elegy for Master William Peter*, we look instead for the line where his name or initials start the line.
+
+```{r remove_preliminary_text, echo=-(1:2)}
+load('data/texts_raw/shakes/shakes_df.RData')
+
+source('r/detect_first_act.R')
+
+shakes_trim = shakes %>%
+  split(.$id) %>%
+  lapply(detect_first_act) %>%
+  bind_rows
+
+shakes %>% filter(id=='Romeo_and_Juliet') %>% head
+shakes_trim %>% filter(id=='Romeo_and_Juliet') %>% head
+```
+
+
+### Scene II. Miscellaneous removal
+
+Next, we'll want to remove empty rows, any remaining titles, lines that denote the act or scene, and other stuff.  I'm going to remove the word *prologue* and *epilogue* as a stopword later. While some texts have a line that just says that (`PROLOGUE`), others have text that describes the scene (`Prologue. Blah blah`) and which I've decided to keep. As such, we just need the word itself gone.
+
+```{r remove_misc}
+titles =  c("A Lover's Complaint", "All's Well That Ends Well", "As You Like It", "The Comedy of Errors",
+            "Cymbeline", "Love's Labour's Lost", "Measure for Measure",
+            "The Merry Wives of Windsor", "The Merchant of Venice", "A Midsummer Night's Dream",
+            "Much Ado about Nothing", "Pericles Prince of Tyre", "The Taming of the Shrew",
+            "The Tempest", "Troilus and Cressida", "Twelfth Night",
+            "The Two Gentlemen of Verona", "The Winter's Tale", "King Henry IV, Part 1",
+            "King Henry IV, Part 2", "Henry V", "Henry VI, Part 1",
+            "Henry VI, Part 2", "Henry VI, Part 3", "Henry VIII",
+            "King John", "Richard II", "Richard III",
+            "Antony and Cleopatra", "Coriolanus", "Hamlet",
+            "Julius Caesar", "King Lear", "Macbeth",
+            "Othello", "Romeo and Juliet", "Timon of Athens",
+            "Titus Andronicus", "Sonnets", 
+            "The Rape of Lucrece", "Venus and Adonis", "A Funeral Elegy", "The Phoenix and the Turtle")
+
+shakes_trim = shakes_trim %>%
+  filter(text != '',                     # empties
+         !text %in% titles,              # titles
+         !str_detect(text, '^ACT|^SCENE|^Enter|^Exit|^Exeunt|^Sonnet')  # acts etc.
+         )
+
+shakes_trim %>% filter(id=='Romeo_and_Juliet') # we'll get prologue later
+```
+
+### Scene III. Classification of works
+
+While we're at it, we can save the classical (sometimes arbitrary) classifications of Shakespeare's works for later comparison to what we'll get in our analyses. We'll save them to call as needed.
+
+```{r shakespeare_classes, eval=FALSE}
+shakes_types = data_frame(title=unique(shakes_trim$id)) %>%
+  mutate(class = 'Comedy',
+         class = if_else(grepl(title, pattern='Adonis|Lucrece|Complaint|Turtle|Pilgrim|Sonnet|Elegy'), 'Poem', class),
+         class = if_else(grepl(title, pattern='Henry|Richard|John'), 'History', class),
+         class = if_else(grepl(title, pattern='Troilus|Coriolanus|Titus|Romeo|Timon|Julius|Macbeth|Hamlet|Othello|Antony|Cymbeline|Lear'), 'Tragedy', class),
+         problem = if_else(grepl(title, pattern='Measure|Merchant|^All|Troilus|Timon|Passion'), 'Problem', 'Not'),
+         late_romance = if_else(grepl(title, pattern='Cymbeline|Kinsmen|Pericles|Winter|Tempest'), 'Late', 'Other'))
+
+save(shakes_types, file='data/shakespeare_classification.RData') # save for later
+```
+
+## ACT III. Stop words
+
+As we've noted before, we'll want to get rid of stop words, things like articles, possessive pronouns, and other very common words.  In this case, we also want to include character names.  However, the big wrinkle here is that this is not everyday English, so we need to get ye, thee, thine etc.  In addition there are things that need to be replaced like o'er to over, which may then also be removed. In short, this is not so straightforward.
+
+### Scene I. Character names
+
+We'll get the list of character names from opensourceshakespeare.org via <span class="pack">rvest</span>, but I added some from the poems and others that came through, e.g. abbreviated names.
+
+```{r character_names, eval=FALSE, echo=-1}
+library(rvest)
+shakes_char_url = 'https://www.opensourceshakespeare.org/views/plays/characters/chardisplay.php'
+page0 = read_html(shakes_char_url)
+tabs = page0 %>% html_table()
+shakes_char = tabs[[2]][-(1:2), c(1,3,5)] # remove header and phantom columns
+colnames(shakes_char) = c('Nspeeches', 'Character', 'Play')
+shakes_char = shakes_char %>%
+  distinct(Character,.keep_all=T)
+
+save(shakes_char, file='data/shakespeare_characters.RData')
+```
+
+A new snag is that some characters with multiple names may be represented (typically) by the first or last or in the case of three, the middle, e.g. Sir Toby Belch. Others are still difficultly named e.g. RICHARD PLANTAGENET (DUKE OF GLOUCESTER). The following should capture everything by splitting the names on spaces, removing parentheses, and keeping unique terms.
+
+```{r character_names_clean, echo=-1}
+load('data/shakespeare_characters.RData')
+
+# remove paren and split
+chars = shakes_char$Character
+chars = str_replace_all(chars, '\\(|\\)', '')
+chars = str_split(chars, ' ') %>%
+  unlist
+
+# these were found after intial processsing
+chars_other = c('enobarbus', 'marcius', 'katharina', 'clarence','pyramus',
+                'andrew', 'arcite', 'perithous', 'hippolita', 'schoolmaster',
+                'cressid', 'diomed', 'kate', 'titinius', 'Palamon', 'Tarquin',
+                'lucrece', 'isidore', 'tom', 'thisbe', 'thisbi', 'paul', 'aemelia')
+
+chars = unique(c(chars, chars_other))
+
+chars =  chars[chars != '']
+sample(chars)[1:3]
+```
+
+### Scene II. Old, Middle, & Modern English
+
+While Shakespeare is considered [Early Modern English](https://en.wikipedia.org/wiki/Early_Modern_English), some text may be more historical, so I include Middle and Old English stopwords, as they were readily available from the <span class="pack">cltk</span> Python module ([link](https://github.com/cltk/cltk)) and also found.  I also added some things to the ME list like "thou'ldst" that I found lingering after initial passes. In my initial use of Gutenberg texts, the Old English might have had some utility, but with these texts it only removes 'wit', so I refrain from using it.
+
+```{r old_middle_modern_english}
+# old and me from python cltk module; 
+# em from http://earlymodernconversions.com/wp-content/uploads/2013/12/stopwords.txt; 
+# I also added some to me
+
+old_stops0 = read_lines('data/old_english_stop_words.txt')
+# sort(old_stops0)
+old_stops = data_frame(word=str_conv(old_stops0, 'UTF8'),
+                      lexicon = 'cltk')
+
+me_stops0 = read_lines('data/middle_english_stop_words')
+# sort(me_stops0)
+me_stops = data_frame(word=str_conv(me_stops0, 'UTF8'),
+                      lexicon = 'cltk')
+
+em_stops0 = read_lines('data/early_modern_english_stop_words.txt')
+# sort(em_stops0)
+em_stops = data_frame(word=str_conv(em_stops0, 'UTF8'),
+                      lexicon = 'emc')
+```
+
+### Scene III. Remove stopwords
+
+We're now ready to start removing words. However, right now, we have lines not words.  We can use the <span class="pack">tidytext</span> function <span class="func">unnnest_tokens</span>, which is like <span class="func">unnnest</span> from <span class="pack">tidyr</span>, but works on different tokens, e.g. words, sentences, or paragraphs. Note that by default, the function will make all words lower case.
+
+```{r unnest_words}
+library(tidytext)
+
+shakes_words = shakes_trim %>%
+  unnest_tokens(word, text, token='words')
+```
+
+We also will be doing a little stemming here. I'm getting rid of suffixes that end with the suffix after an apostrophe.  Many of the remaining words will either be stopwords or need to be further stemmed later. I also created a middle/modern English stemmer for words that are not caught otherwise (<span class="func">me_st_stem</span>).  Again this is the sort of thing you discover after initial passes (e.g. 'criedst'). We can do that, then the <span class="func">anti_join</span> of all the stopwords.
+
+```{r anti_join}
+source('r/st_stem.R')
+
+shakes_words = shakes_words %>%
+  mutate(word = str_trim(word),    # remove possible whitespace
+         word = str_replace(word, "'er$|'d$|'t$|'ld$|'rt$|'st$|'dst$", ''),    # remove me style endings
+         word = str_replace_all(word, "[0-9]", ''),    # remove sonnet numbers
+         word = vapply(word, me_st_stem, 'a')) %>%
+  anti_join(em_stops) %>%
+  anti_join(me_stops) %>%
+  anti_join(data_frame(word=str_to_lower(c(chars, 'prologue', 'epilogue')))) %>%
+  anti_join(data_frame(word=str_to_lower(paste0(chars, "'s")))) %>%     # remove possessive names
+  anti_join(stop_words)
+```
+
+As before, you should do a couple spot checks.
+
+```{r stopword_check, results='hold'}
+any(shakes_words$word == 'romeo')
+any(shakes_words$word == 'prologue')
+any(shakes_words$word == 'mayst')
+```
+
+## ACT IV. Other fixes
+
+Now we're ready to finally do the word counts.  Just kidding! There is *still* work to do the for the remainder, and you'll continue to spot things after runs.  A big issue is the wrods that end in 'st' and 'est', and others that are not consistently spelled or otherwise need to be dealt with.  For example, 'crost' will not be stemmed to 'cross', as 'crossed' would be.  Finally, I limit the result to any words that have more than two characters, as my inspection dis
+
+
+```{r other_fixes}
+# porter should catch remaining 'est'
+
+add_a =  c('mongst', 'gainst')  # words to add a to
+
+shakes_words = shakes_words %>%
+  mutate(word = if_else(word=='honour', 'honor', word),
+         word = if_else(word=='durst', 'dare', word),
+         word = if_else(word=='wast', 'was', word),
+         word = if_else(word=='dust', 'does', word),
+         word = if_else(word=='curst', 'cursed', word),
+         word = if_else(word=='blest', 'blessed', word),
+         word = if_else(word=='crost', 'crossed', word),
+         word = if_else(word=='accurst', 'accursed', word),
+         word = if_else(word %in% add_a,
+                        paste0('a', word),
+                        word),
+         word = str_replace(word, "'s$", ''),                # strip remaining possessives
+         word = if_else(str_detect(word, pattern="o'er"),    # change o'er over
+                        str_replace(word, "'", 'v'),
+                        word)) %>%
+  filter(!(id=='Antony_and_Cleopatra' & word == 'mark')) %>%     # mark here is almost exclusively the character name
+  filter(str_count(word)>2)
+```
+
+At this point we could still maybe add things to this list of additional fixes, but I think it's time to actually start playing with the data.
+
+
+## ACT V. Fun stuff
+
+We are finally ready to get to the fun stuff.  Finally! And now things get easy. 
+
+### Scene I. Count the terms
+
+We can get term counts with standard <span class="pack">dplyr</span> approaches, and <span class="pack">tidytext</span> will take that and do the other things we might want. Specifically, we can use the latter to create the document term matrix which will be used in other analysis.  The function <span class="func">cast_dfm</span> will create a dfm class object, or 'document-feature' matrix, which is the same thing but recognizes this sort of stuff is not specific to words.  With word counts in hand, now would be a good save point since they'll serve as the basis for other things.
+
+```{r term_counts, results='hold', eval=-8}
+term_counts = shakes_words %>%
+  group_by(id, word) %>%
+  count
+
+term_counts %>% 
+  arrange(desc(n))
+
+library(quanteda)
+shakes_dtm = term_counts %>%
+  cast_dfm(document=id, term=word, value=n)
+
+save(shakes_words, term_counts, shakes_dtm, file='data/shakes_words_df.RData')
+```
+
+Now things are looking like Shakespeare, with love for everyone[^love].  You'll notice I've kept place names such as Rome, but this might be something you'd prefer to remove.  Other candidates would be madam, woman, man, majesty (as in 'his/her') etc.  This sort of thing is up to the researcher.
+
+
+### Scene II. Stemming
+
+Now we'll <span class="emph"></span> the words.  While this is actually a pre-processing step, one that we'd do along with (typically after) stopword removal.  I do it here to mostly demonstrate how to use <span class="pack">quanteda</span> to do it, as it can also be used to remove stopwords and do many of the other things we did with <span class="pack">tidytext</span>.
+
+Stemming will make words like eye and eyes just *ey*, or convert war, wars and warring to *war*. In other words it will reduce variations of a word to a common root form, or 'word stem'.  We could have done this in a step prior to counting the terms, but then you only have the stemmed result to work with for the document term matrix from then on.  Depending on your situation, you may or may not want to stem, or maybe you'd want to compare results.  The <span class="pack">quanteda</span> package will actually stem with the DTM and collapse the word counts accordingly.   I note the difference in words before and after.
+
+```{r stem, echo=-(1:4), results='hold'}
+load('data/shakes_words_df.RData')
+
+library(quanteda)
+
+shakes_dtm
+ncol(shakes_dtm)
+
+shakes_dtm = shakes_dtm %>%
+  dfm_wordstem()
+
+shakes_dtm
+ncol(shakes_dtm)
+```
+
+The result is notably fewer columns, which will speed up any analysis, as well as a slightly more dense matrix.
+
+### Scene III. Exploration
+
+```{r top_20_init, echo=F}
+top20 = topfeatures(shakes_dtm, 20)
+```
+
+#### Top features
+
+Let's start looking more in depth.  The following shows the 10 most common words and their respective counts. This is also an easy way to find candidates to add to the stopword list.  Note that dai and prai are stems for day and pray. Love occurs `r round(top20[1]/top20[2], 2)` times as much as the most frequent word!
+
+```{r top_10}
+top10 = topfeatures(shakes_dtm, 10)
+top10
+```
+
+The following is a wordcloud. They are among the most useless visual displays imaginable.  Just because you can, doesn't mean you should.
+
+```{r wordcloud, echo=FALSE}
+# useless!
+textplot_wordcloud(shakes_dtm, min.freq = 400, random.order = T,
+                   rot.per = .25,
+                   colors = viridis::viridis(30))
+```
+
+If you want to display relative frequency do so.
+
+```{r better_cloud, echo=FALSE}
+library(forcats)
+# data_frame(term = names(top20), freq = top20) %>%
+#   mutate(
+#     term = fct_reorder(term, freq, .desc = TRUE),
+#     percentage = freq/ncol(shakes_dtm)
+#   ) %>%
+#   plot_ly(x=~term, y=~percentage) %>%  # , size=~percentage
+#   add_text(text=~term,
+#            color=I('#ff5500'),
+#            size =~ percentage,
+#            sizes = c(15,15),         # doesn't work for text, only markers
+#            showlegend = F)  %>%
+#   theme_plotly() %>%
+#   layout(xaxis = list(
+#   autotick = FALSE,
+#   ticks = F,
+#   showticklabels = F),
+#   yaxis = list(range=c(0,.25)))
+
+g = data_frame(term = names(top20), freq = top20) %>%
+  mutate(
+    term = fct_reorder(term, freq, .desc = TRUE),
+    percentage = freq/ncol(shakes_dtm)
+  ) %>% 
+  ggplot() + 
+  geom_text(aes(x=term, y=percentage, size=percentage, label=term, color=term),  
+            # color='#ff5500', 
+            hjust=-.1,
+            show.legend = F) + 
+  scale_size_continuous(range=c(2,8)) +
+  ylim(c(0,.25)) +
+  lazerhawk::theme_trueMinimal() + 
+  theme(axis.text.x = element_blank(),
+        axis.ticks.x= element_blank(), 
+        legend.position='none')     # for plotly's sake
+ggplotly(width='auto', hoverinfo='none') %>% 
+  lazerhawk::theme_plotly() 
+```
+
+
+#### Similarity
+
+The <span class="pack">quanteda</span> package has some built in similarity measures such as [cosine similarity](https://en.wikipedia.org/wiki/Cosine_similarity), which you can treat similarly to the standard correlation (also available).  I display it visually to better get a sense of things.
+
+```{r similarity, echo=1, eval=2:3}
+textstat_simil(shakes_dtm, margin = "documents", method = "cosine") 
+
+textstat_simil(shakes_dtm, margin = "documents", method = "cosine") %>%
+  heatR::corrheat(show_grid = F, height = 500)
+
+textstat_simil(dfm_weight(shakes_dtm, 'relFreq'), margin = "documents", method = "correlation") %>%
+  heatR::corrheat()
+```
+
+<br>
+
+We can already begin to see the clusters of documents.  For example, the more historical are the clump in the upper left.  The oddball is [*The Phoenix and the Turtle*](https://en.wikipedia.org/wiki/The_Phoenix_and_the_Turtle), though *Lover's Complaint* and the *Elegy* are also less similar than standard Shakespeare.  The Phoenix and the Turtle is about the death of ideal love, represented by the Phoenix and Turtledove, for which there is a funeral.  It actually is considered by scholars to be in stark constrast to his other output. Elegy itself is actually written for a funeral. [*A Lover's Complaint*](https://en.wikipedia.org/wiki/A_Lover%27s_Complaint) is considered an inferior work by the Bard, so perhaps what we're seeing is a reflection of that lack of quality.  In geneal, we're seeing things that we might expect.
+
+#### Readability
+
+We can examine readablity scores for the texts, but for this we'll need them in raw form. We already had them from before, I just added *Phoenix* from the Gutenberg download.
+
+```{r readability1, echo=-1}
+raw_texts = 
+  data_frame(file = dir('data/texts_raw/shakes/moby/', full.names = TRUE)) %>%
+  mutate(text = map(file, read_lines)) %>% 
+  bind_rows(data_frame(file = dir('data/texts_raw/shakes/gutenberg/', full.names = TRUE)) %>%
+              mutate(text = map(file, read_lines))) %>% 
+  mutate(file = str_extract(file, '[^/]*$')) %>% 
+  rename(id=file)
+raw_texts
+```
+
+With raw texts, we need to make them an official <span class="objclass">corpus</span> object to proceed more easily.  The <span class="func">corpus</span> function from <span class="pack">quanteda</span> won't read directly from a list column or a list at all, so we'll convert it via the <span class="pack">tm</span> package, which more or less defeats the purpose of using the <span class="pack">quanteda</span> package except that the <span class="func">textstat_readability</span> function gives us what we want, but I digress.
+
+Unfortunately the concept of <span class="emph">readability</span> is ill-defined, and as such, there are dozens of measures available dating back nearly 75 years.  The following is based on the Coleman-Liau grade score (higher grade = more difficult).  The conclusion here is first, Shakespeare isn't exactly a difficult read, and two, the poems may be more so relative to the other works.
+
+```{r readability2, echo=1:3}
+library(tm)
+raw_text_corpus = corpus(VCorpus(VectorSource(raw_texts$text)))
+shakes_read = textstat_readability(raw_text_corpus) 
+
+shakes_read_ordered = shakes_read %>% 
+  mutate(text = str_sub(raw_texts$id, end=-5)) %>% 
+  arrange(Coleman.Liau.grade) 
+
+shakes_read_ordered %>% 
+  select(Coleman.Liau.grade) %>%
+  round(1) %>% 
+  heatmaply::heatmaply(Rowv=NA, 
+                       Colv=NA, 
+                       labRow=shakes_read_ordered$text, 
+                       colors='Blues',
+                       plot_method='plotly',
+                       colorbar_len=.5,
+                       colorbar_ypos= .25,
+                       colorbar_xpos= .65,
+                       subplot_widths=.25
+                       ) %>% 
+  layout(yaxis=list(ticklen=0)) %>% 
+  theme_plotly()
+# shakes_read %>% 
+#   mutate(id=raw_texts$id) %>% 
+#   gather(key=index, value=score, -id) %>% 
+#   group_by(index) %>% 
+#   mutate(s_score=scales::rescale(score)) %>% 
+#   ungroup %>% 
+#   select(-score) %>% 
+#   spread(key = index, value=s_score) %>% 
+#   heatmaply::heatmaply(Rowv=NA, Colv=NA)
+```
+
+
+
+
+#### Lexical diversity
+
+There are also metrics of <span class="emph">lexical diversity</span>.  As with readability, there is no one way to measure 'diversity'.  Here we'll go back to using the standard DTM, as the focus is on the terms, whereas readibility is more at the sentence level.  Most standard measures of lexical diversity are variants on what is called the type-token ratio, which in our setting is the number of unique terms (types) relative to the total terms (tokens). We can use <span class="func">textstat_lexdiv</span> for our purposes here, which will provide several measures of diversity by default.
+
+```{r lexical_diversity}
+ld = textstat_lexdiv(shakes_dtm)
+```
+
+
+This visual is based on the (absolute) scaled values of those several metrics, and might suggest that the poems are relatively more diverse. This certainly might be the case for *Phoenix*, but it could also be a reflection of the limitation of several of the measures, such that longer works are seen as less diverse, as tokens are added more so than types the longer the text goes.  
+
+```{r lexical_diversity_vis, echo=FALSE}
+scaled_ld = scale(ld) %>%
+  abs() %>% 
+  data.frame() %>% 
+  mutate(text = rownames(ld)) %>% 
+  select(text, everything()) %>% 
+  arrange(rowMeans(.[,-1])) 
+
+scaled_ld %>% 
+  select(-text) %>% 
+  heatmaply::heatmaply(Rowv=F, 
+                       Colv=F, 
+                       colors='Blues',            # note that RCB scales will not work unless method='plotly'
+                       plot_method = 'plotly',
+                       labRow=scaled_ld$text,  # note: heatmaply irregularly trims/justifies, so str_pad won't work 
+                       draw_cellnote=F,
+                       hide_colorbar=T,
+                       subplot_widths=.5) %>% 
+  layout(yaxis=list(ticklen=0)) %>% 
+  theme_plotly()
+```
+
+<br>
+As a comparison, the following shows the results of the 'Measure of Textual Diversity' calculated using the <span class="pack">koRpus</span> package[^noshowmtld].  It is notably less affected by text length, though the conclusions are largely the same. There is notable correlation between the MTLD and readibility as well[^correadmtld]. In general, Shakespeare tends to be more expressive in poems, and less so with comedies. 
+
+```{r MTLD, echo=FALSE, eval=FALSE}
+fnames = c(dir('data/texts_raw/shakes/moby/', full.names=T), 
+           dir('data/texts_raw/shakes/gutenberg/', full.names=T))
+library(koRpus)
+library(parallel)
+cl = makeCluster(7)
+clusterEvalQ(cl, library(koRpus))
+clusterExport(cl, 'fnames')
+
+# this actually just wraps 'lex.div'
+MTLD_results = parLapply(cl, fnames, 
+                       function(x) MTLD(txt=kRp.text.analysis(x, force.lang='en', tagger='tokenize')))
+stopCluster(cl)
+names(MTLD_results) = c(dir('data/texts_raw/shakes/moby/'), 
+           dir('data/texts_raw/shakes/gutenberg/'))
+save(MTLD_results, file='data/shakes_mtld.RData')
+
+
+# sapply(MTLD_results, function(x) x@TTR)
+
+```
+
+
+```{r MTLD_vis, echo=FALSE}
+load('data/shakes_mtld.RData')
+MTLD_df = lapply(MTLD_results, function(x) x@MTLD$MTLD) %>% 
+  data.frame() %>% 
+  gather(key=text, value=MTLD) %>% 
+  mutate(text = str_sub(text, end=-5)) %>% 
+  arrange(MTLD)
+  
+MTLD_df %>% 
+  select(MTLD) %>% 
+  heatmaply::heatmaply(Rowv=F, 
+                       Colv=F, 
+                       colors='Blues',            # note that RCB scales will not work unless method='plotly'
+                       plot_method = 'plotly',
+                       labRow=MTLD_df$text,  # note: heatmaply irregularly trims/justifies, so str_pad won't work 
+                       draw_cellnote=F,
+                       hide_colorbar=T,
+                       subplot_widths=.5) %>% 
+  layout(yaxis=list(ticklen=0)) %>% 
+  theme_plotly()
+```
+
+<br>
+
+### Scene IV. Topic model
+
+I'd say we're now ready for topic model.  That didn't take too much did it?
+
+#### Running the model and exploring the topics
+
+We'll run run one with 10 topics.  We can also see how things compare with the usual classifications for the texts.  Also, this will take a while to run depending on your machine (maybe a minute or two).
+
+
+```{r topic_model, echo=1:2, eval=F}
+library(topicmodels)
+shakes_10 = LDA(convert(shakes_dtm, to = "topicmodels"), k = 10, control=list(seed=1234))
+
+library(stm)
+shakes_10_stm = stm(shakes_dtm, K = 10, seed=1234)  # can take quanteda
+# shakes_10_cor = CTM(convert(shakes_dtm, to = "topicmodels"), k = 10, control=list(cg=list(iter.max=2000)))
+save(shakes_10, shakes_10_stm, file='data/shakespeare_topic_model.RData')
+```
+
+One of the first things to do is to interpret the topics, and we can start by seeing which terms are most probable for each topic.
+
+```{r tm10_results, eval=FALSE}
+get_terms(shakes_10, 20)
+```
+
+```{r tm10_results_pretty_terms, echo=FALSE}
+load('data/shakespeare_topic_model.RData')
+library(topicmodels)
+get_terms(shakes_10, 20) %>% 
+  DT::datatable(options=list(dom='tp')) %>% 
+  DT::formatStyle(
+    0, # ignores columns, but otherwise put here
+    target='row',
+    backgroundColor = 'transparent'
+  )
+```
+
+<br>
+
+We can see there is a lot of overlap in these topics for top terms.  Just looking at the top 10, *love* occurs in all of them, *god* and *heart* as well, but we could have guessed this just looking at how often they occur in general. Other measures can be used to assess term importance, such as those that seek to balance the term's probability of occurrence within a document, and term *exclusivity*, or how likely a term is to occur in only one particular topic.  See the <span class="pack">stm</span> package and corresponding <span class="func">labelTopics</span> function as a way to get several alternatives.  As an example I show the results of their version of the following[^scoredefs]:
+
+- <span class="emph">FREX</span>: **fr**equency and **ex**clusivity, it is a weighted harmonic mean of a term's rank within a topic in terms of frequency and exclusivity
+- <span class="emph">lift</span>: ratio of the termn='s probability within a topic to its probability of occurrence across all documents.  Overly sensitive to rare words.
+- <span class="emph">score</span>: another approach that will give more weight to exclusive terms
+- <span class="emph">prob</span>: This is just the raw probability of the term within a given topic.
+
+```{r coherence, eval=FALSE, echo=FALSE}
+library(stm)
+docs = apply(shakes_dtm, 1, function(x) rbind((1:ncol(shakes_dtm))[x>0], x[x>0]))  # bow for stemmed terms
+tq = topicQuality(model=shakes_10_stm, documents=docs)
+sc = semanticCoherence(model=shakes_10_stm, documents=docs, M=20)
+ex = exclusivity(model=shakes_10_stm, M=20)
+plot_ly(x=~sc, y=~ex, data=data_frame(sc, ex, topic=paste('Topic', 1:10))) %>% 
+  add_text(text=~topic, color=I('#ff5500')) %>% 
+  theme_plotly() %>% 
+  layout(xaxis = list(title='Semantic Coherence'),
+         yaxis = list(title='Exclusivity'))
+```
+
+
+```{r label_topics_stm, eval=F, echo=FALSE}
+# as stm topics won't be exactly the same, it might through them off
+# topic_labels = stm::labelTopics(shakes_10_stm, n=10)
+# sapply(topic_labels[1:4], function(e) apply(e, 1, paste, collapse=', ')) %>%
+#   as_tibble() %>%
+#   mutate(Topic = 1:10) %>%
+#   gather(key=Score, value=Terms, -Topic) %>%
+#   arrange(Topic, Score) %>%
+#   DT::datatable(options=list(dom='t', scrollY=T, pageLength=40), rownames=F) %>%
+#   DT::formatStyle(
+#     0, # ignores columns, but otherwise put here
+#     target='row',
+#     backgroundColor = 'transparent'
+#   )
+```
+
+```{r lable_topics, echo=FALSE}
+library(stm)
+frex_res = calcfrex(shakes_10@beta, wordcounts=colSums(shakes_dtm))[1:10,] %>% 
+  shakes_10@terms[.] %>% 
+  matrix(., 10, 10)
+# lift is definitely bugged, will just flag singletons
+lift_res = calclift(shakes_10@beta, wordcounts=colSums(shakes_dtm))[1:10,] %>%
+  shakes_10@terms[.] %>%
+  matrix(., 10, 10)
+score_res = calcscore(shakes_10@beta)[1:10,] %>%
+  shakes_10@terms[.] %>%
+  matrix(., 10, 10)
+prob_res = apply(shakes_10@beta, 1, order, decreasing = TRUE)[1:10,] %>% 
+  shakes_10@terms[.] %>% 
+  matrix(., 10, 10)
+
+score_list = list(FREX = frex_res, LIFT=lift_res, SCORE=score_res, PROB=prob_res)
+
+sapply(score_list, function(e) apply(e, 2, paste, collapse=', ')) %>%
+  as_tibble() %>%
+  mutate(Topic = 1:10) %>%
+  gather(key=Score, value=Terms, -Topic) %>%
+  arrange(Topic, Score) %>%
+  DT::datatable(options=list(dom='t', scrollY='400px', scrollCollapse=T, pageLength=40), rownames=F) %>%
+  DT::formatStyle(
+    0, # ignores columns, but otherwise put here
+    target='row',
+    backgroundColor = 'transparent'
+  )
+```
+
+<br>
+
+As another approach, consider the <span class="emph">saliency</span> and <span class="emph">relevance</span> of term via the <span class="pack">LDAvis</span> package. While you can play with it here, it's probably easier to [open it separately](vis/index.html).
+
+
+```{r ldavis, eval=FALSE, echo=FALSE}
+library(LDAvis)
+json <- createJSON(phi = exp(shakes_10@beta), 
+                   theta = shakes_10@gamma, 
+                   # doc.length = rowSums(shakes_dtm), 
+                   doc.length = rowSums(shakes_dtm>0), 
+                   vocab = shakes_10@terms, 
+                   term.frequency = colSums(shakes_dtm),
+                   R=10)
+serVis(json, out.dir = '_book/vis', open.browser = F)
+```
+
+<iframe src="vis/index.html" width="1200" height="700" frameborder="0"
+    scrolling="no"
+    marginheight="0"
+    marginwidth="0">
+  <p>Your browser does not support iframes.</p>
+</iframe>
+
+<br> 
+
+Given all these measures, one can now see how well they match what the topics the documents would be most associated with.  
+
+```{r tm10_results_topic_classification, eval=FALSE}
+t(topics(shakes_10, 3))
+```
+
+
+```{r tm10_results_pretty_topic_classification, echo=FALSE}
+t(topics(shakes_10, 2)) %>% 
+  data.frame %>% 
+  rename_all(str_replace, 'X', 'Top Topic ') %>% 
+  DT::datatable(options=list(dom='tp',
+                             autoWidth=T, 
+                             align='center',
+                             columnDefs=list(list(width='150px', targets=0),
+                                             list(width='100px', targets=1:2),
+                                             list(className = 'dt-center', targets = 1:2))), 
+                width='500') %>% 
+  DT::formatStyle(
+    0, # ignores columns, but otherwise put here
+    target='row',
+    backgroundColor = 'transparent'
+)
+```
+
+<br>
+
+For example, base just on term frequency, Hamlet is most likely to be associated with Topic `r t(topicmodels::topics(shakes_10, 3))['Hamlet',1]`. That topic is associated with the (stemmed words) `r topicmodels::get_terms(shakes_10, 20)[, t(topicmodels::topics(shakes_10, 3))['Hamlet',1]]`.  Hamlet is also one that is actually a decent mix, with its second topic expressed being Topic `r t(topicmodels::topics(shakes_10, 3))['Hamlet', 2]`, with common terms `r topicmodels::get_terms(shakes_10, 20)[, t(topicmodels::topics(shakes_10, 3))['Hamlet', 2]]`. They both have `r intersect(topicmodels::get_terms(shakes_10, 20)[, t(topicmodels::topics(shakes_10, 3))['Hamlet',1]], topicmodels::get_terms(shakes_10, 20)[, t(topicmodels::topics(shakes_10, 3))['Hamlet', 2]])` among their top 20 terms. Sounds about right for Hamlet.  The other measures pick up on things like Dane and Denmark.
+
+The following visualization shows a heatmap for the topic probabilities of each document.  Darker values mean higher probability for a document expressing that topic.  I've also added a cluster analysis based on the cosine distance matrix, and the resulting dendrogram[^clustering].  The colored bar on the right represents the given classification of a work as history, tragedy, comedy, or poem.
+
+
+```{r viz_topics, echo=FALSE, out.height='400px', fig.width=8.5, fig.height=8.5, fig.align='center'}
+library(quanteda)
+load('data/shakespeare_classification.RData')
+
+suppressPackageStartupMessages(library(dendextend))
+# see proxy::pr_DB %>% data.frame() for actual info for the metrics that
+# quanteda uses, whose functions don't bother to even tell you that's where they
+# are coming from
+# proxy::pr_DB %>% data.frame() %>% select( distance, formula, description, reference) %>% DT::datatable()
+
+# cosine distance, is not a proper distance
+row_dend  = 
+  (1-textstat_simil(dfm_weight(shakes_dtm, 'relMaxFreq'), 
+                    margin = "documents", 
+                    method = "cosine")) %>%
+  as.dist() %>%
+  hclust(method="complete") %>%
+  as.dendrogram %>%
+  set("branches_k_color", k = 3) %>% set("branches_lwd", c(.5,.5)) %>%
+  ladderize
+
+# row_dend  = 
+#   -quanteda::textstat_dist(dfm_weight(shakes_dtm, 'tfidf'), 
+#                            margin = "documents", 
+#                           method = "kullback") %>%
+#   hclust(method="complete") %>%
+#   as.dendrogram %>%
+#   set("branches_k_color", k = 3) %>% set("branches_lwd", c(.5,.5)) %>%
+#   ladderize
+
+# heatmaply is barely beta, use d3heatmap for now?
+
+# shakes_10@gamma %>%
+#   round(3) %>%
+#   heatmaply::heatmaply(Rowv=row_dend,
+#                        Colv=F,
+#                        labRow=shakes_10@documents,
+#                        labCol=paste0('topic', 1:10),
+#                        colors='Oranges',
+#                        k_row = 4,
+#                        plot_method = 'plotly',
+#                        row_side_colors = select(arrange(shakes_types, title), class),
+#                        # row_side_palette = c("#39BEB1", "#ABB065", "#ACA4E2", "#CC476B", "#E495A5", "black"),
+#                        seriate = 'OLO',
+#                        fontsize_row=7,
+#                        fontsize_col=7,
+#                        subplot_widths=c(.75, .025, .225),
+#                        subplot_heights=1,
+#                        hide_colorbar = T,
+#                        colorbar_len = 0.3,
+#                        colorbar_ypos=0) %>%
+#   layout(showlegend=F) %>% # showing the legend will screw up the colorbar and any associated options
+#   config(displayModeBar = F) %>% 
+#   theme_plotly()
+
+shakes_10@gamma %>%
+  round(3) %>%
+  heatmaply::heatmaply(Rowv=row_dend,
+                       Colv=F,
+                       colors='Oranges',
+                       row_side_colors = data.frame(shakes_types$class),
+                       # RowSideColors = shakes_types$class,
+                       labRow=shakes_10@documents,
+                       labCol=paste0('Topic ', 1:10),
+                       hide_colorbar=T,
+                       grid_gap=2,
+                       plot_method='plotly'
+                       ) %>%
+  layout(showlegend=F) %>% # showing the legend will screw up the colorbar and any associated options
+  config(displayModeBar = F) %>%
+  theme_plotly()
+```
+
+
+<br>
+
+A couple things stand out.  To begin with, most works are associated with one topic.  In terms of the discovered topics, traditional classificiation really probably only works for the historical works, as they cluster together as expected (except for Henry the VIII, possibly due to it being a collaborative work).  Furthermore, tragedies and comedies might hit on the same topics, albeit from different perspecitves.  In addition, at least some works are very poetical, or at least have topics in common with the poems (love).  If we take four clusters, the result boils down to *Phoenix* (on its own), standard poems, a mixed bag of more love oriented works and the remaining poems, then everything else.  
+
+Alternatively, one could merely classify the works based on their probable topics, which would make more sense if clustering of the works is in fact the goal. The following visualization attempts to order them based on their most probable topic.  The order is based on the most likely topics across all documents.
+
+```{r cluster_topics, echo=FALSE}
+topic_class = shakes_10@gamma %>%
+  round(3) %>%
+  data.frame() %>% 
+  rename_all(function(x) str_replace(x, 'X', 'Topic ')) %>% 
+  mutate(text =  shakes_10@documents, 
+         class = shakes_types$class)
+order_topics = order(colSums(shakes_10@gamma), decreasing=T)
+
+topic_class = topic_class %>%
+  # select(-text, -class) %>%
+  select(order_topics, text, class)  %>%
+  arrange_at(vars(contains('Topic')), desc) 
+
+topic_class %>%
+  select(-text, -class) %>% 
+  heatmaply::heatmaply(Rowv=F, Colv=F,
+                       labRow=topic_class$text,
+                       labCol=apply(get_terms(shakes_10, 10), 2, paste0, collapse='\n')[order_topics],
+                       column_text_angle=0, 
+                       colors='Oranges',
+                       subplot_widths=c(.75),
+                       plot_method = 'plotly',
+                       fontsize_row=8,
+                       fontsize_col=8,
+                       hide_colorbar = T) %>% 
+  layout(showlegend=F, height=750) %>% # height to be deprecated, maybe heatmaply will conform to plotly by then
+  config(displayModeBar = F) %>% 
+  theme_plotly() 
+```
+
+<br>
+<br>
+<br>
+<br>
+
+The following shows the average topic probability for each of the traditional classes. Topics are represented by their first five most probable terms.
+
+```{r avg_topic_probs_per_class, echo=FALSE}
+class_probs = shakes_10@gamma %>%
+  data.frame() %>% 
+  round(3) %>%
+  rename_all(function(x) stringr::str_replace_all(x, 'X', 'Topic ')) %>% 
+  bind_cols(doc=shakes_10@documents, arrange(shakes_types, title), .) %>% 
+  select(-title) %>% 
+  gather(key=topic, value=prob, -doc, -class, -problem, -late_romance) %>% 
+  mutate(topic = forcats::fct_reorder(topic, rep(1:10, e=n_distinct(doc)))) %>% 
+  group_by(class, topic) %>% 
+  summarise(mean_prob = mean(prob)) %>% 
+  arrange(class, topic) %>% 
+  spread(topic, mean_prob) %>% 
+  ungroup
+
+# class_probs %>% 
+#   select(-class) %>% 
+#   d3heatmap::d3heatmap(Rowv=F,
+#                        Colv=F,
+#                        labRow=class_probs$class,
+#                        labCol=apply(get_terms(shakes_10, 5), 2, paste0, collapse=' '),
+#                        # colors=viridis::inferno(500),
+#                        colors='Oranges',
+#                        k_row = 10,
+#                        # row_side_colors = select(arrange(shakes_types, title), class),
+#                        xaxis_font_size = 8,
+#                        yaxis_font_size=12, 
+#                        show_grid = F, 
+#                        width=800,
+#                        xaxis_height = 150
+#                        ) 
+class_probs %>% 
+  select(-class) %>% 
+  heatmaply::heatmaply(Rowv=F,
+                       Colv=F,
+                       labRow=class_probs$class,
+                       labCol=apply(get_terms(shakes_10, 10), 2, paste0, collapse='\n'),
+                       # colors=viridis::inferno(500),
+                       colors='Oranges',
+                       plot_method = 'plotly',
+                       xaxis_font_size = 8,
+                       yaxis_font_size=12, 
+                       # xaxis_height = 250,
+                       # subplot_widths = .75,
+                       hide_colorbar = T,
+                       colorbar_len=.5,
+                       column_text_angle=0
+                       ) %>%
+  config(displayModeBar = F) %>% 
+  theme_plotly()
+```
+
+
+```{r ggplay, echo=F, eval=F}
+shakes_10@gamma %>%
+  data.frame() %>% 
+  round(3) %>%
+  rename_all(function(x) stringr::str_replace_all(x, 'X', 'Topic_')) %>% 
+  bind_cols(doc=shakes_10@documents, .) %>% 
+  gather(key=topic, value=prob, -doc) %>% 
+  mutate(topic = forcats::fct_reorder(topic, rep(1:10, e=n_distinct(doc)))) %>% 
+  ggplot(aes(x=prob, y=doc, height=..density..)) +
+  geom_joy(scale=20, fill='#ff5500', alpha=.25, color='#ff5500') +
+  scale_y_discrete(expand=c(0.01, 0)) +
+  scale_x_continuous(expand=c(0, 0)) + 
+  lazerhawk::theme_trueMinimal()
+```
+
+```{r ggplay2, echo=F, eval=F}
+shakes_10@gamma %>%
+  data.frame() %>% 
+  round(3) %>%
+  rename_all(function(x) stringr::str_replace_all(x, 'X', 'Topic_')) %>% 
+  bind_cols(doc=shakes_10@documents, .) %>% 
+  gather(key=topic, value=prob, -doc) %>% 
+  mutate(topic = forcats::fct_reorder(topic, rep(1:10, e=n_distinct(doc)))) %>% 
+  ggplot(aes(x=prob, y=topic, height=..density..)) +
+  geom_joy(scale=4, fill='#ff5500', alpha=.25, color='#ff5500') +
+  scale_y_discrete(expand=c(0.01, 0)) +
+  scale_x_continuous(expand=c(0, 0)) + 
+  lazerhawk::theme_trueMinimal()
+```
+
+Aside from the poems, the classes are a good mix of topics, and appear to have some overlap.
+
+And I grow weary...
+
+<br>
+<br>
+<br>
+
+<div style="text-align:center; font-size:500%">**FIN**</div>
+
+[^bug]: If you can think of a use case where `x<br>y<br>z` leading to `xyz` would be both expected as default behavior and desired please let me know.
+
+[^r4everything]: If this surprises you, let me remind you that there are over 10k packages on CRAN alone.
+
+[^tibblefail]: I found it easier to work with the entire data frame for the function, hence splitting it on id and recombining.  Some attempt was made to work within the tidyverse, but there were numerous issues to what should have been a fairly easy task.
+
+[^love]: Love might as well be a stopword for Shakespere.
+
+[^noshowmtld]: I don't show this as I actually did it in parallel due to longer works taking a notable time to calculate MTLD.
+
+[^correadmtld]: The Pearson correlation between MTLD and the Coleman Liau grade readability depicted previously was .87.
+
+[^clustering]: If you are actually interested in clustering the documents (or anything for that matter in my opinion), this would not be the way to do so. For one, the documents are already clustered based on most probable topic. Second, cosine distance isn't actually a proper distance. Third, as shocking as it may seem, newer methods have been developed since the hierarchical clustering approach, which basically has a dozen arbitrary choices to be made at each step.  However, as a simple means to a visualization, the method is valuable if it helps with understanding the data.
+
+[^scoredefs]: These descriptions are from Sievert and Shirley 2014.
+
+<!--chapter:end:09_shakespeare.Rmd-->
+
+# Appendix
+
+## Texts
+
+
+### Donald Barthelme
+
+<img src="img/Barthelme.jpg" style="display:block; margin: 0 auto;" width=500>
+
+“I have to admit we are mired in the most exquisite mysterious muck. This muck heaves and palpitates. It is multi-directional and has a mayor.” 
+
+“You may not be interested in absurdity," she said firmly, "but absurdity is interested in you.” 
+
+“There was no particular point at which I stopped being promising.” 
+
+#### The First Thing the Baby Did Wrong
+
+This short story is essentially a how-to on parenting.
+
+[link](http://jessamyn.com/barth/baby.html)
+
+
+#### The Balloon
+
+This story is about a balloon that can represent whatever you want it to.
+
+[link](http://www.uni.edu/oloughli/elit11/Balloon.rtf)
+
+
+#### Some of Us Had Been Threatening Our Friend Colby
+
+A brief work about etiquette and how to act in society.
+
+[link](http://jessamyn.com/barth/colby.html)
+
+
+### Raymond Carver
+
+<img src="img/Raymond_Carver.jpg" style="display:block; margin: 0 auto;" width=500>
+
+“It ought to make us feel ashamed when we talk like we know what we're talking about when we talk about love.”
+
+“That's all we have, finally, the words, and they had better be the right ones.” 
+
+“Get in, get out. Don't linger. Go on.” 
+
+“There is no answer. It's okay. But even if it wasn't okay, what am I supposed to do?” 
+
+“You've got to work with your mistakes until they look intended. Understand?” 
+
+#### What We Talk About When We Talk About Love
+
+The text we use is actually *Beginners*, or the unedited version. A drink is required in order to read it with the proper context. Probably several. No. Definitely several.
+
+[link](http://www.newyorker.com/magazine/2007/12/24/beginners)
+
+
+### Billy Dee Shakespeare
+
+<img src="img/Billy_Dee_Shakespeare.jpg" style="display:block; margin: 0 auto;" width='40%'>
+
+
+"It works every time."
+
+"This deal is getting worse all the time!"
+
+These old works have pretty much no relevance today, and are mostly forgotten by everyone except humanities faculty. The analysis of them depicted in this document is pretty much definitive, and leaves little else to say regarding them, so don't bother reading them if you haven't already.
+
+
+
+## R
+
+Up until even a couple years ago, R was *terrible* at text.
+
+[NLP task view](https://www.r-pkg.org/ctv/NaturalLanguageProcessing)
+
+monkeylearn?
+
+## Python
+
+- nltk
+- gensim
+- spacy
+
+<!--chapter:end:10_appendix.Rmd-->
+
