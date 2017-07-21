@@ -32,7 +32,7 @@ Despite the above assigned sentiments, the word *sick* has been used at least si
 
 In addition, the lexicons are going to maybe be applicable to *general* usage of English in the western world.  Some might wonder where exactly these came from or who decided that the word *abacus* should be affiliated with 'trust'. You may start your path by typing `?sentiments` at the console if you have the <span class="pack">tidytext</span> package loaded.
 
-## Example
+## Sentiment Analysis Example
 
 
 ### The first thing the baby did wrong
@@ -68,11 +68,12 @@ barth0 =
 One of the things stressed in this document is the iterative nature of text analysis.  You will consistently take two steps forward, and then one or two back as you find issues that need to be addressed. For example in a subsequent step I found there were encoding issues[^encoding], so the following attempts to fix them.  In addition we want to <span class="emph">tokenize</span> the documents such that our <span class="emph">tokens</span> are sentences (e.g. as opposed to words or paragraphs). The reason for this is that I will be summarizing the sentiment at sentence level.
 
 
-```{r barth_fix_encoding}
+```{r barth_fix_encoding, echo=1:2, eval=1:2}
 # Fix encoding, convert to sentences
 barth = barth0 %>% 
   mutate(text = sapply(text, stringi::stri_enc_toutf8, is_unknown_8bit=TRUE, validate=T)) %>% 
   unnest_tokens(sentence, text, token='sentences')
+save(barth, file='data/barth_sentences.RData')
 ```
 
 The next step is to drill down to just the document we want, and tokenize to the word level.  However, I create a sentence id so that we can group on it later.
@@ -120,7 +121,7 @@ In general the sentiment starts out negative as the problem is explained. It bou
 
 
 
-## Exercises
+## Sentiment Analysis Exercise
 
 ### Romeo & Juliet
 
@@ -214,7 +215,7 @@ rnj_sentiment_bing %>%
 
 <br>
 
-In general it's a close game until perhaps the midway point, when negativity takes over and despair sets in with the story.  By the end [[:SPOILER ALERT:]] Sean Bean is beheaded, Darth Vader reveals himself to be Luke's father, and Number One is *you*.
+In general it's a close game until perhaps the midway point, when negativity takes over and despair sets in with the story.  By the end [[:SPOILER ALERT:]] Sean Bean is beheaded, Darth Vader reveals himself to be Luke's father, and Verbal is Keyser Söze.
 
 Here is the same information expressed as a difference.
 
@@ -230,7 +231,7 @@ rnj_sentiment_bing %>%
 
 <br>
 
-## Summary
+## Sentiment Analysis Summary
 
 In general, sentiment analysis can be a useful exploration of data, but it is highly dependent on the context and tools used.  Note also that 'sentiment' can be anything, it doesn't have to be positive vs. negative.  Any vocabulary may be applied, and so it has more utility than the usual implementation. 
 

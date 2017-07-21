@@ -1,0 +1,4 @@
+# Summary
+
+
+For more natural language processing tools in R, consult the corresponding [task view](https://www.r-pkg.org/ctv/NaturalLanguageProcessing).  Much natural language processing is done with deep learning techniques, which generally requires a lot of data, notable computing resources, copious amounts of fine tunining, and often involves optimization towards a specific task.  Most of the cutting edge work there is done in Python, but as a starting point for more common approaches, you can check out the [Natural Language Toolkit](http://www.nltk.org/book/).

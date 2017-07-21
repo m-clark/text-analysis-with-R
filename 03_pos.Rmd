@@ -1,6 +1,6 @@
-# POS tagging
+# POS taggin'
 
-As an initial review of parts of speech, I suggest you watch the following Schoolhouse Rocks videos:
+As an initial review of parts of speech, if you need a refresher the following Schoolhouse Rocks videos should get you squared away:
 
 - [A noun is a person, place, or thing.](https://youtu.be/h0m89e9oZko)
 - [Interjections](https://youtu.be/YkAX7Vk3JEw)
@@ -26,7 +26,7 @@ We have two adjectives (JJ), a plural noun (NNS), a verb (VBP), and an adverb (R
 
 Common analysis may then be used to predict POS given the current state of the text, comparing the grammar of different texts, human-computer interaction, or translation from one language to another.
 
-## Examples
+## POS Examples
 
 The following approach to POS-tagging is very similar to what we did for sentiment analysis as depicted previously. We have a POS dictionary, and can use an inner join to attach the words to their POS.  Unfortunately this approach is unrealistically simplistic, as additional steps would need to be taken to ensure words are correctly classified.  For example, without more information, we are unable to tell if some words are being used as nouns or verbs (human being vs. being a problematic part of speech).  However, this example can serve as a starting point.
 
@@ -38,27 +38,18 @@ In the following we'll compare three texts from Donald Barthelme:
 - *The First Thing The Baby Did Wrong*
 - *Some Of Us Had Been Threatening Our Friend Colby*
 
-As another comparison, I've included Raymond Carver's *What we talk about when we talk about love*, the unedited version.  I process each text separately for clarity, but you could easily have just done a <span class="func">group_by</span> approach on the whole of the <span class="objclass">barth</span> object.
+As another comparison, I've included Raymond Carver's *What we talk about when we talk about love*, the unedited version.  First we'll load an unnested object from the sentiment analysis, the <span class="objclass">barth</span> object.  Then for each work we create a sentence id, unnest the data to words, join the POS data, then create counts/proportions for each POS.
 
 ```{r barthelme_pos}
-balloon = barth %>% 
-  filter(work=='balloon.txt') %>% 
-  mutate(sentence_id = 1:n()) %>% 
-  unnest_tokens(word, sentence, drop=F) %>% 
-  ungroup 
-
-colby = barth %>% 
-  filter(work=='colby.txt') %>% 
-  mutate(sentence_id = 1:n()) %>% 
-  unnest_tokens(word, sentence, drop=F) %>% 
-  ungroup 
-
-barthelme_pos = bind_rows(baby, balloon, colby) %>% 
-  group_by(work) %>% 
-  inner_join(parts_of_speech) %>% 
-  count(pos) %>%
-  mutate(text=work,
-         prop=n/sum(n))
+load('data/barth_sentences.RData')
+barthelme_pos = barth %>% 
+  mutate(work = str_replace(work, '.txt', '')) %>%  # remove file extension
+  group_by(work) %>%                              
+  mutate(sentence_id = 1:n()) %>%                   # create a sentence id
+  unnest_tokens(word, sentence, drop=F) %>%         # get words
+  inner_join(parts_of_speech) %>%                   # join POS
+  count(pos) %>%                                    # count
+  mutate(prop=n/sum(n))
 ```
 
 Next we read in and process the Carver text in the same manner.
@@ -72,27 +63,28 @@ carver_pos =
   unnest_tokens(word, text, token='words') %>% 
   inner_join(parts_of_speech) %>% 
   count(pos) %>%
-  mutate(text='baby',
+  mutate(work='love',
          prop=n/sum(n))
 ```
 
-This visualization depicts the proprtion of occurrence for each part of speech across the works. It would appear Barthelme is fairly consistent, and also that relative to the Barthelme texts, Carver preferred nouns and pronouns. 
+This visualization depicts the proportion of occurrence for each part of speech across the works. It would appear Barthelme is fairly consistent, and also that relative to the Barthelme texts, Carver preferred nouns and pronouns. 
 
-```{r barthelme_pos_vis, echo=FALSE}
+```{r barthelme_pos_vis, echo=FALSE, out.height='600px', fig.height=6}
 carver_pos %>% 
-  group_by(text) %>% 
+  group_by(work) %>%
   plot_ly() %>% 
-  add_markers(x=~pos, y=~prop, color=I('gray50'), opacity=.5, size=I(20), name='Carver') %>% 
-  add_markers(x=~pos, y=~prop, color=~text, size=I(10), data=barthelme_pos) %>% 
+  add_markers(x=~pos, y=~prop, color=I('gray50'), opacity=.5, size=I(20), name='love') %>% 
+  add_markers(x=~pos, y=~prop, color=~work, size=I(10), data=barthelme_pos) %>% 
   theme_plotly() %>% 
-  layout(xaxis = list(title=F))
+  layout(xaxis = list(title=F)) %>% 
+  theme_plotly
 ```
 
 <br>
 
 
 
-### More taggin
+### More taggin'
 
 More sophisticated POS tagging would require the context of the sentence structure. Luckily there are tools to help with that here, in particular via the <span class="pack">openNLP</span> package.  In addition, it will require a certain language model to be installed (English is only one of many available). I don't recommend doing so unless you are really interested in this (the <span class="pack">openNLPmodels.en</span> package is fairly large).
 
@@ -120,7 +112,7 @@ library(openNLP)
 library(openNLPmodels.en)
 ```
 
-Next comes the processing. This more or less follows the help file example for `?Maxent_POS_Tag_Annotator`. Given the several steps involved I show only the processing for one text for clarity. Ideally you'd write a function, and use a <span class="func">group_by</span> approach.
+Next comes the processing. This more or less follows the help file example for `?Maxent_POS_Tag_Annotator`. Given the several steps involved I show only the processing for one text for clarity. Ideally you'd write a function, and use a <span class="func">group_by</span> approach, to process each of the texts of interest.
 
 
 ```{r baby_pos, eval=F}
@@ -199,7 +191,7 @@ As we can see, we have quite a few more POS to deal with here.  They come from t
 
 <img src="img/POS-Tags.png" style="display:block; margin: 0 auto;">
 
-Ploting the differences, we now see a little more distinction between *The Balloon* and the other two texts. It is more likely to use the determiners, adjectives, singular nouns, and less likely to use personal pronouns and base verbs and verbs in past tense.
+Plotting the differences, we now see a little more distinction between *The Balloon* and the other two texts. It is more likely to use the determiners, adjectives, singular nouns, and less likely to use personal pronouns and base verbs and verbs in past tense.
 
 ```{r barth_pos, eval=T, echo=F}
 load('data/POS_results.RData')
@@ -230,5 +222,4 @@ For more information, consult the following:
 - [Maxent function](http://maxent.sourceforge.net/about.html) Note that this 'maximum entropy' approach is just one way to go about things. Other models include hidden markov models, conditional random fields, and more recently, deep learning techniques.
 
 
-
-For more natural language processing tools in R, consult the corresponding [task view](https://www.r-pkg.org/ctv/NaturalLanguageProcessing).  Much natural language processing is done with deep learning techniques, which generally requires a lot of data, notable computing resources, fine tunining, and often involves optimization towards a specific task.  Most of the cutting edge work there is done in Python, but as a starting point for more common approaches, you can check out the [Natural Language Toolkit](http://www.nltk.org/book/).
+## POS Exercise

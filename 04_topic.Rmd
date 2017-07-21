@@ -3,20 +3,22 @@
 
 ## Basic idea
 
-<span class="emph">Topic modeling</span> as typically conducted is a tool for much more than text.  The primary technique of <span class="emph">latent dirichlet allocation</span> should be as much a part of your toolbox as principal components and factor analysis.  It can be seen merely as a dimension reduction approach, but it can also be used for its rich interpretative quality as well. The basic idea is that we'll take a whole lot of features and boil them down to a few 'topics'.   In this sense LDA is akin to discrete PCA.  Another way to think about this is more from the  perspective of factor analysis, where we are keenly interested in interpretation of the result, and want to know both what terms are associated with which topics, and what documents are more likely to present which topics.  
+<span class="emph">Topic modeling</span> as typically conducted is a tool for much more than text.  The primary technique of <span class="emph">Latent Dirichlet Allocation</span> (LDA) should be as much a part of your toolbox as principal components and factor analysis.  It can be seen merely as a dimension reduction approach, but it can also be used for its rich interpretative quality as well. The basic idea is that we'll take a whole lot of features and boil them down to a few 'topics'.   In this sense LDA is akin to discrete PCA.  Another way to think about this is more from the  perspective of factor analysis, where we are keenly interested in interpretation of the result, and want to know both what terms are associated with which topics, and what documents are more likely to present which topics.  
 
-In the standard setting, to be able to conduct such an analysis from text one needs a <span class="emph">document-term matrix</span>, where rows represent documents, and columns terms. Each cell is a count of how many times the term occurs in the document. Terms are typically words, but could be any <span class="emph">n-gram</span> of interest. Outside of text analysis they could represent bacterial composition, genetic information, or whatever the researcher is interested in. 
+In the standard setting, to be able to conduct such an analysis from text one needs a <span class="emph">document-term matrix</span>, where rows represent documents, and columns terms. Each cell is a count of how many times the term occurs in the document. Terms are typically words, but could be any <span class="emph">n-gram</span> of interest. 
+
+Outside of text analysis terms could represent bacterial composition, genetic information, or whatever the researcher is interested in. Likewise, documents can be people, geographic regions, etc.  The gist is, despite the common text-based application, that what constitutes a document or term is dependent upon the research question, and LDA can be applied in a variety of research settings.
 
 
 ## Steps
 
-Most of the time in topic modeling is spent on processing the text.  Importing/scraping it, dealing with capitalization, punctuation, removing stopwords, dealing with encoding issues, removing other miscellaneous common words.  It is a highly iteratitive process such that once you get to the document-term matrix, you're just going to find the stuff that was missed before and repeat the process with new 'cleaning parameters' in place.  So getting to the document-term matrix is the hard part.  See the [Shakespeare section][Shakespeare Start to Finish], which comprises 5 acts, of which the first four and some additional scenes represent all the processing needed to get to the final scene of topic modeling.  In what follows we'll start at the end of that journey.
+When it comes to text analyiss, most of the time in topic modeling is spent on processing the text itself.  Importing/scraping it, dealing with capitalization, punctuation, removing stopwords, dealing with encoding issues, removing other miscellaneous common words.  It is a highly iteratitive process such that once you get to the document-term matrix, you're just going to find the stuff that was missed before and repeat the process with new 'cleaning parameters' in place.  So getting to the analysis stage is the hard part.  See the [Shakespeare section][Shakespeare Start to Finish], which comprises 5 acts, of which the first four and some additional scenes represent all the processing needed to get to the final scene of topic modeling.  In what follows we'll start at the end of that journey.
 
 ## Examples
 
 ### Shakespeare
 
-For our example, we'll look at Shakespeare's plays and poems, using a topic model with 10 topics.  For our needs we'll use the <span class="pack">topicModels</span> package for the analysis, and mostly others for post-processing.  Due to the large number of terms, this will take a while to run depending on your machine (maybe a minute or two).  We can also see how things compare with the academic classifications for the texts.
+In this example, we'll look at Shakespeare's plays and poems, using a topic model with 10 topics.  For our needs we'll use the <span class="pack">topicModels</span> package for the analysis, and mostly others for post-processing.  Due to the large number of terms, this could take a while to run depending on your machine (maybe a minute or two).  We can also see how things compare with the academic classifications for the texts.
 
 ```{r tm_chapter_topic_model, eval=F}
 load('Data/shakes_dtm_stemmed.RData')
@@ -24,11 +26,12 @@ library(topicmodels)
 shakes_10 = LDA(convert(shakes_dtm, to = "topicmodels"), k = 10)
 ```
 
+#### Examine Terms within Topics
+
 One of the first things to do is attempt to interpret the topics, and we can start by seeing which terms are most probable for each topic.
 
 ```{r tm_chapter_tm10_results, eval=FALSE}
 get_terms(shakes_10, 20)
-t(topics(shakes_10, 3))
 ```
 
 ```{r tm_chapter_tm10_results_pretty_terms, echo=FALSE}
@@ -45,10 +48,15 @@ get_terms(shakes_10, 20) %>%
 
 <br>
 
-We can see there is a lot of overlap in these topics for top terms.  Just looking at the top 10, *love* occurs in all of them, *god* and *heart* as well, but we could have guessed this just looking at how often they occur in general. Other measures can be used to assess term importance, such as those that seek to balance the term's probability of occurrence within a document, and term *exclusivity*, or how likely a term is to occur in only one particular topic.  See the [Shakespeare section][Shakespeare Start to Finish] for some of those.
+We can see there is a lot of overlap in these topics for top terms.  Just looking at the top 10, *love* occurs in all of them, *god* and *heart* as well, but we could have guessed this just looking at how often they occur in general. Other measures can be used to assess term importance, such as those that seek to balance the term's probability of occurrence within a document, and term *exclusivity*, or how likely a term is to occur in only one particular topic.  See the [Shakespeare section][Shakespeare Start to Finish] for some examples of those.
+
+#### Examine Document-Topic Expression
 
 Next we can look at which documents are more likely to express each topic. 
 
+```{r tm_chapter_tm10_results_topic_classification, eval=FALSE}
+t(topics(shakes_10, 2))
+```
 
 ```{r tm_chapter_tm10_results_pretty_topic_classification, echo=FALSE}
 t(topics(shakes_10, 2)) %>% 
@@ -70,13 +78,13 @@ t(topics(shakes_10, 2)) %>%
 
 <br>
 
-For example, Hamlet is most likely to be associated with Topic `r t(topicmodels::topics(shakes_10, 3))['Hamlet',1]`. That topic is associated with the (stemmed words) `r topicmodels::get_terms(shakes_10, 20)[, t(topicmodels::topics(shakes_10, 3))['Hamlet',1]]`.  Hamlet is also one that is actually a decent mix, with its second topic expressed being Topic `r t(topicmodels::topics(shakes_10, 3))['Hamlet', 2]`, with common terms `r topicmodels::get_terms(shakes_10, 20)[, t(topicmodels::topics(shakes_10, 3))['Hamlet', 2]]`. They both have `r intersect(topicmodels::get_terms(shakes_10, 20)[, t(topicmodels::topics(shakes_10, 3))['Hamlet',1]], topicmodels::get_terms(shakes_10, 20)[, t(topicmodels::topics(shakes_10, 3))['Hamlet', 2]])` among their top 20 terms. Sounds about right for Hamlet.
+For example, Hamlet is most likely to be associated with Topic `r t(topicmodels::topics(shakes_10, 3))['Hamlet',1]`. That topic is associated with the (stemmed words) `r topicmodels::get_terms(shakes_10, 20)[, t(topicmodels::topics(shakes_10, 3))['Hamlet',1]]`.  Hamlet is also one of the few documents that is actually a decent mix, with its second topic expressed being Topic `r t(topicmodels::topics(shakes_10, 3))['Hamlet', 2]`, with common terms `r topicmodels::get_terms(shakes_10, 20)[, t(topicmodels::topics(shakes_10, 3))['Hamlet', 2]]`. They both have `r intersect(topicmodels::get_terms(shakes_10, 20)[, t(topicmodels::topics(shakes_10, 3))['Hamlet',1]], topicmodels::get_terms(shakes_10, 20)[, t(topicmodels::topics(shakes_10, 3))['Hamlet', 2]])` among their top 20 terms. Sounds about right for Hamlet.
 
-The following visualization shows a heatmap for the topic probabilities of each document.  Darker values mean higher probability for a document expressing that topic.  I've also added a cluster analysis based on the  cosine distance matrix, and the resulting dendrogram. The colored bar on the right represents the given classification of a work as history, tragedy, comedy, or poem.
+The following visualization shows a heatmap for the topic probabilities of all documents.  Darker values mean higher probability for a document expressing that topic.  I've also added a cluster analysis based on the cosine distance matrix, and the resulting dendrogram. The colored bar on the right represents the given classification of a work as history, tragedy, comedy, or poem.
 
+<br>
 
-
-```{r tm_chapter_viz_topics, echo=FALSE, out.height='400px', fig.width=8.5, fig.height=8.5, fig.align='center'}
+```{r tm_chapter_viz_topics, echo=FALSE, out.height='700px', out.width='700px', fig.width=11, fig.height=8.5, fig.align='center'}
 # Note the latex figure settings can actually limit the plot size; so basically
 # you have several chunk options, possibly multiple package options, and css all working against
 # each other for single visual (wtf)
@@ -94,8 +102,9 @@ suppressPackageStartupMessages(library(dendextend))
 # are coming from
 # proxy::pr_DB %>% data.frame() %>% select( distance, formula, description, reference) %>% DT::datatable()
 
-suppressPackageStartupMessages(library(heatmaply))
+colvec = c(palettes$orange$orange, palettes$orange$tetradic)[as.integer(factor(shakes_types$class))]
 
+suppressPackageStartupMessages(library(heatmaply))
 # cosine distance, is not a proper distance
 row_dend  = 
   (1-textstat_simil(dfm_weight(shakes_dtm, 'relMaxFreq'), 
@@ -104,7 +113,8 @@ row_dend  =
   as.dist() %>%
   hclust(method="complete") %>%
   as.dendrogram %>%
-  set("branches_k_color", k = 3) %>% set("branches_lwd", c(.5,.5)) %>%
+  set("branches_k_color", k = 4) %>% 
+  set("branches_lwd", c(.5,.5)) %>%
   ladderize
 
 # the amount of bugs is staggering
@@ -116,7 +126,7 @@ row_dend  =
 # for the heatmaply part, row_side_colors is required again, or nothing will be displayed; what you actually provide is superfluous and ignored, even NULL
 # rowSideColors is now required, but whatever you put there is ignored
 # AND AFTER ALL THAT, it literally gets you back to square one, because the width and height are ignored
-colvec = c(palettes$orange$orange, palettes$orange$tetradic)[as.integer(factor(shakes_types$class))]
+
 # fix_heatmaply = shakes_10@gamma %>%
 #   round(3) %>%
 #   heatmapr(Rowv=row_dend,
@@ -159,7 +169,9 @@ shakes_10@gamma %>%
                        Colv=F,
                        colors='Oranges',
                        row_side_colors = data.frame(shakes_types$class),
-                       # RowSideColors = shakes_types$class,
+                       row_side_palette = plasma,
+                       k_row= 4,
+                       # RowSideColors = 'Set2',
                        labRow=shakes_10@documents,
                        labCol=paste0('Topic ', 1:10),
                        hide_colorbar=T,
@@ -169,20 +181,18 @@ shakes_10@gamma %>%
   layout(showlegend=F) %>% # showing the legend will screw up the colorbar and any associated options
   config(displayModeBar = F) %>%
   theme_plotly()
-
 ```
-
 
 
 <br>
 
-A couple things stand out.  To begin with, most works are associated with one topic[^howmanytopics].  In terms of the discovered topics, traditional classificiation really probably only works for the historical works, as they cluster together as expected (except for Henry the VIII, possibly due to it being a collaborative work).  Furthermore, tragedies and comedies might hit on the same topics, albeit from different perspecitves.  In addition, at least some works are very poetical, or at least have topics in common with the poems (love).  If we take four clusters, the result boils down to *Phoenix* (on its own), standard poems, a mixed bag of more love oriented works and the remaining poems, then everything else.  
+A couple things stand out.  To begin with, most works are associated with one topic[^howmanytopics].  In terms of the discovered topics, traditional classificiation really probably only works for the <span class="" style="color:#9C179E">historical</span> works, as they cluster together as expected (except for Henry the VIII, possibly due to it being a collaborative work).  Furthermore, <span class="" style="color:#F0F921">tragedies</span> and <span class="" style="color:#0D0887">comedies</span> might hit on the same topics, albeit from different perspecitves.  In addition, at least some works are very poetical, or at least have topics in common with the <span class="" style="color:#ED7953">poems</span> (love, beauty).  If we take four clusters from the cluster analysis, the result boils down to *Phoenix* (on its own), standard poems, a mixed bag of more love-oriented works and the remaining poems, then everything else.  
 
 Alternatively, one could merely classify the works based on their probable topics, which would make more sense if clustering of the works is in fact the goal. The following visualization attempts to order them based on their most probable topic.  The order is based on the most likely topics across all documents.
 
+<br>
 
-
-```{r tm_chapter_cluster_topics, echo=FALSE, fig.align='center', fig.width=6, fig.height=5, out.height='800px'}
+```{r tm_chapter_cluster_topics, echo=FALSE, fig.align='center', fig.width=11, fig.height=5, out.height='800px', out.width='650px'}
 topic_class = shakes_10@gamma %>%
   round(3) %>%
   data.frame() %>% 
@@ -204,7 +214,7 @@ topic_class %>%
                        labCol=apply(get_terms(shakes_10, 10), 2, paste0, collapse='\n')[order_topics],
                        column_text_angle=0, 
                        colors='Oranges',
-                       subplot_widths=c(1),
+                       # subplot_widths=c(1),
                        plot_method = 'plotly',
                        fontsize_row=8,
                        fontsize_col=8,
@@ -231,4 +241,4 @@ There extensions of LDA used in topic modeling that will allow your analysis to 
 https://ldavis.cpsievert.me/reviews/reviews.html
 
 
-[^howmanytopics]: There isn't a lot to work with in this realm, but I investigated the 'optimal' number of topics via a measure called <span class="emph">perplexity</span>.  It bottomed out at around 50 topics.
+[^howmanytopics]: There isn't a lot to work with in the realm of choosing an 'optimal' number of topics, but I investigated it via a measure called <span class="emph">perplexity</span>.  It bottomed out at around 50 topics.  Usually such an approach is done through cross-validation.  However, the solution chosen has no guarantee to produce human interpretable topics.

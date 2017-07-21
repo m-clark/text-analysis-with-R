@@ -53,7 +53,7 @@ github-repo:  m-clark/
 
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE, message=F, warning=F, error=F, comment=NA, R.options=list(width=220),   # code 
-                      dev.args=list(bg = 'transparent'), dev='svg', fig.align='center'     # viz
+                      dev.args=list(bg = 'transparent'), dev='svg', fig.align='center',     # viz
                       cache.rebuild=F, cache=T)                                                 # cache
 ```
 
@@ -177,7 +177,7 @@ However, if memory is really a concern, it's probably not that using factors wil
 
 ### Analysis
 
-It is important to know that raw text cannot be analyzed quantitatively. There is no magic that takes a categorical variable with text labels and estimates correlations among words and other words or numeric data. *Everything* that can be analyzed must have some numeric representation first, and this is where factors come in. For example, here is a data frame with two categorical predictors (`factor*`), a numeric predictor (`x`), and a numeric target (`y`).  What follows is what it looks like if you wanted to run a regression model.
+It is important to know that raw text cannot be analyzed quantitatively. There is no magic that takes a categorical variable with text labels and estimates correlations among words and other words or numeric data. *Everything* that can be analyzed must have some numeric representation first, and this is where factors come in. For example, here is a data frame with two categorical predictors (`factor*`), a numeric predictor (`x`), and a numeric target (`y`).  What follows is what it looks like if you wanted to run a regression model in that setting.
 
 ```{r dummy, eval=-3}
 df = 
@@ -226,6 +226,7 @@ A lot of folks new to R are not aware of just how much basic text processing R c
 - <span class="func">strsplit</span>: split strings
 - <span class="func">nchar</span>: how many characters in a string
 - <span class="func">as.numeric</span>: convert a string to numeric if it can be
+- <span class="func">strtoi</span>: convert a string to integer if it can be (faster than as.integer)
 - <span class="func">adist</span>: string distances
 
 I probably use paste/paste0 more than most things when dealing with text, as string concatenation comes up so often.
@@ -245,15 +246,15 @@ Beyond that, use of regular expression and functionality included in the <span c
 
 A couple packages will probably take care of the vast majority of your standard text processing needs.  Note that even if they aren't adding anything to the functionality of the base R functions, they typically will have been optimized in some fashion
 
-- <span class="pack">stringr</span>/<span class="pack">stringi</span>: more or less the same stuff you'll find with <span class="func">substr</span>, <span class="func">grep</span> etc. except easier to use or faster
+- <span class="pack">stringr</span>/<span class="pack">stringi</span>: more or less the same stuff you'll find with <span class="func">substr</span>, <span class="func">grep</span> etc. except easier to use or faster. Also add useful functionality not in base R (e.g. <span class="func">str_to_title</span>)
 - <span class="pack">tidyr</span>: has functions such as <span class="func">unite</span>, <span class="func">separate</span>, <span class="func">replace_na</span> that can often come in handy when working with data frames
-- <span class="pack">glue</span>: a newer package that can be seen as a fancier <span class="func">paste</span>. Most likely will be useful when creating functions or shiny apps in which variable text output is desired.
+- <span class="pack">glue</span>: a newer package that can be seen as a fancier <span class="func">paste</span>. Most likely will be useful when creating functions or shiny apps in which variable text output is desired
 
-One issue I have with both packages and base R is that often they return a list object, when it should be simplifying to the vector format it was initially fed.  This sometimes requires an additional step or two of further processing that shouldn't be necessary, but be prepared for it[^str_all]. 
+One issue I have with both packages and base R is that often they return a list object, when it should be simplifying to the vector format it was initially fed.  This sometimes requires an additional step or two of further processing that shouldn't be necessary, so be prepared for it[^str_all]. 
 
 ### Other
 
-In this section I'll add some things that come to mind from time to time that might come into play when you're dealing with text.
+In this section I'll add some things that come to mind that might come into play when you're dealing with text.
 
 #### Dates
 
@@ -298,7 +299,7 @@ Here is an example:
 
 `^r.*shiny[0-9]$`
 
-What is *that* you may ask?  Well here is an example of what it would and wouldn't match.
+What is *that* you may ask?  Well here is an example of strings it would and wouldn't match.
 
 ```{r regex_intro_ex}
 grepl(c('r is the shiny', 'r is the shiny1', 'r shines brightly'), pattern='^r.*shiny[0-9]$')
@@ -318,7 +319,7 @@ What the regex esoterically is attempting to match is any string that starts wit
 
 None of it makes sense, so don't attempt to do so. Just try to remember a couple key approaches, and search the web for the rest.
 
-Along with ^ . * [0-9], a couple more common ones are:
+Along with ^ . * [0-9] $, a couple more common ones are:
 
 - **[a-z]** : letters a-z
 - **[A-Z]** : capital letters
@@ -336,7 +337,7 @@ In addition, there are certain predefined characters that can be called:
 
 Those are just a few.  The key functions can be found by looking at the help file for the <span class="func">grep</span> function (`?grep`).  However, the <span class="pack">stringr</span> package has the same functionality with perhaps a slightly faster processing (though that's due to the underlying <span class="pack">stringi</span> package).
 
-See if you can guess which of the following will turn up true.
+See if you can guess which of the following will turn up `TRUE`.
 
 ```{r eval=FALSE}
 grepl(c('apple', 'pear', 'banana'), pattern='a')
@@ -374,13 +375,15 @@ df = data_frame(
 DT::datatable(df, 
               rownames=F,
               options=list(dom='t', 
-                           scrollX='50%',
                            autoWidth = TRUE,
                            columnDefs = list(list(width = '50px', targets = 0),
-                                             list(className = 'dt-center', targets = 1)))
+                                             list(className = 'dt-center', targets = 0:1),
+                                             list(className = 'dt-right', targets = 2))),
+              width='300px'
 )
 ```
 
+<br>
 
 It might seem okay until...
 
@@ -470,9 +473,9 @@ We just have to use the <span class="func">num_range</span> helper function with
 
 ## Basic idea
 
-A common and intuitive approach to text is <span class="emph">sentiment analysis</span>.  In a grand sense we are interested in the emotional content of some text, e.g. posts on Facebook, tweets, or movie reviews.  Most of the time, this is obvious when one reads it, but if you have hundreds of thousands or millions of strings to analyze, we'd like to be able to do so efficiently.
+A common and intuitive approach to text is <span class="emph">sentiment analysis</span>.  In a grand sense we are interested in the emotional content of some text, e.g. posts on Facebook, tweets, or movie reviews.  Most of the time, this is obvious when one reads it, but if you have hundreds of thousands or millions of strings to analyze, you'd like to be able to do so efficiently.
 
-We will use the <span class="pack">tidytext</span> package for our demonstration.  It comes with a lexicon of positive and negative words that is actually a combination of multiple sources, one of which provides numeric ratings, while the others suggest different classses of sentiment.
+We will use the <span class="pack">tidytext</span> package for our demonstration.  It comes with a lexicon of positive and negative words that is actually a combination of multiple sources, one of which provides numeric ratings, while the others suggest different classes of sentiment.
 
 
 ```{r lexicon, echo=-1}
@@ -481,7 +484,7 @@ library(tidytext)
 sentiments %>% slice(sample(1:nrow(sentiments)))
 ```
 
-The gist is that we are dealing with a specific, pre-defined vocabulary.  Of course, any analysis will only be as good as the lexicon. The goal is usually to assign a sentiment score to a text, possibly an overall score or specifically positive or negative. Given that, other analyses may be implemented to predict sentiment via standard regression or machine learning.
+The gist is that we are dealing with a specific, pre-defined vocabulary.  Of course, any analysis will only be as good as the lexicon. The goal is usually to assign a sentiment score to a text, possibly an overall score, or a generally positive or negative grade. Given that, other analyses may be implemented to predict sentiment via standard regression tools or machine learning approaches.
 
 ## Issues
 
@@ -493,18 +496,18 @@ Now consider the following.
 sentiments %>% filter(word=='sick') 
 ```
 
-The word *sick* has been used at least since 1960s surfing culture as slang for positive.  A basic approach to sentiment analysis as described here will not be able to detect slang or other context like sarcasm.  However, with lots of training data for a particular context may allow one to correctly predict such sentiment.  In addition, there are, for example, slang lexicons, or one can simply add their own complements to any available lexicon.
+Despite the above assigned sentiments, the word *sick* has been used at least since 1960s surfing culture as slang for positive.  A basic approach to sentiment analysis as described here will not be able to detect slang or other context like sarcasm.  However, with lots of training data for a particular context may allow one to correctly predict such sentiment.  In addition, there are, for example, slang lexicons, or one can simply add their own complements to any available lexicon.
 
 ### Lexicons
 
 In addition, the lexicons are going to maybe be applicable to *general* usage of English in the western world.  Some might wonder where exactly these came from or who decided that the word *abacus* should be affiliated with 'trust'. You may start your path by typing `?sentiments` at the console if you have the <span class="pack">tidytext</span> package loaded.
 
-## Example
+## Sentiment Analysis Example
 
 
 ### The first thing the baby did wrong
 
-We demonstrate sentiment analysis with the text *The first thing the baby did wrong*, which is a very popular brief guide to parenting written by world renown psychologist Donald Barthelme who, in his spare time, also wrote postmodern literature.  This particular text talks about an issue with the baby, who likes to tear pages out of books. Attempts are made to rectify the situation, without much success, but things are finally resolved at the end.  The ultimate goal will be to see how sentiment in the text evolves over time.
+We demonstrate sentiment analysis with the text *The first thing the baby did wrong*, which is a very popular brief guide to parenting written by world renown psychologist [Donald Barthelme][Donald Barthelme] who, in his spare time, also wrote postmodern literature.  This particular text talks about an issue with the baby, whose name is Born Dancin', who likes to tear pages out of books. Attempts are made by her parents to rectify the situation, without much success, but things are finally resolved at the end.  The ultimate goal will be to see how sentiment in the text evolves over time.
 
 How do we start? Let's look at the <span class="objclass">sentiments</span> data set in the <span class="pack">tidytext</span> package.
 
@@ -523,7 +526,7 @@ sentiments %>%
 
 But I digress.  We start with the raw text, reading it in line by line.  In what follows we read in all the texts (three) in a given directory, such that each element of 'text' is the work itself, i.e. `text` is a list column[^text]. The <span class="func">unnest</span> function will more or less unravel the work to paragraph form.
 
-```{r baby_sentiment_importraw, echo=FALSE}
+```{r baby_sentiment_importraw, echo=T}
 library(tidytext)
 barth0 = 
   data_frame(file = dir('data/texts_raw/barthelme/', full.names = TRUE)) %>%
@@ -532,14 +535,15 @@ barth0 =
   unnest(text) 
 ```
 
-One of the things stressed in this document is the iterative nature of text analysis.  You will consistently take two steps forward, and then one or two back as you find issues that need to be addressed. For example in a subsequent step I found there were encoding issues[^encoding], so the following attempts to fix them.  In addition we want to tokenize <span class="emph">tokenize</span> the documents such that our <span class="emph">tokens</span> are sentences (e.g. as opposed to words or paragraphs). The reason for this is that I will be summarizing the sentiment at sentence level.
+One of the things stressed in this document is the iterative nature of text analysis.  You will consistently take two steps forward, and then one or two back as you find issues that need to be addressed. For example in a subsequent step I found there were encoding issues[^encoding], so the following attempts to fix them.  In addition we want to <span class="emph">tokenize</span> the documents such that our <span class="emph">tokens</span> are sentences (e.g. as opposed to words or paragraphs). The reason for this is that I will be summarizing the sentiment at sentence level.
 
 
-```{r barth_fix_encoding}
+```{r barth_fix_encoding, echo=1:2, eval=1:2}
 # Fix encoding, convert to sentences
 barth = barth0 %>% 
   mutate(text = sapply(text, stringi::stri_enc_toutf8, is_unknown_8bit=TRUE, validate=T)) %>% 
   unnest_tokens(sentence, text, token='sentences')
+save(barth, file='data/barth_sentences.RData')
 ```
 
 The next step is to drill down to just the document we want, and tokenize to the word level.  However, I create a sentence id so that we can group on it later.
@@ -553,7 +557,7 @@ baby = barth %>%
   ungroup 
 ```
 
-Now that the data has been prepped, getting the sentiments is ridiculously easy.  But that is how it is with text analysis.  All the hard work is spent with the data processing.  Here all we need is an <span class="emph">inner join</span> of our words with a sentiment lexicon of choice. This process will only retain words that are also in the lexicon.  I use the numeric-based lexion here. At that point we get a sum score of sentiment by sentence.
+Now that the data has been prepped, getting the sentiments is ridiculously easy.  But that is how it is with text analysis.  All the hard work is spent with the data processing.  Here all we need is an <span class="emph">inner join</span> of our words with a sentiment lexicon of choice. This process will only retain words that are also in the lexicon.  I use the numeric-based lexicon here. At that point we get a sum score of sentiment by sentence.
 
 
 ```{r baby_sentiment}
@@ -587,7 +591,7 @@ In general the sentiment starts out negative as the problem is explained. It bou
 
 
 
-## Exercises
+## Sentiment Analysis Exercise
 
 ### Romeo & Juliet
 
@@ -645,7 +649,7 @@ rnj_filtered = rnj_filtered %>%
   anti_join(stop_words)
 ```
 
-Now we add the sentiments via the inner_join.  Here I use 'bing', but you can use another, and you might get a different result.
+Now we add the sentiments via the <span class="func">inner_join</span> function.  Here I use 'bing', but you can use another, and you might get a different result.
 
 ```{r rnj_sentiment}
 rnj_filtered %>% 
@@ -665,7 +669,7 @@ table(rnj_sentiment_bing$sentiment)
 
 
 
-The following visualizes (via <span class="pack">plotly</span>) the positive and negative sentiment scores as one progresses sentence by sentence through the work.
+Looks like this one is going to be a downer. The following visualizes (via <span class="pack">plotly</span>) the positive and negative sentiment scores as one progresses sentence by sentence through the work.
 
 ```{r rnj_sentiment_as_game}
 rnj_sentiment_bing %>% 
@@ -681,7 +685,7 @@ rnj_sentiment_bing %>%
 
 <br>
 
-In general it's a close game until the end, when negativity takes over as despair sets in with the story.
+In general it's a close game until perhaps the midway point, when negativity takes over and despair sets in with the story.  By the end [[:SPOILER ALERT:]] Sean Bean is beheaded, Darth Vader reveals himself to be Luke's father, and Verbal is Keyser Söze.
 
 Here is the same information expressed as a difference.
 
@@ -697,7 +701,7 @@ rnj_sentiment_bing %>%
 
 <br>
 
-## Summary
+## Sentiment Analysis Summary
 
 In general, sentiment analysis can be a useful exploration of data, but it is highly dependent on the context and tools used.  Note also that 'sentiment' can be anything, it doesn't have to be positive vs. negative.  Any vocabulary may be applied, and so it has more utility than the usual implementation. 
 
@@ -708,9 +712,9 @@ In general, sentiment analysis can be a useful exploration of data, but it is hi
 
 <!--chapter:end:02_sentiment.Rmd-->
 
-# POS tagging
+# POS taggin'
 
-As an initial review of parts of speech, I suggest you watch the following Schoolhouse Rocks videos:
+As an initial review of parts of speech, if you need a refresher the following Schoolhouse Rocks videos should get you squared away:
 
 - [A noun is a person, place, or thing.](https://youtu.be/h0m89e9oZko)
 - [Interjections](https://youtu.be/YkAX7Vk3JEw)
@@ -736,7 +740,7 @@ We have two adjectives (JJ), a plural noun (NNS), a verb (VBP), and an adverb (R
 
 Common analysis may then be used to predict POS given the current state of the text, comparing the grammar of different texts, human-computer interaction, or translation from one language to another.
 
-## Examples
+## POS Examples
 
 The following approach to POS-tagging is very similar to what we did for sentiment analysis as depicted previously. We have a POS dictionary, and can use an inner join to attach the words to their POS.  Unfortunately this approach is unrealistically simplistic, as additional steps would need to be taken to ensure words are correctly classified.  For example, without more information, we are unable to tell if some words are being used as nouns or verbs (human being vs. being a problematic part of speech).  However, this example can serve as a starting point.
 
@@ -748,27 +752,18 @@ In the following we'll compare three texts from Donald Barthelme:
 - *The First Thing The Baby Did Wrong*
 - *Some Of Us Had Been Threatening Our Friend Colby*
 
-As another comparison, I've included Raymond Carver's *What we talk about when we talk about love*, the unedited version.  I process each text separately for clarity, but you could easily have just done a <span class="func">group_by</span> approach on the whole of the <span class="objclass">barth</span> object.
+As another comparison, I've included Raymond Carver's *What we talk about when we talk about love*, the unedited version.  First we'll load an unnested object from the sentiment analysis, the <span class="objclass">barth</span> object.  Then for each work we create a sentence id, unnest the data to words, join the POS data, then create counts/proportions for each POS.
 
 ```{r barthelme_pos}
-balloon = barth %>% 
-  filter(work=='balloon.txt') %>% 
-  mutate(sentence_id = 1:n()) %>% 
-  unnest_tokens(word, sentence, drop=F) %>% 
-  ungroup 
-
-colby = barth %>% 
-  filter(work=='colby.txt') %>% 
-  mutate(sentence_id = 1:n()) %>% 
-  unnest_tokens(word, sentence, drop=F) %>% 
-  ungroup 
-
-barthelme_pos = bind_rows(baby, balloon, colby) %>% 
-  group_by(work) %>% 
-  inner_join(parts_of_speech) %>% 
-  count(pos) %>%
-  mutate(text=work,
-         prop=n/sum(n))
+load('data/barth_sentences.RData')
+barthelme_pos = barth %>% 
+  mutate(work = str_replace(work, '.txt', '')) %>%  # remove file extension
+  group_by(work) %>%                              
+  mutate(sentence_id = 1:n()) %>%                   # create a sentence id
+  unnest_tokens(word, sentence, drop=F) %>%         # get words
+  inner_join(parts_of_speech) %>%                   # join POS
+  count(pos) %>%                                    # count
+  mutate(prop=n/sum(n))
 ```
 
 Next we read in and process the Carver text in the same manner.
@@ -782,27 +777,28 @@ carver_pos =
   unnest_tokens(word, text, token='words') %>% 
   inner_join(parts_of_speech) %>% 
   count(pos) %>%
-  mutate(text='baby',
+  mutate(work='love',
          prop=n/sum(n))
 ```
 
-This visualization depicts the proprtion of occurrence for each part of speech across the works. It would appear Barthelme is fairly consistent, and also that relative to the Barthelme texts, Carver preferred nouns and pronouns. 
+This visualization depicts the proportion of occurrence for each part of speech across the works. It would appear Barthelme is fairly consistent, and also that relative to the Barthelme texts, Carver preferred nouns and pronouns. 
 
-```{r barthelme_pos_vis, echo=FALSE}
+```{r barthelme_pos_vis, echo=FALSE, out.height='600px', fig.height=6}
 carver_pos %>% 
-  group_by(text) %>% 
+  group_by(work) %>%
   plot_ly() %>% 
-  add_markers(x=~pos, y=~prop, color=I('gray50'), opacity=.5, size=I(20), name='Carver') %>% 
-  add_markers(x=~pos, y=~prop, color=~text, size=I(10), data=barthelme_pos) %>% 
+  add_markers(x=~pos, y=~prop, color=I('gray50'), opacity=.5, size=I(20), name='love') %>% 
+  add_markers(x=~pos, y=~prop, color=~work, size=I(10), data=barthelme_pos) %>% 
   theme_plotly() %>% 
-  layout(xaxis = list(title=F))
+  layout(xaxis = list(title=F)) %>% 
+  theme_plotly
 ```
 
 <br>
 
 
 
-### More taggin
+### More taggin'
 
 More sophisticated POS tagging would require the context of the sentence structure. Luckily there are tools to help with that here, in particular via the <span class="pack">openNLP</span> package.  In addition, it will require a certain language model to be installed (English is only one of many available). I don't recommend doing so unless you are really interested in this (the <span class="pack">openNLPmodels.en</span> package is fairly large).
 
@@ -830,7 +826,7 @@ library(openNLP)
 library(openNLPmodels.en)
 ```
 
-Next comes the processing. This more or less follows the help file example for `?Maxent_POS_Tag_Annotator`. Given the several steps involved I show only the processing for one text for clarity. Ideally you'd write a function, and use a <span class="func">group_by</span> approach.
+Next comes the processing. This more or less follows the help file example for `?Maxent_POS_Tag_Annotator`. Given the several steps involved I show only the processing for one text for clarity. Ideally you'd write a function, and use a <span class="func">group_by</span> approach, to process each of the texts of interest.
 
 
 ```{r baby_pos, eval=F}
@@ -909,7 +905,7 @@ As we can see, we have quite a few more POS to deal with here.  They come from t
 
 <img src="img/POS-Tags.png" style="display:block; margin: 0 auto;">
 
-Ploting the differences, we now see a little more distinction between *The Balloon* and the other two texts. It is more likely to use the determiners, adjectives, singular nouns, and less likely to use personal pronouns and base verbs and verbs in past tense.
+Plotting the differences, we now see a little more distinction between *The Balloon* and the other two texts. It is more likely to use the determiners, adjectives, singular nouns, and less likely to use personal pronouns and base verbs and verbs in past tense.
 
 ```{r barth_pos, eval=T, echo=F}
 load('data/POS_results.RData')
@@ -940,8 +936,7 @@ For more information, consult the following:
 - [Maxent function](http://maxent.sourceforge.net/about.html) Note that this 'maximum entropy' approach is just one way to go about things. Other models include hidden markov models, conditional random fields, and more recently, deep learning techniques.
 
 
-
-For more natural language processing tools in R, consult the corresponding [task view](https://www.r-pkg.org/ctv/NaturalLanguageProcessing).  Much natural language processing is done with deep learning techniques, which generally requires a lot of data, notable computing resources, fine tunining, and often involves optimization towards a specific task.  Most of the cutting edge work there is done in Python, but as a starting point for more common approaches, you can check out the [Natural Language Toolkit](http://www.nltk.org/book/).
+## POS Exercise
 
 <!--chapter:end:03_pos.Rmd-->
 
@@ -950,20 +945,22 @@ For more natural language processing tools in R, consult the corresponding [task
 
 ## Basic idea
 
-<span class="emph">Topic modeling</span> as typically conducted is a tool for much more than text.  The primary technique of <span class="emph">latent dirichlet allocation</span> should be as much a part of your toolbox as principal components and factor analysis.  It can be seen merely as a dimension reduction approach, but it can also be used for its rich interpretative quality as well. The basic idea is that we'll take a whole lot of features and boil them down to a few 'topics'.   In this sense LDA is akin to discrete PCA.  Another way to think about this is more from the  perspective of factor analysis, where we are keenly interested in interpretation of the result, and want to know both what terms are associated with which topics, and what documents are more likely to present which topics.  
+<span class="emph">Topic modeling</span> as typically conducted is a tool for much more than text.  The primary technique of <span class="emph">Latent Dirichlet Allocation</span> (LDA) should be as much a part of your toolbox as principal components and factor analysis.  It can be seen merely as a dimension reduction approach, but it can also be used for its rich interpretative quality as well. The basic idea is that we'll take a whole lot of features and boil them down to a few 'topics'.   In this sense LDA is akin to discrete PCA.  Another way to think about this is more from the  perspective of factor analysis, where we are keenly interested in interpretation of the result, and want to know both what terms are associated with which topics, and what documents are more likely to present which topics.  
 
-In the standard setting, to be able to conduct such an analysis from text one needs a <span class="emph">document-term matrix</span>, where rows represent documents, and columns terms. Each cell is a count of how many times the term occurs in the document. Terms are typically words, but could be any <span class="emph">n-gram</span> of interest. Outside of text analysis they could represent bacterial composition, genetic information, or whatever the researcher is interested in. 
+In the standard setting, to be able to conduct such an analysis from text one needs a <span class="emph">document-term matrix</span>, where rows represent documents, and columns terms. Each cell is a count of how many times the term occurs in the document. Terms are typically words, but could be any <span class="emph">n-gram</span> of interest. 
+
+Outside of text analysis terms could represent bacterial composition, genetic information, or whatever the researcher is interested in. Likewise, documents can be people, geographic regions, etc.  The gist is, despite the common text-based application, that what constitutes a document or term is dependent upon the research question, and LDA can be applied in a variety of research settings.
 
 
 ## Steps
 
-Most of the time is spent on processing the text.  Importing/scraping it, dealing with capitalization, punctuation, removing stopwords, dealing with encoding issues, removing other miscellaneous common words.  It is a highly iteratitive process such that once you get to the document term matrix, you're just going to find the stuff that was missed before and repeat the process with new 'cleaning parameters' in place.  So getting to the document term matrix is the hard part.  See the [Shakespeare section][Shakespeare Start to Finish], which comprises 5 acts, of which the first four and some additional scenes represent all the processing needed to get to the final scene of topic modeling.  In what follows we'll start at the end of that journey.
+When it comes to text analyiss, most of the time in topic modeling is spent on processing the text itself.  Importing/scraping it, dealing with capitalization, punctuation, removing stopwords, dealing with encoding issues, removing other miscellaneous common words.  It is a highly iteratitive process such that once you get to the document-term matrix, you're just going to find the stuff that was missed before and repeat the process with new 'cleaning parameters' in place.  So getting to the analysis stage is the hard part.  See the [Shakespeare section][Shakespeare Start to Finish], which comprises 5 acts, of which the first four and some additional scenes represent all the processing needed to get to the final scene of topic modeling.  In what follows we'll start at the end of that journey.
 
 ## Examples
 
 ### Shakespeare
 
-For our example, we'll look at Shakespeare's plays and poems, using a topic model with 10 topics.  For our needs we'll use the <span class="pack">topicModels</span> package for the analysis, and mostly others for post-processing.  Due to the large number of terms, this will take a while to run depending on your machine (maybe a minute or two).  We can also see how things compare with the academic classifications for the texts.
+In this example, we'll look at Shakespeare's plays and poems, using a topic model with 10 topics.  For our needs we'll use the <span class="pack">topicModels</span> package for the analysis, and mostly others for post-processing.  Due to the large number of terms, this could take a while to run depending on your machine (maybe a minute or two).  We can also see how things compare with the academic classifications for the texts.
 
 ```{r tm_chapter_topic_model, eval=F}
 load('Data/shakes_dtm_stemmed.RData')
@@ -971,11 +968,12 @@ library(topicmodels)
 shakes_10 = LDA(convert(shakes_dtm, to = "topicmodels"), k = 10)
 ```
 
-One of the first things to do is interpret the topics, and we can start by seeing which terms are most probable for each topic.
+#### Examine Terms within Topics
+
+One of the first things to do is attempt to interpret the topics, and we can start by seeing which terms are most probable for each topic.
 
 ```{r tm_chapter_tm10_results, eval=FALSE}
 get_terms(shakes_10, 20)
-t(topics(shakes_10, 3))
 ```
 
 ```{r tm_chapter_tm10_results_pretty_terms, echo=FALSE}
@@ -992,16 +990,27 @@ get_terms(shakes_10, 20) %>%
 
 <br>
 
-We can see there is a lot of overlap in these topics for top terms.  Just looking at the top 10, *love* occurs in all of them, god and heart as well, but we could have guessed this just looking at how often they occur in general. Other measures can be used to assess term importance, such as those that seek to balance the term's probability of occurrence within a document, and term *exclusivity*, or how likely a term is to occur in only one particular topic.  See the [Shakespeare section][Shakespeare Start to Finish] for some of those.
+We can see there is a lot of overlap in these topics for top terms.  Just looking at the top 10, *love* occurs in all of them, *god* and *heart* as well, but we could have guessed this just looking at how often they occur in general. Other measures can be used to assess term importance, such as those that seek to balance the term's probability of occurrence within a document, and term *exclusivity*, or how likely a term is to occur in only one particular topic.  See the [Shakespeare section][Shakespeare Start to Finish] for some examples of those.
+
+#### Examine Document-Topic Expression
 
 Next we can look at which documents are more likely to express each topic. 
 
+```{r tm_chapter_tm10_results_topic_classification, eval=FALSE}
+t(topics(shakes_10, 2))
+```
 
 ```{r tm_chapter_tm10_results_pretty_topic_classification, echo=FALSE}
 t(topics(shakes_10, 2)) %>% 
   data.frame %>% 
-  rename_all(str_replace, 'X', 'Topic ') %>% 
-  DT::datatable(options=list(dom='tp')) %>% 
+  rename_all(str_replace, 'X', 'Top Topic ') %>% 
+  DT::datatable(options=list(dom='tp',
+                             autoWidth=T, 
+                             align='center',
+                             columnDefs=list(list(width='150px', targets=0),
+                                             list(width='100px', targets=1:2),
+                                             list(className = 'dt-center', targets = 1:2))), 
+                width='500') %>% 
   DT::formatStyle(
     0, # ignores columns, but otherwise put here
     target='row',
@@ -1011,13 +1020,13 @@ t(topics(shakes_10, 2)) %>%
 
 <br>
 
-For example, Hamlet is most likely to be associated with Topic `r t(topicmodels::topics(shakes_10, 3))['Hamlet',1]`. That topic is associated with the (stemmed words) `r topicmodels::get_terms(shakes_10, 20)[, t(topicmodels::topics(shakes_10, 3))['Hamlet',1]]`.  Sounds about right.
+For example, Hamlet is most likely to be associated with Topic `r t(topicmodels::topics(shakes_10, 3))['Hamlet',1]`. That topic is associated with the (stemmed words) `r topicmodels::get_terms(shakes_10, 20)[, t(topicmodels::topics(shakes_10, 3))['Hamlet',1]]`.  Hamlet is also one of the few documents that is actually a decent mix, with its second topic expressed being Topic `r t(topicmodels::topics(shakes_10, 3))['Hamlet', 2]`, with common terms `r topicmodels::get_terms(shakes_10, 20)[, t(topicmodels::topics(shakes_10, 3))['Hamlet', 2]]`. They both have `r intersect(topicmodels::get_terms(shakes_10, 20)[, t(topicmodels::topics(shakes_10, 3))['Hamlet',1]], topicmodels::get_terms(shakes_10, 20)[, t(topicmodels::topics(shakes_10, 3))['Hamlet', 2]])` among their top 20 terms. Sounds about right for Hamlet.
 
-The following visualization shows a heatmap for the topic probabilities of each document.  Darker values mean higher probability for a document expressing that topic.  I've also added a cluster analysis based on the  cosine distance matrix, and the resulting dendrogram. The colored bar on the right represents the given classification of a work as history, tragedy, comedy, or poem.
+The following visualization shows a heatmap for the topic probabilities of all documents.  Darker values mean higher probability for a document expressing that topic.  I've also added a cluster analysis based on the cosine distance matrix, and the resulting dendrogram. The colored bar on the right represents the given classification of a work as history, tragedy, comedy, or poem.
 
+<br>
 
-
-```{r tm_chapter_viz_topics, echo=FALSE, out.height='400px', fig.width=8.5, fig.height=8.5, fig.align='center'}
+```{r tm_chapter_viz_topics, echo=FALSE, out.height='700px', out.width='700px' fig.width=8.5, fig.height=8.5, fig.align='center'}
 # Note the latex figure settings can actually limit the plot size; so basically
 # you have several chunk options, possibly multiple package options, and css all working against
 # each other for single visual (wtf)
@@ -1035,8 +1044,9 @@ suppressPackageStartupMessages(library(dendextend))
 # are coming from
 # proxy::pr_DB %>% data.frame() %>% select( distance, formula, description, reference) %>% DT::datatable()
 
-suppressPackageStartupMessages(library(heatmaply))
+colvec = c(palettes$orange$orange, palettes$orange$tetradic)[as.integer(factor(shakes_types$class))]
 
+suppressPackageStartupMessages(library(heatmaply))
 # cosine distance, is not a proper distance
 row_dend  = 
   (1-textstat_simil(dfm_weight(shakes_dtm, 'relMaxFreq'), 
@@ -1045,7 +1055,8 @@ row_dend  =
   as.dist() %>%
   hclust(method="complete") %>%
   as.dendrogram %>%
-  set("branches_k_color", k = 3) %>% set("branches_lwd", c(.5,.5)) %>%
+  set("branches_k_color", k = 4) %>% 
+  set("branches_lwd", c(.5,.5)) %>%
   ladderize
 
 # the amount of bugs is staggering
@@ -1057,7 +1068,7 @@ row_dend  =
 # for the heatmaply part, row_side_colors is required again, or nothing will be displayed; what you actually provide is superfluous and ignored, even NULL
 # rowSideColors is now required, but whatever you put there is ignored
 # AND AFTER ALL THAT, it literally gets you back to square one, because the width and height are ignored
-colvec = c(palettes$orange$orange, palettes$orange$tetradic)[as.integer(factor(shakes_types$class))]
+
 # fix_heatmaply = shakes_10@gamma %>%
 #   round(3) %>%
 #   heatmapr(Rowv=row_dend,
@@ -1100,7 +1111,9 @@ shakes_10@gamma %>%
                        Colv=F,
                        colors='Oranges',
                        row_side_colors = data.frame(shakes_types$class),
-                       # RowSideColors = shakes_types$class,
+                       row_side_palette = plasma,
+                       k_row= 4,
+                       # RowSideColors = 'Set2',
                        labRow=shakes_10@documents,
                        labCol=paste0('Topic ', 1:10),
                        hide_colorbar=T,
@@ -1110,20 +1123,18 @@ shakes_10@gamma %>%
   layout(showlegend=F) %>% # showing the legend will screw up the colorbar and any associated options
   config(displayModeBar = F) %>%
   theme_plotly()
-
 ```
-
 
 
 <br>
 
-A couple things stand out.  To begin with, most works are associated with one topic[^toomanytopics].  In terms of the discovered topics, traditional classificiation really probably only works for the historical works, as they cluster together as expected (except for Henry the VIII, possibly due to it being a collaborative work).  Furthermore, tragedies and comedies might hit on the same topics, albeit from different perspecitves.  In addition, at least some works are very poetical, or at least have topics in common with the poems (love).  If we take four clusters, the result boils down to *Phoenix* (on its own), standard poems, a mixed bag of more love oriented works and the remaining poems, then everything else.  
+A couple things stand out.  To begin with, most works are associated with one topic[^howmanytopics].  In terms of the discovered topics, traditional classificiation really probably only works for the <span class="" style="color:'#0D0887'">historical</span> works, as they cluster together as expected (except for Henry the VIII, possibly due to it being a collaborative work).  Furthermore, <span class="" style="color:'#9C179E'">tragedies</span> and <span class="" style="color:'#ED7953'">comedies</span> might hit on the same topics, albeit from different perspecitves.  In addition, at least some works are very poetical, or at least have topics in common with the <span class="" style="color:'#F0F921'">poems</span> (love, beauty).  If we take four clusters from the cluster analysis, the result boils down to *Phoenix* (on its own), standard poems, a mixed bag of more love oriented works and the remaining poems, then everything else.  
 
 Alternatively, one could merely classify the works based on their probable topics, which would make more sense if clustering of the works is in fact the goal. The following visualization attempts to order them based on their most probable topic.  The order is based on the most likely topics across all documents.
 
+<br>
 
-
-```{r tm_chapter_cluster_topics, echo=FALSE, fig.align='center', fig.width=6, fig.height=7}
+```{r tm_chapter_cluster_topics, echo=FALSE, fig.align='center', fig.width=6, fig.height=5, out.height='800px', out.width='600px'}
 topic_class = shakes_10@gamma %>%
   round(3) %>%
   data.frame() %>% 
@@ -1155,14 +1166,33 @@ topic_class %>%
   theme_plotly() 
 ```
 
+So we can see that topic modeling can be use to classify the documents themselves into groups of documents most likely to express the same sorts of topics.
+
+## Extensions
+
+There extensions of LDA used in topic modeling that will allow your analysis to go even further.
+ 
+- Correlated Topic Models: the standard LDA does not estimate the topic correlation as part of the process.
+- Supervised LDA: In this scenario, topics can be used for prediction, e.g. the classification of tragedy, comedy etc. (similar to PC regression)
+- Structured Topic Models: Here we want to find the relevant covariates that can explain the topics (e.g. year written, author sex, etc.)
+- Other: There are still other ways to examine topics.
+
+
 ## Exercise
 
 https://ldavis.cpsievert.me/reviews/reviews.html
 
 
-[^toomanytopics]: This may be partly due to the number of topics relative to row observations.
+[^howmanytopics]: There isn't a lot to work with in the realm of choosing an 'optimal' number of topics, but I investigated it via a measure called <span class="emph">perplexity</span>.  It bottomed out at around 50 topics.  Usually such an approach is done through cross-validation.  However, the solution chosen has no guarantee to produce human interpretable topics.
 
 <!--chapter:end:04_topic.Rmd-->
+
+# Summary
+
+
+For more natural language processing tools in R, consult the corresponding [task view](https://www.r-pkg.org/ctv/NaturalLanguageProcessing).  Much natural language processing is done with deep learning techniques, which generally requires a lot of data, notable computing resources, copious amounts of fine tunining, and often involves optimization towards a specific task.  Most of the cutting edge work there is done in Python, but as a starting point for more common approaches, you can check out the [Natural Language Toolkit](http://www.nltk.org/book/).
+
+<!--chapter:end:05_Summary.Rmd-->
 
 # Shakespeare Start to Finish
 
@@ -1836,7 +1866,7 @@ shakes_10_stm = stm(shakes_dtm, K = 10, seed=1234)  # can take quanteda
 save(shakes_10, shakes_10_stm, file='data/shakespeare_topic_model.RData')
 ```
 
-One of the first things to do is interpret the topics, and we can start by seeing which terms are most probable for each topic.
+One of the first things to do is to interpret the topics, and we can start by seeing which terms are most probable for each topic.
 
 ```{r tm10_results, eval=FALSE}
 get_terms(shakes_10, 20)
@@ -1856,12 +1886,25 @@ get_terms(shakes_10, 20) %>%
 
 <br>
 
-We can see there is a lot of overlap in these topics for top terms.  Just looking at the top 10, *love* occurs in all of them, god and heart as well, but we could have guessed this just looking at how often they occur in general. Other measures can be used to assess term importance, such as those that seek to balance the term's probability of occurrence within a document, and term *exclusivity*, or how likely a term is to occur in only one particular topic.  See the <span class="pack">stm</span> package and corresponding <span class="func">labelTopics</span> function as a way to get several alternatives.  As an example I show the results of their version of the following[^scoredefs]:
+We can see there is a lot of overlap in these topics for top terms.  Just looking at the top 10, *love* occurs in all of them, *god* and *heart* as well, but we could have guessed this just looking at how often they occur in general. Other measures can be used to assess term importance, such as those that seek to balance the term's probability of occurrence within a document, and term *exclusivity*, or how likely a term is to occur in only one particular topic.  See the <span class="pack">stm</span> package and corresponding <span class="func">labelTopics</span> function as a way to get several alternatives.  As an example I show the results of their version of the following[^scoredefs]:
 
 - <span class="emph">FREX</span>: **fr**equency and **ex**clusivity, it is a weighted harmonic mean of a term's rank within a topic in terms of frequency and exclusivity
 - <span class="emph">lift</span>: ratio of the termn='s probability within a topic to its probability of occurrence across all documents.  Overly sensitive to rare words.
 - <span class="emph">score</span>: another approach that will give more weight to exclusive terms
 - <span class="emph">prob</span>: This is just the raw probability of the term within a given topic.
+
+```{r coherence, eval=FALSE, echo=FALSE}
+library(stm)
+docs = apply(shakes_dtm, 1, function(x) rbind((1:ncol(shakes_dtm))[x>0], x[x>0]))  # bow for stemmed terms
+tq = topicQuality(model=shakes_10_stm, documents=docs)
+sc = semanticCoherence(model=shakes_10_stm, documents=docs, M=20)
+ex = exclusivity(model=shakes_10_stm, M=20)
+plot_ly(x=~sc, y=~ex, data=data_frame(sc, ex, topic=paste('Topic', 1:10))) %>% 
+  add_text(text=~topic, color=I('#ff5500')) %>% 
+  theme_plotly() %>% 
+  layout(xaxis = list(title='Semantic Coherence'),
+         yaxis = list(title='Exclusivity'))
+```
 
 
 ```{r label_topics_stm, eval=F, echo=FALSE}
@@ -1913,7 +1956,7 @@ sapply(score_list, function(e) apply(e, 2, paste, collapse=', ')) %>%
 
 <br>
 
-As another approach, consider the <span class="emph">saliency</span> and <span class="emph">relevance</span> of term via the <span class="pack">LDAvis</span> package.
+As another approach, consider the <span class="emph">saliency</span> and <span class="emph">relevance</span> of term via the <span class="pack">LDAvis</span> package. While you can play with it here, it's probably easier to [open it separately](vis/index.html).
 
 
 ```{r ldavis, eval=FALSE, echo=FALSE}
@@ -1925,10 +1968,10 @@ json <- createJSON(phi = exp(shakes_10@beta),
                    vocab = shakes_10@terms, 
                    term.frequency = colSums(shakes_dtm),
                    R=10)
-serVis(json, out.dir = 'vis', open.browser = F)
+serVis(json, out.dir = '_book/vis', open.browser = F)
 ```
 
-<iframe src="../vis/index.html" width="1200" height="700" frameborder="0"
+<iframe src="vis/index.html" width="1200" height="700" frameborder="0"
     scrolling="no"
     marginheight="0"
     marginwidth="0">
@@ -1943,11 +1986,18 @@ Given all these measures, one can now see how well they match what the topics th
 t(topics(shakes_10, 3))
 ```
 
+
 ```{r tm10_results_pretty_topic_classification, echo=FALSE}
 t(topics(shakes_10, 2)) %>% 
   data.frame %>% 
   rename_all(str_replace, 'X', 'Top Topic ') %>% 
-  DT::datatable(options=list(dom='tp'), width='500') %>% 
+  DT::datatable(options=list(dom='tp',
+                             autoWidth=T, 
+                             align='center',
+                             columnDefs=list(list(width='150px', targets=0),
+                                             list(width='100px', targets=1:2),
+                                             list(className = 'dt-center', targets = 1:2))), 
+                width='500') %>% 
   DT::formatStyle(
     0, # ignores columns, but otherwise put here
     target='row',
@@ -1957,12 +2007,12 @@ t(topics(shakes_10, 2)) %>%
 
 <br>
 
-For example, Hamlet is most associated with `r t(topicmodels::topics(shakes_10, 3))['Hamlet',1]`. That topic is associated with the (stemmed words) `r topicmodels::get_terms(shakes_10, 20)[, t(topicmodels::topics(shakes_10, 3))['Hamlet',1]]`.  Sounds about right.
+For example, base just on term frequency, Hamlet is most likely to be associated with Topic `r t(topicmodels::topics(shakes_10, 3))['Hamlet',1]`. That topic is associated with the (stemmed words) `r topicmodels::get_terms(shakes_10, 20)[, t(topicmodels::topics(shakes_10, 3))['Hamlet',1]]`.  Hamlet is also one that is actually a decent mix, with its second topic expressed being Topic `r t(topicmodels::topics(shakes_10, 3))['Hamlet', 2]`, with common terms `r topicmodels::get_terms(shakes_10, 20)[, t(topicmodels::topics(shakes_10, 3))['Hamlet', 2]]`. They both have `r intersect(topicmodels::get_terms(shakes_10, 20)[, t(topicmodels::topics(shakes_10, 3))['Hamlet',1]], topicmodels::get_terms(shakes_10, 20)[, t(topicmodels::topics(shakes_10, 3))['Hamlet', 2]])` among their top 20 terms. Sounds about right for Hamlet.  The other measures pick up on things like Dane and Denmark.
 
 The following visualization shows a heatmap for the topic probabilities of each document.  Darker values mean higher probability for a document expressing that topic.  I've also added a cluster analysis based on the cosine distance matrix, and the resulting dendrogram[^clustering].  The colored bar on the right represents the given classification of a work as history, tragedy, comedy, or poem.
 
 
-```{r viz_topics, echo=FALSE}
+```{r viz_topics, echo=FALSE, out.height='400px', fig.width=8.5, fig.height=8.5, fig.align='center'}
 library(quanteda)
 load('data/shakespeare_classification.RData')
 
@@ -1994,45 +2044,45 @@ row_dend  =
 
 # heatmaply is barely beta, use d3heatmap for now?
 
+# shakes_10@gamma %>%
+#   round(3) %>%
+#   heatmaply::heatmaply(Rowv=row_dend,
+#                        Colv=F,
+#                        labRow=shakes_10@documents,
+#                        labCol=paste0('topic', 1:10),
+#                        colors='Oranges',
+#                        k_row = 4,
+#                        plot_method = 'plotly',
+#                        row_side_colors = select(arrange(shakes_types, title), class),
+#                        # row_side_palette = c("#39BEB1", "#ABB065", "#ACA4E2", "#CC476B", "#E495A5", "black"),
+#                        seriate = 'OLO',
+#                        fontsize_row=7,
+#                        fontsize_col=7,
+#                        subplot_widths=c(.75, .025, .225),
+#                        subplot_heights=1,
+#                        hide_colorbar = T,
+#                        colorbar_len = 0.3,
+#                        colorbar_ypos=0) %>%
+#   layout(showlegend=F) %>% # showing the legend will screw up the colorbar and any associated options
+#   config(displayModeBar = F) %>% 
+#   theme_plotly()
+
 shakes_10@gamma %>%
   round(3) %>%
   heatmaply::heatmaply(Rowv=row_dend,
                        Colv=F,
-                       labRow=shakes_10@documents,
-                       labCol=paste0('topic', 1:10),
                        colors='Oranges',
-                       k_row = 4,
-                       plot_method = 'plotly',
-                       row_side_colors = select(arrange(shakes_types, title), class),
-                       # row_side_palette = c("#39BEB1", "#ABB065", "#ACA4E2", "#CC476B", "#E495A5", "black"),
-                       seriate = 'OLO',
-                       fontsize_row=7,
-                       fontsize_col=7,
-                       subplot_widths=c(.75, .025, .225),
-                       subplot_heights=1,
-                       hide_colorbar = T,
-                       colorbar_len = 0.3,
-                       colorbar_ypos=0) %>%
+                       row_side_colors = data.frame(shakes_types$class),
+                       # RowSideColors = shakes_types$class,
+                       labRow=shakes_10@documents,
+                       labCol=paste0('Topic ', 1:10),
+                       hide_colorbar=T,
+                       grid_gap=2,
+                       plot_method='plotly'
+                       ) %>%
   layout(showlegend=F) %>% # showing the legend will screw up the colorbar and any associated options
-  config(displayModeBar = F) %>% 
+  config(displayModeBar = F) %>%
   theme_plotly()
-# shakes_10@gamma %>%
-# round(3) %>%
-# d3heatmap::d3heatmap(Rowv=row_dend,
-#                      Colv=F,
-#                      labRow=shakes_10@documents,
-#                      labCol=paste0('topic', 1:10),
-#                      # colors=viridis::inferno(500),
-#                      colors='Blues',
-#                      k_row = 10,
-#                      xaxis_font_size = 12,
-#                      yaxis_font_size=8,
-#                      colorbar_len = 0.2,
-#                      show_grid = F,
-#                      width=800,
-#                      height=800) #%>%
-# layout(width=900, height=900, showlegend=F) %>% # showing the legend will screw up the colorbar and any associated options
-# lazerhawk::theme_plotly()
 ```
 
 
