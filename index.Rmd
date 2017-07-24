@@ -11,7 +11,7 @@ site: bookdown::bookdown_site
 output:
   bookdown::gitbook:
     css: [css/standard_html.css, css/book.css]
-    hightlight: pygments
+    highlight: pygments
     number_sections: false
     # split_by: section
     toc_depth: 3
@@ -47,7 +47,7 @@ biblio-style: apalike
 link-citations: yes
 description: "An Introduction to  Text Analysis with R"
 cover-image: img/nineteeneightyR.png
-url: 'https\://m-clark.github.io/Workshops/'  # evidently the \: is required or you'll get text in the title/toc area
+url: 'https\://m-clark.github.io/Workshops/text_analysis/'  # evidently the \: is required or you'll get text in the title/toc area
 github-repo:  m-clark/
 ---
 
@@ -71,4 +71,9 @@ library(magrittr); library(tidyverse); library(stringr); library(pander); librar
 # tags$style(".plotly { margin-left: auto; margin-right: auto;}") # heatmapr will awesomely override this if subplot widths = 1
 ```
 
-# 
+
+#
+
+```{r fig.align='center', echo=FALSE, include=identical(knitr:::pandoc_to(), 'html')}
+knitr::include_graphics('img/nineteeneightyR.png', dpi = NA)
+```

@@ -1,6 +1,5 @@
 # Introduction
 
-This work is in progress. Until this sentence is deleted you should probably ignore everything in it.
 
 ## Overview
 
