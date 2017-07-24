@@ -11,7 +11,7 @@ site: bookdown::bookdown_site
 output:
   bookdown::gitbook:
     css: [css/standard_html.css, css/book.css]
-    hightlight: pygments
+    highlight: pygments
     number_sections: false
     # split_by: section
     toc_depth: 3
@@ -47,7 +47,7 @@ biblio-style: apalike
 link-citations: yes
 description: "An Introduction to  Text Analysis with R"
 cover-image: img/nineteeneightyR.png
-url: 'https\://m-clark.github.io/Workshops/'  # evidently the \: is required or you'll get text in the title/toc area
+url: 'https\://m-clark.github.io/Workshops/text_analysis/'  # evidently the \: is required or you'll get text in the title/toc area
 github-repo:  m-clark/
 ---
 
@@ -71,13 +71,17 @@ library(magrittr); library(tidyverse); library(stringr); library(pander); librar
 # tags$style(".plotly { margin-left: auto; margin-right: auto;}") # heatmapr will awesomely override this if subplot widths = 1
 ```
 
-# 
+
+#
+
+```{r fig.align='center', echo=FALSE, include=identical(knitr:::pandoc_to(), 'html')}
+knitr::include_graphics('img/nineteeneightyR.png', dpi = NA)
+```
 
 <!--chapter:end:index.Rmd-->
 
 # Introduction
 
-This work is in progress. Until this sentence is deleted you should probably ignore everything in it.
 
 ## Overview
 
@@ -1026,7 +1030,7 @@ The following visualization shows a heatmap for the topic probabilities of all d
 
 <br>
 
-```{r tm_chapter_viz_topics, echo=FALSE, out.height='700px', out.width='700px' fig.width=8.5, fig.height=8.5, fig.align='center'}
+```{r tm_chapter_viz_topics, echo=FALSE, out.height='700px', out.width='700px', fig.width=11, fig.height=8.5, fig.align='center'}
 # Note the latex figure settings can actually limit the plot size; so basically
 # you have several chunk options, possibly multiple package options, and css all working against
 # each other for single visual (wtf)
@@ -1128,13 +1132,13 @@ shakes_10@gamma %>%
 
 <br>
 
-A couple things stand out.  To begin with, most works are associated with one topic[^howmanytopics].  In terms of the discovered topics, traditional classificiation really probably only works for the <span class="" style="color:'#0D0887'">historical</span> works, as they cluster together as expected (except for Henry the VIII, possibly due to it being a collaborative work).  Furthermore, <span class="" style="color:'#9C179E'">tragedies</span> and <span class="" style="color:'#ED7953'">comedies</span> might hit on the same topics, albeit from different perspecitves.  In addition, at least some works are very poetical, or at least have topics in common with the <span class="" style="color:'#F0F921'">poems</span> (love, beauty).  If we take four clusters from the cluster analysis, the result boils down to *Phoenix* (on its own), standard poems, a mixed bag of more love oriented works and the remaining poems, then everything else.  
+A couple things stand out.  To begin with, most works are associated with one topic[^howmanytopics].  In terms of the discovered topics, traditional classificiation really probably only works for the <span class="" style="color:#9C179E">historical</span> works, as they cluster together as expected (except for Henry the VIII, possibly due to it being a collaborative work).  Furthermore, <span class="" style="color:#F0F921">tragedies</span> and <span class="" style="color:#0D0887">comedies</span> might hit on the same topics, albeit from different perspecitves.  In addition, at least some works are very poetical, or at least have topics in common with the <span class="" style="color:#ED7953">poems</span> (love, beauty).  If we take four clusters from the cluster analysis, the result boils down to *Phoenix* (on its own), standard poems, a mixed bag of more love-oriented works and the remaining poems, then everything else.  
 
 Alternatively, one could merely classify the works based on their probable topics, which would make more sense if clustering of the works is in fact the goal. The following visualization attempts to order them based on their most probable topic.  The order is based on the most likely topics across all documents.
 
 <br>
 
-```{r tm_chapter_cluster_topics, echo=FALSE, fig.align='center', fig.width=6, fig.height=5, out.height='800px', out.width='600px'}
+```{r tm_chapter_cluster_topics, echo=FALSE, fig.align='center', fig.width=11, fig.height=5, out.height='800px', out.width='650px'}
 topic_class = shakes_10@gamma %>%
   round(3) %>%
   data.frame() %>% 
@@ -1156,7 +1160,7 @@ topic_class %>%
                        labCol=apply(get_terms(shakes_10, 10), 2, paste0, collapse='\n')[order_topics],
                        column_text_angle=0, 
                        colors='Oranges',
-                       subplot_widths=c(1),
+                       # subplot_widths=c(1),
                        plot_method = 'plotly',
                        fontsize_row=8,
                        fontsize_col=8,
@@ -1968,7 +1972,7 @@ json <- createJSON(phi = exp(shakes_10@beta),
                    vocab = shakes_10@terms, 
                    term.frequency = colSums(shakes_dtm),
                    R=10)
-serVis(json, out.dir = '_book/vis', open.browser = F)
+serVis(json, out.dir = '_book/vis', open.browser = F)  # have to redo if book folder is cleaned
 ```
 
 <iframe src="vis/index.html" width="1200" height="700" frameborder="0"
@@ -2222,6 +2226,9 @@ And I grow weary...
 <br>
 
 <div style="text-align:center; font-size:500%">**FIN**</div>
+<div style="text-align:center; font-size:500%">`r ji('face')`</div>
+
+
 
 [^bug]: If you can think of a use case where `x<br>y<br>z` leading to `xyz` would be both expected as default behavior and desired please let me know.
 
@@ -2252,7 +2259,7 @@ And I grow weary...
 
 “I have to admit we are mired in the most exquisite mysterious muck. This muck heaves and palpitates. It is multi-directional and has a mayor.” 
 
-“You may not be interested in absurdity," she said firmly, "but absurdity is interested in you.” 
+“You may not be interested in absurdity, but absurdity is interested in you.” 
 
 “There was no particular point at which I stopped being promising.” 
 

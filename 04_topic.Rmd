@@ -12,9 +12,9 @@ Outside of text analysis terms could represent bacterial composition, genetic in
 
 ## Steps
 
-When it comes to text analyiss, most of the time in topic modeling is spent on processing the text itself.  Importing/scraping it, dealing with capitalization, punctuation, removing stopwords, dealing with encoding issues, removing other miscellaneous common words.  It is a highly iteratitive process such that once you get to the document-term matrix, you're just going to find the stuff that was missed before and repeat the process with new 'cleaning parameters' in place.  So getting to the analysis stage is the hard part.  See the [Shakespeare section][Shakespeare Start to Finish], which comprises 5 acts, of which the first four and some additional scenes represent all the processing needed to get to the final scene of topic modeling.  In what follows we'll start at the end of that journey.
+When it comes to text analysis, most of the time in topic modeling is spent on processing the text itself.  Importing/scraping it, dealing with capitalization, punctuation, removing stopwords, dealing with encoding issues, removing other miscellaneous common words.  It is a highly iterative process such that once you get to the document-term matrix, you're just going to find the stuff that was missed before and repeat the process with new 'cleaning parameters' in place.  So getting to the analysis stage is the hard part.  See the [Shakespeare section][Shakespeare Start to Finish], which comprises 5 acts, of which the first four and some additional scenes represent all the processing needed to get to the final scene of topic modeling.  In what follows we'll start at the end of that journey.
 
-## Examples
+## Topic Model Example
 
 ### Shakespeare
 
@@ -80,7 +80,7 @@ t(topics(shakes_10, 2)) %>%
 
 For example, Hamlet is most likely to be associated with Topic `r t(topicmodels::topics(shakes_10, 3))['Hamlet',1]`. That topic is associated with the (stemmed words) `r topicmodels::get_terms(shakes_10, 20)[, t(topicmodels::topics(shakes_10, 3))['Hamlet',1]]`.  Hamlet is also one of the few documents that is actually a decent mix, with its second topic expressed being Topic `r t(topicmodels::topics(shakes_10, 3))['Hamlet', 2]`, with common terms `r topicmodels::get_terms(shakes_10, 20)[, t(topicmodels::topics(shakes_10, 3))['Hamlet', 2]]`. They both have `r intersect(topicmodels::get_terms(shakes_10, 20)[, t(topicmodels::topics(shakes_10, 3))['Hamlet',1]], topicmodels::get_terms(shakes_10, 20)[, t(topicmodels::topics(shakes_10, 3))['Hamlet', 2]])` among their top 20 terms. Sounds about right for Hamlet.
 
-The following visualization shows a heatmap for the topic probabilities of all documents.  Darker values mean higher probability for a document expressing that topic.  I've also added a cluster analysis based on the cosine distance matrix, and the resulting dendrogram. The colored bar on the right represents the given classification of a work as history, tragedy, comedy, or poem.
+The following visualization shows a heatmap for the topic probabilities of each document.  Darker values mean higher probability for a document expressing that topic.  I've also added a cluster analysis based on the cosine distance matrix, and the resulting dendrogram. The colored bar on the right represents the given classification of a work as history, tragedy, comedy, or poem.
 
 <br>
 
@@ -186,7 +186,7 @@ shakes_10@gamma %>%
 
 <br>
 
-A couple things stand out.  To begin with, most works are associated with one topic[^howmanytopics].  In terms of the discovered topics, traditional classificiation really probably only works for the <span class="" style="color:#9C179E">historical</span> works, as they cluster together as expected (except for Henry the VIII, possibly due to it being a collaborative work).  Furthermore, <span class="" style="color:#F0F921">tragedies</span> and <span class="" style="color:#0D0887">comedies</span> might hit on the same topics, albeit from different perspecitves.  In addition, at least some works are very poetical, or at least have topics in common with the <span class="" style="color:#ED7953">poems</span> (love, beauty).  If we take four clusters from the cluster analysis, the result boils down to *Phoenix* (on its own), standard poems, a mixed bag of more love-oriented works and the remaining poems, then everything else.  
+A couple things stand out.  To begin with, most works are associated with one topic[^howmanytopics].  In terms of the discovered topics, traditional classification really probably only works for the <span class="" style="color:#9C179E">historical</span> works, as they cluster together as expected (except for Henry the VIII, possibly due to it being a collaborative work).  Furthermore, <span class="" style="color:#F0F921">tragedies</span> and <span class="" style="color:#0D0887">comedies</span> might hit on the same topics, albeit from different perspectives.  In addition, at least some works are very poetical, or at least have topics in common with the <span class="" style="color:#ED7953">poems</span> (love, beauty).  If we take four clusters from the cluster analysis, the result boils down to *Phoenix* (on its own), standard poems, a mixed bag of more love-oriented works and the remaining poems, then everything else.  
 
 Alternatively, one could merely classify the works based on their probable topics, which would make more sense if clustering of the works is in fact the goal. The following visualization attempts to order them based on their most probable topic.  The order is based on the most likely topics across all documents.
 
@@ -228,7 +228,7 @@ So we can see that topic modeling can be use to classify the documents themselve
 
 ## Extensions
 
-There extensions of LDA used in topic modeling that will allow your analysis to go even further.
+There are extensions of LDA used in topic modeling that will allow your analysis to go even further.
  
 - Correlated Topic Models: the standard LDA does not estimate the topic correlation as part of the process.
 - Supervised LDA: In this scenario, topics can be used for prediction, e.g. the classification of tragedy, comedy etc. (similar to PC regression)

@@ -141,7 +141,7 @@ DT::datatable(shakes0[1:20,],
 
 ### Scene V. Add additional works 
 
-It is typical to be gathering texts from multiple sources. In this case, we'll get *The Phoenix and the Turtle* from the Gutenberger website.  There is an R package that will allow us to work directly with the site, making the process straightforward[^r4everything].  I also considered two other works, but I refrained from "The Two Noble Kinsmen" because like many other of Shakespeare's versions on Gutenberg, it's basically written in a different language.  I also refrained from  *The Passionate Pilgrim* because it's mostly not Shakespeare.
+It is typical to be gathering texts from multiple sources. In this case, we'll get *The Phoenix and the Turtle* from the Project Gutenberg website.  There is an R package that will allow us to work directly with the site, making the process straightforward[^r4everything].  I also considered two other works, but I refrained from "The Two Noble Kinsmen" because like many other of Shakespeare's versions on Gutenberg, it's basically written in a different language.  I also refrained from  *The Passionate Pilgrim* because it's mostly not Shakespeare.
 
 When first doing this project, I actually started with Gutenberg, but it became a notable PITA. The texts were inconsistent in source, and sometimes reproduced printing errors purposely, which would have compounded typical problems.  I thought it could have been solved by using the *Complete Works of Shakespeare* but the download only came with that title, meaning one would have to hunt for and delineate each separate work.  This might not have been too big of an issue, except that there is no table of contents, nor consistent naming of titles across different printings.  The MIT approach, on the other hand, was a few lines of code. This represents a common issue in text analysis when dealing with sources, a different option may save a lot of time in the end.
 
@@ -177,7 +177,7 @@ Now we can start thinking about prepping the data for eventual analysis. One of 
 
 ### Scene I. Remove initial text/metadata
 
-First on our todo list is to get rid of all the prelimnary text of titles, authorship etc.  This is fairly easy when you think that every text will start with ACT I, or in the case of the Sonnets, the word 'Sonnet'.  We want to drop all text up to those points.  I've created a [function](https://github.com/m-clark/text-analysis-with-R/blob/master/r/detect_first_act.R) that will do that, and then just apply it to each works tibble[^tibblefail].  For the poems and *A Funeral Elegy for Master William Peter*, we look instead for the line where his name or initials start the line.
+First on our to-do list is to get rid of all the preliminary text of titles, authorship etc.  This is fairly easy when you think that every text will start with ACT I, or in the case of the Sonnets, the word 'Sonnet'.  We want to drop all text up to those points.  I've created a [function](https://github.com/m-clark/text-analysis-with-R/blob/master/r/detect_first_act.R) that will do that, and then just apply it to each works tibble[^tibblefail].  For the poems and *A Funeral Elegy for Master William Peter*, we look instead for the line where his name or initials start the line.
 
 ```{r remove_preliminary_text, echo=-(1:2)}
 load('data/texts_raw/shakes/shakes_df.RData')
@@ -245,7 +245,7 @@ As we've noted before, we'll want to get rid of stop words, things like articles
 
 ### Scene I. Character names
 
-We'll get the list of character names from opensourceshakespeare.org via <span class="pack">rvest</span>, but I added some from the poems and others that came through, e.g. abbreviated names.
+We'll get the list of character names from [opensourceshakespeare.org](http://opensourceshakespeare.org/) via <span class="pack">rvest</span>, but I added some from the poems and others that came through, e.g. abbreviated names.
 
 ```{r character_names, eval=FALSE, echo=-1}
 library(rvest)
@@ -310,7 +310,7 @@ em_stops = data_frame(word=str_conv(em_stops0, 'UTF8'),
 
 ### Scene III. Remove stopwords
 
-We're now ready to start removing words. However, right now, we have lines not words.  We can use the <span class="pack">tidytext</span> function <span class="func">unnnest_tokens</span>, which is like <span class="func">unnnest</span> from <span class="pack">tidyr</span>, but works on different tokens, e.g. words, sentences, or paragraphs. Note that by default, the function will make all words lower case.
+We're now ready to start removing words. However, right now, we have lines not words.  We can use the <span class="pack">tidytext</span> function <span class="func">unnest_tokens</span>, which is like <span class="func">unnest</span> from <span class="pack">tidyr</span>, but works on different tokens, e.g. words, sentences, or paragraphs. Note that by default, the function will make all words lower case.
 
 ```{r unnest_words}
 library(tidytext)
@@ -346,7 +346,7 @@ any(shakes_words$word == 'mayst')
 
 ## ACT IV. Other fixes
 
-Now we're ready to finally do the word counts.  Just kidding! There is *still* work to do the for the remainder, and you'll continue to spot things after runs.  A big issue is the wrods that end in 'st' and 'est', and others that are not consistently spelled or otherwise need to be dealt with.  For example, 'crost' will not be stemmed to 'cross', as 'crossed' would be.  Finally, I limit the result to any words that have more than two characters, as my inspection dis
+Now we're ready to finally do the word counts.  Just kidding! There is *still* work to do the for the remainder, and you'll continue to spot things after runs.  A big issue is the words that end in 'st' and 'est', and others that are not consistently spelled or otherwise need to be dealt with.  For example, 'crost' will not be stemmed to 'cross', as 'crossed' would be.  Finally, I limit the result to any words that have more than two characters, as my inspection suggested these be left-over suffixes or otherwise would be considered stopwords anyway.
 
 
 ```{r other_fixes}
@@ -441,7 +441,7 @@ top10 = topfeatures(shakes_dtm, 10)
 top10
 ```
 
-The following is a wordcloud. They are among the most useless visual displays imaginable.  Just because you can, doesn't mean you should.
+The following is a word cloud. They are among the most useless visual displays imaginable.  Just because you can, doesn't mean you should.
 
 ```{r wordcloud, echo=FALSE}
 # useless!
@@ -509,11 +509,11 @@ textstat_simil(dfm_weight(shakes_dtm, 'relFreq'), margin = "documents", method =
 
 <br>
 
-We can already begin to see the clusters of documents.  For example, the more historical are the clump in the upper left.  The oddball is [*The Phoenix and the Turtle*](https://en.wikipedia.org/wiki/The_Phoenix_and_the_Turtle), though *Lover's Complaint* and the *Elegy* are also less similar than standard Shakespeare.  The Phoenix and the Turtle is about the death of ideal love, represented by the Phoenix and Turtledove, for which there is a funeral.  It actually is considered by scholars to be in stark constrast to his other output. Elegy itself is actually written for a funeral. [*A Lover's Complaint*](https://en.wikipedia.org/wiki/A_Lover%27s_Complaint) is considered an inferior work by the Bard, so perhaps what we're seeing is a reflection of that lack of quality.  In geneal, we're seeing things that we might expect.
+We can already begin to see the clusters of documents.  For example, the more historical are the clump in the upper left.  The oddball is [*The Phoenix and the Turtle*](https://en.wikipedia.org/wiki/The_Phoenix_and_the_Turtle), though *Lover's Complaint* and the *Elegy* are also less similar than standard Shakespeare.  The Phoenix and the Turtle is about the death of ideal love, represented by the Phoenix and Turtledove, for which there is a funeral.  It actually is considered by scholars to be in stark contrast to his other output. Elegy itself is actually written for a funeral. [*A Lover's Complaint*](https://en.wikipedia.org/wiki/A_Lover%27s_Complaint) is considered an inferior work by the Bard, so perhaps what we're seeing is a reflection of that lack of quality.  In general, we're seeing things that we might expect.
 
 #### Readability
 
-We can examine readablity scores for the texts, but for this we'll need them in raw form. We already had them from before, I just added *Phoenix* from the Gutenberg download.
+We can examine readability scores for the texts, but for this we'll need them in raw form. We already had them from before, I just added *Phoenix* from the Gutenberg download.
 
 ```{r readability1, echo=-1}
 raw_texts = 
@@ -570,7 +570,7 @@ shakes_read_ordered %>%
 
 #### Lexical diversity
 
-There are also metrics of <span class="emph">lexical diversity</span>.  As with readability, there is no one way to measure 'diversity'.  Here we'll go back to using the standard DTM, as the focus is on the terms, whereas readibility is more at the sentence level.  Most standard measures of lexical diversity are variants on what is called the type-token ratio, which in our setting is the number of unique terms (types) relative to the total terms (tokens). We can use <span class="func">textstat_lexdiv</span> for our purposes here, which will provide several measures of diversity by default.
+There are also metrics of <span class="emph">lexical diversity</span>.  As with readability, there is no one way to measure 'diversity'.  Here we'll go back to using the standard DTM, as the focus is on the terms, whereas readability is more at the sentence level.  Most standard measures of lexical diversity are variants on what is called the type-token ratio, which in our setting is the number of unique terms (types) relative to the total terms (tokens). We can use <span class="func">textstat_lexdiv</span> for our purposes here, which will provide several measures of diversity by default.
 
 ```{r lexical_diversity}
 ld = textstat_lexdiv(shakes_dtm)
@@ -602,7 +602,7 @@ scaled_ld %>%
 ```
 
 <br>
-As a comparison, the following shows the results of the 'Measure of Textual Diversity' calculated using the <span class="pack">koRpus</span> package[^noshowmtld].  It is notably less affected by text length, though the conclusions are largely the same. There is notable correlation between the MTLD and readibility as well[^correadmtld]. In general, Shakespeare tends to be more expressive in poems, and less so with comedies. 
+As a comparison, the following shows the results of the 'Measure of Textual Diversity' calculated using the <span class="pack">koRpus</span> package[^noshowmtld].  It is notably less affected by text length, though the conclusions are largely the same. There is notable correlation between the MTLD and readability as well[^correadmtld]. In general, Shakespeare tends to be more expressive in poems, and less so with comedies. 
 
 ```{r MTLD, echo=FALSE, eval=FALSE}
 fnames = c(dir('data/texts_raw/shakes/moby/', full.names=T), 
@@ -693,7 +693,7 @@ get_terms(shakes_10, 20) %>%
 We can see there is a lot of overlap in these topics for top terms.  Just looking at the top 10, *love* occurs in all of them, *god* and *heart* as well, but we could have guessed this just looking at how often they occur in general. Other measures can be used to assess term importance, such as those that seek to balance the term's probability of occurrence within a document, and term *exclusivity*, or how likely a term is to occur in only one particular topic.  See the <span class="pack">stm</span> package and corresponding <span class="func">labelTopics</span> function as a way to get several alternatives.  As an example I show the results of their version of the following[^scoredefs]:
 
 - <span class="emph">FREX</span>: **fr**equency and **ex**clusivity, it is a weighted harmonic mean of a term's rank within a topic in terms of frequency and exclusivity
-- <span class="emph">lift</span>: ratio of the termn='s probability within a topic to its probability of occurrence across all documents.  Overly sensitive to rare words.
+- <span class="emph">lift</span>: ratio of the term's probability within a topic to its probability of occurrence across all documents.  Overly sensitive to rare words.
 - <span class="emph">score</span>: another approach that will give more weight to exclusive terms
 - <span class="emph">prob</span>: This is just the raw probability of the term within a given topic.
 
@@ -770,13 +770,17 @@ json <- createJSON(phi = exp(shakes_10@beta),
                    # doc.length = rowSums(shakes_dtm), 
                    doc.length = rowSums(shakes_dtm>0), 
                    vocab = shakes_10@terms, 
+                   plot.opts = list(mdswidth  = 250,
+                                    mdsheight = 250,
+                                    barwidth  = 250,
+                                    barheight = 250),
                    term.frequency = colSums(shakes_dtm),
                    R=10)
-serVis(json, out.dir = '_book/vis', open.browser = F)
+serVis(json, out.dir = '_book/vis', open.browser = F)  # have to redo if book folder is cleaned can only adjust plot height/width directly in .js file
 ```
 
-<iframe src="vis/index.html" width="1200" height="700" frameborder="0"
-    scrolling="no"
+<iframe src="vis/index.html" width="100%" height="850px" frameborder="0"
+    scrolling="yes"
     marginheight="0"
     marginwidth="0">
   <p>Your browser does not support iframes.</p>
@@ -815,8 +819,9 @@ For example, base just on term frequency, Hamlet is most likely to be associated
 
 The following visualization shows a heatmap for the topic probabilities of each document.  Darker values mean higher probability for a document expressing that topic.  I've also added a cluster analysis based on the cosine distance matrix, and the resulting dendrogram[^clustering].  The colored bar on the right represents the given classification of a work as history, tragedy, comedy, or poem.
 
+<br>
 
-```{r viz_topics, echo=FALSE, out.height='400px', fig.width=8.5, fig.height=8.5, fig.align='center'}
+```{r viz_topics, echo=FALSE, out.height='700px', out.width='700px', fig.width=11, fig.height=8.5, fig.align='center'}
 library(quanteda)
 load('data/shakespeare_classification.RData')
 
@@ -834,42 +839,9 @@ row_dend  =
   as.dist() %>%
   hclust(method="complete") %>%
   as.dendrogram %>%
-  set("branches_k_color", k = 3) %>% set("branches_lwd", c(.5,.5)) %>%
+  set("branches_k_color", k = 4) %>% 
+  set("branches_lwd", c(.5,.5)) %>%
   ladderize
-
-# row_dend  = 
-#   -quanteda::textstat_dist(dfm_weight(shakes_dtm, 'tfidf'), 
-#                            margin = "documents", 
-#                           method = "kullback") %>%
-#   hclust(method="complete") %>%
-#   as.dendrogram %>%
-#   set("branches_k_color", k = 3) %>% set("branches_lwd", c(.5,.5)) %>%
-#   ladderize
-
-# heatmaply is barely beta, use d3heatmap for now?
-
-# shakes_10@gamma %>%
-#   round(3) %>%
-#   heatmaply::heatmaply(Rowv=row_dend,
-#                        Colv=F,
-#                        labRow=shakes_10@documents,
-#                        labCol=paste0('topic', 1:10),
-#                        colors='Oranges',
-#                        k_row = 4,
-#                        plot_method = 'plotly',
-#                        row_side_colors = select(arrange(shakes_types, title), class),
-#                        # row_side_palette = c("#39BEB1", "#ABB065", "#ACA4E2", "#CC476B", "#E495A5", "black"),
-#                        seriate = 'OLO',
-#                        fontsize_row=7,
-#                        fontsize_col=7,
-#                        subplot_widths=c(.75, .025, .225),
-#                        subplot_heights=1,
-#                        hide_colorbar = T,
-#                        colorbar_len = 0.3,
-#                        colorbar_ypos=0) %>%
-#   layout(showlegend=F) %>% # showing the legend will screw up the colorbar and any associated options
-#   config(displayModeBar = F) %>% 
-#   theme_plotly()
 
 shakes_10@gamma %>%
   round(3) %>%
@@ -877,7 +849,9 @@ shakes_10@gamma %>%
                        Colv=F,
                        colors='Oranges',
                        row_side_colors = data.frame(shakes_types$class),
-                       # RowSideColors = shakes_types$class,
+                       row_side_palette = plasma,
+                       k_row= 4,
+                       # RowSideColors = 'Set2',
                        labRow=shakes_10@documents,
                        labCol=paste0('Topic ', 1:10),
                        hide_colorbar=T,
@@ -889,14 +863,13 @@ shakes_10@gamma %>%
   theme_plotly()
 ```
 
-
 <br>
 
-A couple things stand out.  To begin with, most works are associated with one topic.  In terms of the discovered topics, traditional classificiation really probably only works for the historical works, as they cluster together as expected (except for Henry the VIII, possibly due to it being a collaborative work).  Furthermore, tragedies and comedies might hit on the same topics, albeit from different perspecitves.  In addition, at least some works are very poetical, or at least have topics in common with the poems (love).  If we take four clusters, the result boils down to *Phoenix* (on its own), standard poems, a mixed bag of more love oriented works and the remaining poems, then everything else.  
+A couple things stand out.  To begin with, most works are associated with one topic[^howmanytopics].  In terms of the discovered topics, traditional classification really probably only works for the <span class="" style="color:#9C179E">historical</span> works, as they cluster together as expected (except for Henry the VIII, possibly due to it being a collaborative work).  Furthermore, <span class="" style="color:#F0F921">tragedies</span> and <span class="" style="color:#0D0887">comedies</span> might hit on the same topics, albeit from different perspectives.  In addition, at least some works are very poetical, or at least have topics in common with the <span class="" style="color:#ED7953">poems</span> (love, beauty).  If we take four clusters from the cluster analysis, the result boils down to *Phoenix* (on its own), standard poems, a mixed bag of more love-oriented works and the remaining poems, then everything else.   
 
 Alternatively, one could merely classify the works based on their probable topics, which would make more sense if clustering of the works is in fact the goal. The following visualization attempts to order them based on their most probable topic.  The order is based on the most likely topics across all documents.
 
-```{r cluster_topics, echo=FALSE}
+```{r cluster_topics, echo=FALSE, fig.align='center', fig.width=11, fig.height=5, out.height='800px', out.width='650px'}
 topic_class = shakes_10@gamma %>%
   round(3) %>%
   data.frame() %>% 
@@ -912,25 +885,21 @@ topic_class = topic_class %>%
 
 topic_class %>%
   select(-text, -class) %>% 
-  heatmaply::heatmaply(Rowv=F, Colv=F,
+  heatmaply::heatmaply(Rowv=NA,
+                       Colv=NA,
                        labRow=topic_class$text,
                        labCol=apply(get_terms(shakes_10, 10), 2, paste0, collapse='\n')[order_topics],
                        column_text_angle=0, 
                        colors='Oranges',
-                       subplot_widths=c(.75),
+                       # subplot_widths=c(1),
                        plot_method = 'plotly',
                        fontsize_row=8,
                        fontsize_col=8,
                        hide_colorbar = T) %>% 
-  layout(showlegend=F, height=750) %>% # height to be deprecated, maybe heatmaply will conform to plotly by then
+  layout(showlegend=F) %>% # height to be deprecated, maybe heatmaply will conform to plotly by then
   config(displayModeBar = F) %>% 
   theme_plotly() 
 ```
-
-<br>
-<br>
-<br>
-<br>
 
 The following shows the average topic probability for each of the traditional classes. Topics are represented by their first five most probable terms.
 
@@ -1017,7 +986,9 @@ shakes_10@gamma %>%
   lazerhawk::theme_trueMinimal()
 ```
 
-Aside from the poems, the classes are a good mix of topics, and appear to have some overlap.
+Aside from the poems, the classes are a good mix of topics, and appear to have some overlap.  Tragedies are perhaps most diverse.
+
+#### Summary of Topic Models
 
 And I grow weary...
 
@@ -1027,13 +998,15 @@ And I grow weary...
 
 <div style="text-align:center; font-size:500%">**FIN**</div>
 
+
+
 [^bug]: If you can think of a use case where `x<br>y<br>z` leading to `xyz` would be both expected as default behavior and desired please let me know.
 
 [^r4everything]: If this surprises you, let me remind you that there are over 10k packages on CRAN alone.
 
 [^tibblefail]: I found it easier to work with the entire data frame for the function, hence splitting it on id and recombining.  Some attempt was made to work within the tidyverse, but there were numerous issues to what should have been a fairly easy task.
 
-[^love]: Love might as well be a stopword for Shakespere.
+[^love]: Love might as well be a stopword for Shakespeare.
 
 [^noshowmtld]: I don't show this as I actually did it in parallel due to longer works taking a notable time to calculate MTLD.
 
