@@ -90,7 +90,7 @@ More sophisticated POS tagging would require the context of the sentence structu
 
 We'll reexamine the Barthelme texts above with this more involved approach. Initially we'll need to get the English-based tagger we need and load the libraries.
 
-```{r eval=FALSE, echo=FALSE}
+```{r koRpus, eval=FALSE, echo=FALSE}
 # POS tagging in R with koRpus; requires installation of treeTagger or using its
 # own tokenizer, e.g. as used in textual diversity section
 # activate library
@@ -103,7 +103,7 @@ text.tagged <- treetag("data/texts_raw/carver/beginners.txt",
                        TT.options=list(path="C:\\TreeTagger", preset="en"))
 ```
 
-```{r, eval=F}
+```{r openNLP, eval=F}
 # install.packages("openNLPmodels.en", repos = "http://datacube.wu.ac.at/", type = "source")
 
 library(NLP)

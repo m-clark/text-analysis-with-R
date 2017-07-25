@@ -225,7 +225,7 @@ Those are just a few.  The key functions can be found by looking at the help fil
 
 See if you can guess which of the following will turn up `TRUE`.
 
-```{r eval=FALSE}
+```{r quick_regex_exercise, eval=FALSE}
 grepl(c('apple', 'pear', 'banana'), pattern='a')
 grepl(c('apple', 'pear', 'banana'), pattern='^a')
 grepl(c('apple', 'pear', 'banana'), pattern='^a|a$')

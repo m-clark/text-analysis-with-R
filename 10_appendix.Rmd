@@ -7,11 +7,11 @@
 
 <img src="img/Barthelme.jpg" style="display:block; margin: 0 auto;" width=500>
 
-“I have to admit we are mired in the most exquisite mysterious muck. This muck heaves and palpitates. It is multi-directional and has a mayor.” 
+"I have to admit we are mired in the most exquisite mysterious muck. This muck heaves and palpitates. It is multi-directional and has a mayor." 
 
-“You may not be interested in absurdity, but absurdity is interested in you.” 
+<p style="text-align:center">"You may not be interested in absurdity, but absurdity is interested in you."</p>
 
-“There was no particular point at which I stopped being promising.” 
+
 
 #### The First Thing the Baby Did Wrong
 
@@ -38,15 +38,15 @@ A brief work about etiquette and how to act in society.
 
 <img src="img/Raymond_Carver.jpg" style="display:block; margin: 0 auto;" width=500>
 
-“It ought to make us feel ashamed when we talk like we know what we're talking about when we talk about love.”
+"It ought to make us feel ashamed when we talk like we know what we're talking about when we talk about love."
 
-“That's all we have, finally, the words, and they had better be the right ones.” 
+"That's all we have, finally, the words, and they had better be the right ones." 
 
-“Get in, get out. Don't linger. Go on.” 
+"Get in, get out. Don't linger. Go on." 
 
-“There is no answer. It's okay. But even if it wasn't okay, what am I supposed to do?” 
+"There is no answer. It's okay. But even if it wasn't okay, what am I supposed to do?" 
 
-“You've got to work with your mistakes until they look intended. Understand?” 
+"You've got to work with your mistakes until they look intended. Understand?" 
 
 #### What We Talk About When We Talk About Love
 
@@ -60,9 +60,9 @@ The text we use is actually *Beginners*, or the unedited version. A drink is req
 <img src="img/Billy_Dee_Shakespeare.jpg" style="display:block; margin: 0 auto;" width='40%'>
 
 
-"It works every time."
+<p style="text-align:center">"It works every time."</p>
 
-"This deal is getting worse all the time!"
+
 
 These old works have pretty much no relevance today, and are mostly forgotten by everyone except humanities faculty. The analysis of them depicted in this document is pretty much definitive, and leaves little else to say regarding them, so don't bother reading them if you haven't already.
 

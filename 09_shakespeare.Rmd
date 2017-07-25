@@ -275,7 +275,8 @@ chars = str_split(chars, ' ') %>%
 chars_other = c('enobarbus', 'marcius', 'katharina', 'clarence','pyramus',
                 'andrew', 'arcite', 'perithous', 'hippolita', 'schoolmaster',
                 'cressid', 'diomed', 'kate', 'titinius', 'Palamon', 'Tarquin',
-                'lucrece', 'isidore', 'tom', 'thisbe', 'thisbi', 'paul', 'aemelia')
+                'lucrece', 'isidore', 'tom', 'thisbe', 'paul',
+                'aemelia', 'sycorax', 'montague', 'capulet', 'collatinus')
 
 chars = unique(c(chars, chars_other))
 
@@ -692,9 +693,9 @@ get_terms(shakes_10, 20) %>%
 
 We can see there is a lot of overlap in these topics for top terms.  Just looking at the top 10, *love* occurs in all of them, *god* and *heart* as well, but we could have guessed this just looking at how often they occur in general. Other measures can be used to assess term importance, such as those that seek to balance the term's probability of occurrence within a document, and term *exclusivity*, or how likely a term is to occur in only one particular topic.  See the <span class="pack">stm</span> package and corresponding <span class="func">labelTopics</span> function as a way to get several alternatives.  As an example I show the results of their version of the following[^scoredefs]:
 
-- <span class="emph">FREX</span>: **fr**equency and **ex**clusivity, it is a weighted harmonic mean of a term's rank within a topic in terms of frequency and exclusivity
-- <span class="emph">lift</span>: ratio of the term's probability within a topic to its probability of occurrence across all documents.  Overly sensitive to rare words.
-- <span class="emph">score</span>: another approach that will give more weight to exclusive terms
+- <span class="emph">FREX</span>: **FR**equency and **EX**clusivity, it is a weighted harmonic mean of a term's rank within a topic in terms of frequency and exclusivity.
+- <span class="emph">lift</span>: Ratio of the term's probability within a topic to its probability of occurrence across all documents.  Overly sensitive to rare words.
+- <span class="emph">score</span>: Another approach that will give more weight to more exclusive terms.
 - <span class="emph">prob</span>: This is just the raw probability of the term within a given topic.
 
 ```{r coherence, eval=FALSE, echo=FALSE}
@@ -762,6 +763,7 @@ sapply(score_list, function(e) apply(e, 2, paste, collapse=', ')) %>%
 
 As another approach, consider the <span class="emph">saliency</span> and <span class="emph">relevance</span> of term via the <span class="pack">LDAvis</span> package. While you can play with it here, it's probably easier to [open it separately](vis/index.html).
 
+<br>
 
 ```{r ldavis, eval=FALSE, echo=FALSE}
 library(LDAvis)
@@ -779,7 +781,7 @@ json <- createJSON(phi = exp(shakes_10@beta),
 serVis(json, out.dir = '_book/vis', open.browser = F)  # have to redo if book folder is cleaned can only adjust plot height/width directly in .js file
 ```
 
-<iframe src="vis/index.html" width="100%" height="850px" frameborder="0"
+<iframe src="vis/index.html" width="100%" height="862px" frameborder="0"
     scrolling="yes"
     marginheight="0"
     marginwidth="0">
@@ -799,7 +801,10 @@ t(topics(shakes_10, 3))
 t(topics(shakes_10, 2)) %>% 
   data.frame %>% 
   rename_all(str_replace, 'X', 'Top Topic ') %>% 
-  DT::datatable(options=list(dom='tp',
+  DT::datatable(options=list(dom='t', 
+                             scrollY='400px', 
+                             scrollCollapse=T, 
+                             pageLength=40,
                              autoWidth=T, 
                              align='center',
                              columnDefs=list(list(width='150px', targets=0),
@@ -869,7 +874,9 @@ A couple things stand out.  To begin with, most works are associated with one to
 
 Alternatively, one could merely classify the works based on their probable topics, which would make more sense if clustering of the works is in fact the goal. The following visualization attempts to order them based on their most probable topic.  The order is based on the most likely topics across all documents.
 
-```{r cluster_topics, echo=FALSE, fig.align='center', fig.width=11, fig.height=5, out.height='800px', out.width='650px'}
+<br>
+
+```{r cluster_topics, echo=FALSE, fig.align='center', fig.width=11, fig.height=8, out.height='800px', out.width='650px'}
 topic_class = shakes_10@gamma %>%
   round(3) %>%
   data.frame() %>% 
@@ -903,7 +910,7 @@ topic_class %>%
 
 The following shows the average topic probability for each of the traditional classes. Topics are represented by their first five most probable terms.
 
-```{r avg_topic_probs_per_class, echo=FALSE}
+```{r avg_topic_probs_per_class, echo=FALSE, fig.width=6, fig.height=3, out.height='600px', out.width='650px'}
 class_probs = shakes_10@gamma %>%
   data.frame() %>% 
   round(3) %>%
@@ -948,12 +955,25 @@ class_probs %>%
                        # xaxis_height = 250,
                        # subplot_widths = .75,
                        hide_colorbar = T,
-                       colorbar_len=.5,
+                       # colorbar_len=.5,
                        column_text_angle=0
                        ) %>%
   config(displayModeBar = F) %>% 
   theme_plotly()
 ```
+
+
+Aside from the poems, the classes are a good mix of topics, and appear to have some overlap.  Tragedies are perhaps most diverse.
+
+#### Summary of Topic Models
+
+And I grow weary...
+
+<br>
+<br>
+<br>
+
+<div style="text-align:center; font-size:500%">**FIN**</div>
 
 
 ```{r ggplay, echo=F, eval=F}
@@ -985,19 +1005,6 @@ shakes_10@gamma %>%
   scale_x_continuous(expand=c(0, 0)) + 
   lazerhawk::theme_trueMinimal()
 ```
-
-Aside from the poems, the classes are a good mix of topics, and appear to have some overlap.  Tragedies are perhaps most diverse.
-
-#### Summary of Topic Models
-
-And I grow weary...
-
-<br>
-<br>
-<br>
-
-<div style="text-align:center; font-size:500%">**FIN**</div>
-
 
 
 [^bug]: If you can think of a use case where `x<br>y<br>z` leading to `xyz` would be both expected as default behavior and desired please let me know.

@@ -62,7 +62,10 @@ t(topics(shakes_10, 2))
 t(topics(shakes_10, 2)) %>% 
   data.frame %>% 
   rename_all(str_replace, 'X', 'Top Topic ') %>% 
-  DT::datatable(options=list(dom='tp',
+  DT::datatable(options=list(dom='t', 
+                             scrollY='400px', 
+                             scrollCollapse=T, 
+                             pageLength=40,
                              autoWidth=T, 
                              align='center',
                              columnDefs=list(list(width='150px', targets=0),

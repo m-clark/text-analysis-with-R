@@ -1,11 +1,12 @@
 ---
-title: "In the beginning was the word.."
-subtitle: 'An Introduction to Text Processing and Analysis with R'
+title: <span style="font-size:125%; font-family:Stalemate">In the beginning was the word \.\.\.</span>
+subtitle: <span style="font-size:125%; font-variant:small-caps; font-family:'Open Sans'">An Introduction to Text Processing and Analysis with R</span>
 author:  |
-  <div class="title"><span style="font-size:125%; font-variant:small-caps; ">Michael Clark</span><br><br>
+  <img src="img/mc.png" style="width:15%; padding:0px 0;"> <br>
   <span class="" style="font-size:75%">http://m-clark.github.io/workshops/</span><br><br>
   <img src="img/signature-acronym.png" style="width:30%; padding:10px 0;"> <br>
   <img src="img/ARC-acronym-signature.png" style="width:21%; padding:10px 0;"> </div>
+
 date: "`r Sys.Date()`"
 site: bookdown::bookdown_site
 output:
