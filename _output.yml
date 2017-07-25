@@ -6,9 +6,9 @@ bookdown::gitbook:
  config:
    toc:
      before: |
-       <li><a href="https://m-clark.github.io/workshops/"><span style="font-size:125%; font-variant:small-caps; font-style:italic; color:#9E1B34">Text Analysis in R</span></a></li>
+       <li><a href="https://m-clark.github.io/workshops/"><span style="font-size:125%; font-variant:small-caps; font-style:italic; color:#9E1B34; font-family:Roboto">Text Analysis in R</span></a></li>
      after: |
-       <li><a href="https://m-clark.github.io" target="blank" style="font-size:150%; font-variant:small-caps; color:#9E1B34">Michael Clark</a></li>
+       <li><a href="https://m-clark.github.io" target="blank" style="font-size:150%; font-variant:small-caps; color:#9E1B34; font-family:Roboto">Michael Clark</a></li>
    edit:
      link: https://github.com/m-clark/workshops/
    highlight: pygments

@@ -1,6 +1,6 @@
 # Shakespeare Start to Finish
 
-The following attempts to demonstrate the usual difficulties in dealing with text by procuring and processing the works of Shakespeare.  The source is [MIT](http://shakespeare.mit.edu/) which has made the 'complete' works available on the web since 1993, plus one other from Gutenberg.  The initial issue is simply getting the works from the web.  Subsequently there is metadata, character names, stopwords etc. to be removed. At that point we can stem and count the words in each work, which, when complete, puts us at the point we are ready for analysis.
+The following attempts to demonstrate the usual difficulties one encounters dealing with text by procuring and processing the works of Shakespeare.  The source is [MIT](http://shakespeare.mit.edu/) which has made the 'complete' works available on the web since 1993, plus one other from Gutenberg.  The initial issue is simply getting the works from the web.  Subsequently there is metadata, character names, stopwords etc. to be removed. At that point we can stem and count the words in each work, which, when complete, puts us at the point we are ready for analysis.
 
 The primary packages used are <span class="pack">tidytext</span>, <span class="pack">stringr</span>, and when things are ready for analysis, <span class="pack">quanteda.</span>
 
