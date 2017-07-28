@@ -2,10 +2,10 @@
 title: <span style="font-size:125%; font-family:Stalemate">In the beginning was the word \.\.\.</span>
 subtitle: <span style="font-size:125%; font-variant:small-caps; font-family:'Open Sans'">An Introduction to Text Processing and Analysis with R</span>
 author:  |
-  <img src="img/mc.png" style="width:15%; padding:0px 0;"> <br>
+  <span style="font-size:125%; font-variant:small-caps; font-family:'Open Sans'">Michael Clark</span> <br>
   <span class="" style="font-size:75%">http://m-clark.github.io/workshops/</span><br><br>
   <img src="img/signature-acronym.png" style="width:30%; padding:10px 0;"> <br>
-  <img src="img/ARC-acronym-signature.png" style="width:21%; padding:10px 0;"> </div>
+  <img src="img/ARC-acronym-signature.png" style="width:21%; padding:10px 0;"> 
 
 date: "`r Sys.Date()`"
 site: bookdown::bookdown_site
