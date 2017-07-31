@@ -230,11 +230,11 @@ While we're at it, we can save the classical (sometimes arbitrary) classificatio
 ```{r shakespeare_classes, eval=FALSE}
 shakes_types = data_frame(title=unique(shakes_trim$id)) %>%
   mutate(class = 'Comedy',
-         class = if_else(grepl(title, pattern='Adonis|Lucrece|Complaint|Turtle|Pilgrim|Sonnet|Elegy'), 'Poem', class),
-         class = if_else(grepl(title, pattern='Henry|Richard|John'), 'History', class),
-         class = if_else(grepl(title, pattern='Troilus|Coriolanus|Titus|Romeo|Timon|Julius|Macbeth|Hamlet|Othello|Antony|Cymbeline|Lear'), 'Tragedy', class),
-         problem = if_else(grepl(title, pattern='Measure|Merchant|^All|Troilus|Timon|Passion'), 'Problem', 'Not'),
-         late_romance = if_else(grepl(title, pattern='Cymbeline|Kinsmen|Pericles|Winter|Tempest'), 'Late', 'Other'))
+         class = if_else(str_detect(title, pattern='Adonis|Lucrece|Complaint|Turtle|Pilgrim|Sonnet|Elegy'), 'Poem', class),
+         class = if_else(str_detect(title, pattern='Henry|Richard|John'), 'History', class),
+         class = if_else(str_detect(title, pattern='Troilus|Coriolanus|Titus|Romeo|Timon|Julius|Macbeth|Hamlet|Othello|Antony|Cymbeline|Lear'), 'Tragedy', class),
+         problem = if_else(str_detect(title, pattern='Measure|Merchant|^All|Troilus|Timon|Passion'), 'Problem', 'Not'),
+         late_romance = if_else(str_detect(title, pattern='Cymbeline|Kinsmen|Pericles|Winter|Tempest'), 'Late', 'Other'))
 
 save(shakes_types, file='data/shakespeare_classification.RData') # save for later
 ```
@@ -878,15 +878,15 @@ Alternatively, one could merely classify the works based on their probable topic
 
 ```{r cluster_topics, echo=FALSE, fig.align='center', fig.width=11, fig.height=8, out.height='800px', out.width='650px'}
 topic_class = shakes_10@gamma %>%
-  round(3) %>%
+  round(2) %>%
   data.frame() %>% 
   rename_all(function(x) str_replace(x, 'X', 'Topic ')) %>% 
   mutate(text =  shakes_10@documents, 
          class = shakes_types$class)
 order_topics = order(colSums(shakes_10@gamma), decreasing=T)
+# order_topics = order(apply(shakes_10@gamma, 2, mean), decreasing=T)
 
 topic_class = topic_class %>%
-  # select(-text, -class) %>%
   select(order_topics, text, class)  %>%
   arrange_at(vars(contains('Topic')), desc) 
 
@@ -903,7 +903,7 @@ topic_class %>%
                        fontsize_row=8,
                        fontsize_col=8,
                        hide_colorbar = T) %>% 
-  layout(showlegend=F) %>% # height to be deprecated, maybe heatmaply will conform to plotly by then
+  layout(showlegend=F) %>% 
   config(displayModeBar = F) %>% 
   theme_plotly() 
 ```

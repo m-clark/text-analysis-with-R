@@ -5,11 +5,11 @@
 
 ### Donald Barthelme
 
-<img src="img/Barthelme.jpg" style="display:block; margin: 0 auto;" width=500>
+<a href="https://en.wikipedia.org/wiki/Donald_Barthelme"><img src="img/Barthelme.jpg" style="display:block; margin: 0 auto;" width=500></a>
 
-"I have to admit we are mired in the most exquisite mysterious muck. This muck heaves and palpitates. It is multi-directional and has a mayor." 
+> <p style="text-align:center">"I have to admit we are mired in the most exquisite mysterious muck. <br> This muck heaves and palpitates. It is multi-directional and has a mayor."</p>
 
-<p style="text-align:center">"You may not be interested in absurdity, but absurdity is interested in you."</p>
+> <p style="text-align:center">"You may not be interested in absurdity, but absurdity is interested in you."</p>
 
 
 
@@ -36,17 +36,12 @@ A brief work about etiquette and how to act in society.
 
 ### Raymond Carver
 
-<img src="img/Raymond_Carver.jpg" style="display:block; margin: 0 auto;" width=500>
+<a href="https://en.wikipedia.org/wiki/Raymond_Carver"><img src="img/Raymond_Carver.jpg" style="display:block; margin: 0 auto;" width=500></a>
 
-"It ought to make us feel ashamed when we talk like we know what we're talking about when we talk about love."
+> <p style="text-align:center">"It ought to make us feel ashamed when we talk like we know what we're talking about when we talk about love."</p>
 
-"That's all we have, finally, the words, and they had better be the right ones." 
+> <p style="text-align:center">"That's all we have, finally, the words, and they had better be the right ones." </p>
 
-"Get in, get out. Don't linger. Go on." 
-
-"There is no answer. It's okay. But even if it wasn't okay, what am I supposed to do?" 
-
-"You've got to work with your mistakes until they look intended. Understand?" 
 
 #### What We Talk About When We Talk About Love
 
@@ -60,7 +55,7 @@ The text we use is actually *Beginners*, or the unedited version. A drink is req
 <img src="img/Billy_Dee_Shakespeare.jpg" style="display:block; margin: 0 auto;" width='40%'>
 
 
-<p style="text-align:center">"It works every time."</p>
+> <p style="text-align:center">"It works every time."</p>
 
 
 
@@ -70,14 +65,22 @@ These old works have pretty much no relevance today, and are mostly forgotten by
 
 ## R
 
-Up until even a couple years ago, R was *terrible* at text.
+Up until even a couple years ago, R was *terrible* at text.  You really only had base R for basic processing and a couple packages that were not straightforward to use.  There was little for scraping the web.  Nowadays, I would say it's probably easier to deal with text in R than it is elsewhere, including Python. Packages like <span class="pack">rvest</span>, <span class="pack">stringr</span>/<span class="pack">stringi</span>, and <span class="pack">tidytext</span> and more make it almost easy enough to jump right in.
+
+One can start of current R tools by visiting the Natural Language Processing task view to start getting a sense of what all is available.
 
 [NLP task view](https://www.r-pkg.org/ctv/NaturalLanguageProcessing)
 
-monkeylearn?
+
+The one drawback with R is that most of the dealing with text is slow and/or memory intensive.  The Shakespeare texts are only a few dozen and not very long works, and yet your basic LDA might still take a minute or so.  Most text analysis situations might have thousands to millions of texts, such that the corpus itself may be too much to hold in memory, and thus R, at least on a standard computing device, might not be viable for your needs.
 
 ## Python
 
-- nltk
-- gensim
-- spacy
+While R has done a lot to catch up, more advanced text analysis techniques are developed in Python (if not lower level languages), and so the state of the art may be found there.  Furthermore, much of text analysis is a high volume affair, and that means it will likely be done much more efficiently in the Python environment if so, though one still might need a high performance computing environment.  Here are some of the popular modules in Python. 
+
+- <span class="pack">nltk</span>
+- <span class="pack">textblob</span> (the tidytext for Python)
+- <span class="pack">gensim</span> (topic modeling)
+- <span class="pack">spaCy</span>
+
+
