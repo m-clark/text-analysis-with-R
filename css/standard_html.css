@@ -1,5 +1,5 @@
-@import url("http://fonts.googleapis.com/css?family=Roboto|Roboto+Mono|Roboto+Condensed");
-@import url("http://fonts.googleapis.com/css?family=Open+Sans");
+@import url("https://fonts.googleapis.com/css?family=Roboto|Roboto+Mono|Roboto+Condensed");
+@import url("https://fonts.googleapis.com/css?family=Open+Sans");
 @import url('https://fonts.googleapis.com/css?family=Open+Sans+Condensed:300');
 @import url('https://fonts.googleapis.com/css?family=Source+Code+Pro');
 @import url('https://fonts.googleapis.com/css?family=Stalemate|Alex+Brush');
@@ -10,7 +10,7 @@
   font-weight: 500;
 }
 
-/* pack func and objclass colors come from hcl(seq(90,360, length.out=4), c=80, l=80)*/
+/* pack func and objclass colors initially come from hcl(seq(90,360, length.out=4), c=80, l=80); redone for contrast*/
 .pack {
   color: #AC9CFF; /*#e41a1c*/
   font-weight: 500;
@@ -31,7 +31,7 @@ a {
 }
 
 body {
-  color: #595959; /*#595959 (i.e. gray35) provides recommended contrast ratio 7:1; previous  #7f7f7f (4:1); */
+  color: #585858; /*#595959 (i.e. gray35) provides recommended contrast ratio 7:1 on white; change 9s to 8s for offwhite;*/
   background-color: #fffff8;
 }
 

@@ -8,7 +8,7 @@ bookdown::gitbook:
      before: |
        <li><a href="https://m-clark.github.io/workshops/text_analysis/"><span style="font-size:125%; font-variant:small-caps; font-style:italic; color:#9E1B34; font-family:Roboto">Text Analysis in R</span></a></li>
      after: |
-       <li><a href="https://m-clark.github.io/"><img src="img/mc.png" style="width:50%; padding:0px 0;"></a></li>
+       <li><a href="https://m-clark.github.io/"><img src="img/mc.png" style="width:50%; padding:0px 0;" alt="MC logo"></a></li>
    edit:
      link: https://github.com/m-clark/workshops/
    highlight: pygments

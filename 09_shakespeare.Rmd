@@ -767,7 +767,7 @@ As another approach, consider the <span class="emph">saliency</span> and <span c
 
 ```{r ldavis, eval=FALSE, echo=FALSE}
 library(LDAvis)
-json <- createJSON(phi = exp(shakes_10@beta), 
+json = createJSON(phi = exp(shakes_10@beta), 
                    theta = shakes_10@gamma, 
                    # doc.length = rowSums(shakes_dtm), 
                    doc.length = rowSums(shakes_dtm>0), 
@@ -784,7 +784,7 @@ serVis(json, out.dir = '_book/vis', open.browser = F)  # have to redo if book fo
 <iframe src="vis/index.html" width="100%" height="862px" frameborder="0"
     scrolling="yes"
     marginheight="0"
-    marginwidth="0">
+    marginwidth="0" title="LDAvis results">
   <p>Your browser does not support iframes.</p>
 </iframe>
 

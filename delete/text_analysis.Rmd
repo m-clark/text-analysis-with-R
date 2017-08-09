@@ -1,11 +1,12 @@
 ---
-title: "In the beginning was the word.."
-subtitle: 'An Introduction to Text Processing and Analysis with R'
+title: <span style="font-size:125%; font-family:Stalemate">In the beginning was the word \.\.\.</span>
+subtitle: <span style="font-size:125%; font-variant:small-caps; font-family:'Open Sans'">An Introduction to Text Processing and Analysis with R</span>
 author:  |
-  <div class="title"><span style="font-size:125%; font-variant:small-caps; ">Michael Clark</span><br><br>
+  <span style="font-size:125%; font-variant:small-caps; font-family:'Open Sans'">Michael Clark</span> <br>
   <span class="" style="font-size:75%">http://m-clark.github.io/workshops/</span><br><br>
   <img src="img/signature-acronym.png" style="width:30%; padding:10px 0;"> <br>
-  <img src="img/ARC-acronym-signature.png" style="width:21%; padding:10px 0;"> </div>
+  <img src="img/ARC-acronym-signature.png" style="width:21%; padding:10px 0;"> 
+
 date: "`r Sys.Date()`"
 site: bookdown::bookdown_site
 output:
@@ -1196,14 +1197,23 @@ https://ldavis.cpsievert.me/reviews/reviews.html
 
 # Summary
 
+It should be clear at this point that text can be seen as amenable to analysis as anything else in statistics.  Depending on the goals, the exploration of text can take on one of many forms.  In most situations, at least some preprocessing may be required, and often it will be quite an undertaking to make the text amenable to analysis.  However, this is often rewarded by interesting insights and a better understanding of the data at hand, and makes possible what otherwise would not be if only human-powered analysis were applied.
 
-For more natural language processing tools in R, consult the corresponding [task view](https://www.r-pkg.org/ctv/NaturalLanguageProcessing).  Much natural language processing is done with deep learning techniques, which generally requires a lot of data, notable computing resources, copious amounts of fine tunining, and often involves optimization towards a specific task.  Most of the cutting edge work there is done in Python, but as a starting point for more common approaches, you can check out the [Natural Language Toolkit](http://www.nltk.org/book/).
+For more natural language processing tools in R, one should consult the corresponding [task view](https://www.r-pkg.org/ctv/NaturalLanguageProcessing).  However, one should be aware that it doesn't take much to strain one's computing resources with R's tools and standard approach. As an example, the Shakespeare corpus is very small by any standard, and even then it will take some time for certain statistics or topic modeling to be conducted.  As such, one should be prepared to also spend time learning ways to make computing more efficient.  Luckily, many aspects of the process may be easily distributed/parallelized.
+
+Much natural language processing is actually done with deep learning techniques, which generally requires a lot of data, notable computing resources, copious amounts of fine tuning, and often involves optimization towards a specific task.  Most of the cutting edge work there is done in Python, and as a starting point for more common text-analytic approaches, you can check out the [Natural Language Toolkit](http://www.nltk.org/book/).
+
+Dealing with text is not always easy, but it's definitely easier than it ever has been.  The amount of tools at your disposal is vast, and more are being added all the time. One of the main take home messages is that text analysis can be a lot of fun, so enjoy the process!
+
+<br>
+
+<p style="text-align:center; font-family:'Alex Brush'; font-size:200%">Best of luck with your research! $\qquad\sim\mathbb{M}$</p> 
 
 <!--chapter:end:05_Summary.Rmd-->
 
 # Shakespeare Start to Finish
 
-The following attempts to demonstrate the usual difficulties in dealing with text by procuring and processing the works of Shakespeare.  The source is [MIT](http://shakespeare.mit.edu/) which has made the 'complete' works available on the web since 1993, plus one other from Gutenberg.  The initial issue is simply getting the works from the web.  Subsequently there is metadata, character names, stopwords etc. to be removed. At that point we can stem and count the words in each work, which, when complete, puts us at the point we are ready for analysis.
+The following attempts to demonstrate the usual difficulties one encounters dealing with text by procuring and processing the works of Shakespeare.  The source is [MIT](http://shakespeare.mit.edu/) which has made the 'complete' works available on the web since 1993, plus one other from Gutenberg.  The initial issue is simply getting the works from the web.  Subsequently there is metadata, character names, stopwords etc. to be removed. At that point we can stem and count the words in each work, which, when complete, puts us at the point we are ready for analysis.
 
 The primary packages used are <span class="pack">tidytext</span>, <span class="pack">stringr</span>, and when things are ready for analysis, <span class="pack">quanteda.</span>
 
@@ -1433,11 +1443,11 @@ While we're at it, we can save the classical (sometimes arbitrary) classificatio
 ```{r shakespeare_classes, eval=FALSE}
 shakes_types = data_frame(title=unique(shakes_trim$id)) %>%
   mutate(class = 'Comedy',
-         class = if_else(grepl(title, pattern='Adonis|Lucrece|Complaint|Turtle|Pilgrim|Sonnet|Elegy'), 'Poem', class),
-         class = if_else(grepl(title, pattern='Henry|Richard|John'), 'History', class),
-         class = if_else(grepl(title, pattern='Troilus|Coriolanus|Titus|Romeo|Timon|Julius|Macbeth|Hamlet|Othello|Antony|Cymbeline|Lear'), 'Tragedy', class),
-         problem = if_else(grepl(title, pattern='Measure|Merchant|^All|Troilus|Timon|Passion'), 'Problem', 'Not'),
-         late_romance = if_else(grepl(title, pattern='Cymbeline|Kinsmen|Pericles|Winter|Tempest'), 'Late', 'Other'))
+         class = if_else(str_detect(title, pattern='Adonis|Lucrece|Complaint|Turtle|Pilgrim|Sonnet|Elegy'), 'Poem', class),
+         class = if_else(str_detect(title, pattern='Henry|Richard|John'), 'History', class),
+         class = if_else(str_detect(title, pattern='Troilus|Coriolanus|Titus|Romeo|Timon|Julius|Macbeth|Hamlet|Othello|Antony|Cymbeline|Lear'), 'Tragedy', class),
+         problem = if_else(str_detect(title, pattern='Measure|Merchant|^All|Troilus|Timon|Passion'), 'Problem', 'Not'),
+         late_romance = if_else(str_detect(title, pattern='Cymbeline|Kinsmen|Pericles|Winter|Tempest'), 'Late', 'Other'))
 
 save(shakes_types, file='data/shakespeare_classification.RData') # save for later
 ```
@@ -2081,15 +2091,15 @@ Alternatively, one could merely classify the works based on their probable topic
 
 ```{r cluster_topics, echo=FALSE, fig.align='center', fig.width=11, fig.height=8, out.height='800px', out.width='650px'}
 topic_class = shakes_10@gamma %>%
-  round(3) %>%
+  round(2) %>%
   data.frame() %>% 
   rename_all(function(x) str_replace(x, 'X', 'Topic ')) %>% 
   mutate(text =  shakes_10@documents, 
          class = shakes_types$class)
 order_topics = order(colSums(shakes_10@gamma), decreasing=T)
+# order_topics = order(apply(shakes_10@gamma, 2, mean), decreasing=T)
 
 topic_class = topic_class %>%
-  # select(-text, -class) %>%
   select(order_topics, text, class)  %>%
   arrange_at(vars(contains('Topic')), desc) 
 
@@ -2106,7 +2116,7 @@ topic_class %>%
                        fontsize_row=8,
                        fontsize_col=8,
                        hide_colorbar = T) %>% 
-  layout(showlegend=F) %>% # height to be deprecated, maybe heatmaply will conform to plotly by then
+  layout(showlegend=F) %>% 
   config(displayModeBar = F) %>% 
   theme_plotly() 
 ```
@@ -2235,13 +2245,13 @@ shakes_10@gamma %>%
 
 ### Donald Barthelme
 
-<img src="img/Barthelme.jpg" style="display:block; margin: 0 auto;" width=500>
+<a href="https://en.wikipedia.org/wiki/Donald_Barthelme"><img src="img/Barthelme.jpg" style="display:block; margin: 0 auto;" width=500></a>
 
-"I have to admit we are mired in the most exquisite mysterious muck. This muck heaves and palpitates. It is multi-directional and has a mayor." 
+> <p style="text-align:center">"I have to admit we are mired in the most exquisite mysterious muck. <br> This muck heaves and palpitates. It is multi-directional and has a mayor."</p>
 
-<p style="text-align:center">"You may not be interested in absurdity, but absurdity is interested in you."</p>
+> <p style="text-align:center">"You may not be interested in absurdity, but absurdity is interested in you."</p>
 
-"There was no particular point at which I stopped being promising." 
+
 
 #### The First Thing the Baby Did Wrong
 
@@ -2266,17 +2276,12 @@ A brief work about etiquette and how to act in society.
 
 ### Raymond Carver
 
-<img src="img/Raymond_Carver.jpg" style="display:block; margin: 0 auto;" width=500>
+<a href="https://en.wikipedia.org/wiki/Raymond_Carver"><img src="img/Raymond_Carver.jpg" style="display:block; margin: 0 auto;" width=500></a>
 
-"It ought to make us feel ashamed when we talk like we know what we're talking about when we talk about love."
+> <p style="text-align:center">"It ought to make us feel ashamed when we talk like we know what we're talking about when we talk about love."</p>
 
-"That's all we have, finally, the words, and they had better be the right ones." 
+> <p style="text-align:center">"That's all we have, finally, the words, and they had better be the right ones." </p>
 
-"Get in, get out. Don't linger. Go on." 
-
-"There is no answer. It's okay. But even if it wasn't okay, what am I supposed to do?" 
-
-"You've got to work with your mistakes until they look intended. Understand?" 
 
 #### What We Talk About When We Talk About Love
 
@@ -2290,7 +2295,7 @@ The text we use is actually *Beginners*, or the unedited version. A drink is req
 <img src="img/Billy_Dee_Shakespeare.jpg" style="display:block; margin: 0 auto;" width='40%'>
 
 
-<p style="text-align:center">"It works every time."</p?
+> <p style="text-align:center">"It works every time."</p>
 
 
 
@@ -2300,17 +2305,25 @@ These old works have pretty much no relevance today, and are mostly forgotten by
 
 ## R
 
-Up until even a couple years ago, R was *terrible* at text.
+Up until even a couple years ago, R was *terrible* at text.  You really only had base R for basic processing and a couple packages that were not straightforward to use.  There was little for scraping the web.  Nowadays, I would say it's probably easier to deal with text in R than it is elsewhere, including Python. Packages like <span class="pack">rvest</span>, <span class="pack">stringr</span>/<span class="pack">stringi</span>, and <span class="pack">tidytext</span> and more make it almost easy enough to jump right in.
+
+One can start of current R tools by visiting the Natural Language Processing task view to start getting a sense of what all is available.
 
 [NLP task view](https://www.r-pkg.org/ctv/NaturalLanguageProcessing)
 
-monkeylearn?
+
+The one drawback with R is that most of the dealing with text is slow and/or memory intensive.  The Shakespeare texts are only a few dozen and not very long works, and yet your basic LDA might still take a minute or so.  Most text analysis situations might have thousands to millions of texts, such that the corpus itself may be too much to hold in memory, and thus R, at least on a standard computing device, might not be viable for your needs.
 
 ## Python
 
-- nltk
-- gensim
-- spacy
+While R has done a lot to catch up, more advanced text analysis techniques are developed in Python (if not lower level languages), and so the state of the art may be found there.  Furthermore, much of text analysis is a high volume affair, and that means it will likely be done much more efficiently in the Python environment if so, though one still might need a high performance computing environment.  Here are some of the popular modules in Python. 
+
+- <span class="pack">nltk</span>
+- <span class="pack">textblob</span> (the tidytext for Python)
+- <span class="pack">gensim</span> (topic modeling)
+- <span class="pack">spaCy</span>
+
+
 
 <!--chapter:end:10_appendix.Rmd-->
 
