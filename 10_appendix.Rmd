@@ -67,12 +67,12 @@ These old works have pretty much no relevance today, and are mostly forgotten by
 
 Up until even a couple years ago, R was *terrible* at text.  You really only had base R for basic processing and a couple packages that were not straightforward to use.  There was little for scraping the web.  Nowadays, I would say it's probably easier to deal with text in R than it is elsewhere, including Python. Packages like <span class="pack">rvest</span>, <span class="pack">stringr</span>/<span class="pack">stringi</span>, and <span class="pack">tidytext</span> and more make it almost easy enough to jump right in.
 
-One can start of current R tools by visiting the Natural Language Processing task view to start getting a sense of what all is available.
+One can peruse the Natural Language Processing task view to start getting a sense of what all is available in R.
 
 [NLP task view](https://www.r-pkg.org/ctv/NaturalLanguageProcessing)
 
 
-The one drawback with R is that most of the dealing with text is slow and/or memory intensive.  The Shakespeare texts are only a few dozen and not very long works, and yet your basic LDA might still take a minute or so.  Most text analysis situations might have thousands to millions of texts, such that the corpus itself may be too much to hold in memory, and thus R, at least on a standard computing device, might not be viable for your needs.
+The one drawback with R is that most of the dealing with text is slow and/or memory intensive.  The Shakespeare texts are only a few dozen and not very long works, and yet your basic LDA might still take a minute or so.  Most text analysis situations might have thousands to millions of texts, such that the corpus itself may be too much to hold in memory, and thus R, at least on a standard computing device or with the usual methods, might not be viable for your needs.
 
 ## Python
 
