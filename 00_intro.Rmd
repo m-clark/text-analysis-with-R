@@ -3,11 +3,13 @@
 
 ## Overview
 
-Dealing with text is typically not even considered in the applied statistical training of most disciplines.  This is in direct conflict with how often it has to be dealt with prior to analysis, or how interesting it might be to have text be the focus of analysis.  This document and corresponding workshop will aim to provide a sense of the things one can do with text, and the sorts of analyses that might be useful.  It must be stressed that this is only a starting point.
+Dealing with text is typically not even considered in the applied statistical training of most disciplines.  This is in direct conflict with how often it has to be dealt with prior to analysis, or how interesting it might be to have text be the focus of analysis.  This document and corresponding workshop will aim to provide a sense of the things one can do with text, and the sorts of analyses that might be useful.  
 
 ### Goals
 
-The goal of this workshop is primarily to provide a sense of common tasks related to dealing with text as part of the data or the focus of analysis, and provide some relatively easy to use tools.  Additionally, we'll have exercises to practice, but those comfortable enough to do so should follow along with the in-text examples.  Note that there is more content here than will be covered in a 2 hour workshop.
+The goal of this workshop is primarily to provide a sense of common tasks related to dealing with text as part of the data or the focus of analysis, and provide some relatively easy to use tools.  It must be stressed that this is only a starting point, a hopefully fun foray into the world of text, not definitive statement of how you *should* analyze text.
+
+Additionally, we'll have exercises to practice, but those comfortable enough to do so should follow along with the in-text examples.  Note that there is more content here than will be covered in a 2 hour workshop.
 
 
 ### Prerequisites

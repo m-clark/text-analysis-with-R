@@ -216,10 +216,15 @@ barthelme_pos %>%
 
 <br>
 
+
+## Tagging summary
+
 For more information, consult the following:
 
 - [Penn Treebank](http://repository.upenn.edu/cgi/viewcontent.cgi?article=1603&context=cis_reports) 
-- [Maxent function](http://maxent.sourceforge.net/about.html) Note that this 'maximum entropy' approach is just one way to go about things. Other models include hidden markov models, conditional random fields, and more recently, deep learning techniques.
+- [Maxent function](http://maxent.sourceforge.net/about.html) 
+
+As with the sentiment analysis demos, the above should be seen only starting point for getting a sense of what you're dealing with.  The 'maximum entropy' approach is just one way to go about things. Other models include hidden markov models, conditional random fields, and more recently, deep learning techniques.  Goals might include text prediction (i.e. the thing your phone always gets wrong), translation, and more.
 
 
 ## POS Exercise

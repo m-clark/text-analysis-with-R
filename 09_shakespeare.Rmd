@@ -318,6 +318,7 @@ library(tidytext)
 
 shakes_words = shakes_trim %>%
   unnest_tokens(word, text, token='words')
+save(shakes_words, file='data/shakes_words_df_4text2vec.RData')
 ```
 
 We also will be doing a little stemming here. I'm getting rid of suffixes that end with the suffix after an apostrophe.  Many of the remaining words will either be stopwords or need to be further stemmed later. I also created a middle/modern English stemmer for words that are not caught otherwise (<span class="func">me_st_stem</span>).  Again this is the sort of thing you discover after initial passes (e.g. 'criedst'). We can do that, then the <span class="func">anti_join</span> of all the stopwords.
