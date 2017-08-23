@@ -1,0 +1,39 @@
+---
+title: "R Notebook"
+output: html_notebook
+editor_options: 
+  chunk_output_type: inline
+---
+
+```{r}
+# knitr::opts_chunk$set(engine.path = list(python = '/anaconda/bin/python'))
+knitr::opts_chunk$set(engine.path = list(python = '/anaconda/bin/python'))
+```
+
+
+```{python}
+import spacy as spacy
+
+nlp = spacy.load('en')
+doc = nlp(u'They told us to duck.')
+for word in doc:
+    print(word.text, word.lemma, word.lemma_, word.tag, word.tag_, word.pos, word.pos_)
+
+```
+
+```{python}
+
+def read_file(file_name):
+    with open(file_name, 'r') as file:
+        return file.read().decode('utf-8')
+
+baby = read_file('../data/texts_raw/barthelme/baby.txt')
+processed_text = nlp(text)
+
+for word in test:
+    print(word.text, word.lemma, word.lemma_, word.tag, word.tag_, word.pos, word.pos_)
+
+for word in doc:
+    print(word.text, word.lemma, word.lemma_, word.tag, word.tag_, word.pos, word.pos_)
+```
+
