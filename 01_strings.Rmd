@@ -48,6 +48,14 @@ as.numeric(x)
 sum(x)
 ```
 
+Any numbers could be used, what we're interested in are the labels, so a 'sum' doesn't make any sense.  All of the following would produce the same factor.
+
+```{r factor_rep, eval=FALSE}
+factor(c(1, 2, 3), labels=c('a', 'b', 'c'))
+factor(c(3.2, 10, 500000), labels=c('a', 'b', 'c'))
+factor(c(.49, 1, 5), labels=c('a', 'b', 'c'))
+```
+
 
 Because of the integer+metadata representation, factors are actually smaller than character strings, often notably so.
 
@@ -84,7 +92,7 @@ The <span class="func">model.matrix</span> function exposes the underlying matri
 
 ### Characters vs. Factors
 
-The main thing to note is that factors are generally a statistical phenomenon, and are required to do statistical things with data that would otherwise be a simple character string.  If you know the relatively few levels the data can take, you'll generally want to use factors, or at least know that statistical packages and methods will require them.  In addition, factors allow you to easily overcome the sometimes silly default alphabetical ordering of category levels in some very popular visualization packages.
+The main thing to note is that factors are generally a statistical phenomenon, and are required to do statistical things with data that would otherwise be a simple character string.  If you know the relatively few levels the data can take, you'll generally want to use factors, or at least know that statistical packages and methods will require them.  In addition, factors allow you to easily overcome the silly default alphabetical ordering of category levels in some very popular visualization packages.
 
 For other things, such as text analysis, you'll almost certainly want character strings instead, and in many cases it will be required.  It's also worth noting that a lot of base R and other behavior will coerce strings to factors.  This made a lot more sense in the early days of R, but is not really necessary these days.
 
@@ -191,7 +199,7 @@ What is *that* you may ask?  Well here is an example of strings it would and wou
 grepl(c('r is the shiny', 'r is the shiny1', 'r shines brightly'), pattern='^r.*shiny[0-9]$')
 ```
 
-What the regex esoterically is attempting to match is any string that starts with 'r' and ends with 'shiny_' where _ is some single digit.  Specifically it breaks down as follows:
+What the regex is esoterically attempting to match is any string that starts with 'r' and ends with 'shiny_' where _ is some single digit.  Specifically it breaks down as follows:
 
 - **^** : starts with, so ^r means starts with r
 - **.** : any character
@@ -341,8 +349,36 @@ df %>%
 We just have to use the <span class="func">num_range</span> helper function within the function that tells <span class="func">rename_at</span> what it should be renaming, and let <span class="func">str_replace</span> do the rest. 
 
 
-
 ## Exercises
+
+
+1. In your own words, state the difference between a character string and a factor variable.
+
+2. The following application of paste produces this result.
+
+```{r ex_paste}
+paste(c('A', '1', 'Q'), c('B', '2', 'z'))
+```
+
+How might you paste them so that there is an underscore `_` between characters and no space?
+
+3. Use regex to grab the Star Wars names that have a number.
+
+```{r ex_regex, eval=FALSE, echo=-1}
+# grep(starwars$name, pattern = '[0-9]', value=T)
+grep(starwars$name, pattern = ?)
+```
+
+Now use your hacking skills to determine which one is the tallest.
+
+4. Use the <span class="pack">dplyr</span> helper functions  to grab all the columns in the <span class="objclass">starwars</span> data set with `color` in the name but without referring to them directly.  The following shows a generic example.  There are several ways to do this. Try two if you can. 
+
+```{r ex_dplyr, eval=FALSE}
+starwars %>% 
+  select(helper_function('pattern'))
+```
+
+
 
 [^poordoc]: At least they're exposed now.
 

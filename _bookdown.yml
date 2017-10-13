@@ -2,3 +2,4 @@ book_filename: "text_analysis"
 language:
   ui:
     chapter_name: "Chapter "
+output_dir: "docs"

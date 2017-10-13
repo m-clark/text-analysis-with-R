@@ -37,7 +37,7 @@ In addition, the lexicons are going to maybe be applicable to *general* usage of
 
 ### The first thing the baby did wrong
 
-We demonstrate sentiment analysis with the text *The first thing the baby did wrong*, which is a very popular brief guide to parenting written by world renown psychologist [Donald Barthelme][Donald Barthelme] who, in his spare time, also wrote postmodern literature.  This particular text talks about an issue with the baby, whose name is Born Dancin', who likes to tear pages out of books. Attempts are made by her parents to rectify the situation, without much success, but things are finally resolved at the end.  The ultimate goal will be to see how sentiment in the text evolves over time.
+We demonstrate sentiment analysis with the text *The first thing the baby did wrong*, which is a very popular brief guide to parenting written by world renown psychologist [Donald Barthelme][Donald Barthelme] who, in his spare time, also wrote postmodern literature.  This particular text talks about an issue with the baby, whose name is Born Dancin', and who likes to tear pages out of books. Attempts are made by her parents to rectify the situation, without much success, but things are finally resolved at the end.  The ultimate goal will be to see how sentiment in the text evolves over time.
 
 How do we start? Let's look at the <span class="objclass">sentiments</span> data set in the <span class="pack">tidytext</span> package.
 
@@ -215,8 +215,6 @@ rnj_sentiment_bing %>%
 
 <br>
 
-In general it's a close game until perhaps the midway point, when negativity takes over and despair sets in with the story.  By the end [[:SPOILER ALERT:]] Sean Bean is beheaded, Darth Vader reveals himself to be Luke's father, and Verbal is Keyser Söze.
-
 Here is the same information expressed as a difference.
 
 ```{r rnj_sentiment_diff, echo=F}
@@ -230,6 +228,8 @@ rnj_sentiment_bing %>%
 ```
 
 <br>
+
+In general it's a close game until perhaps the midway point, when negativity takes over and despair sets in with the story.  By the end [[:SPOILER ALERT:]] Sean Bean is beheaded, Darth Vader reveals himself to be Luke's father, and Verbal is Keyser Söze.
 
 ## Sentiment Analysis Summary
 
