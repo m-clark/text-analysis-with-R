@@ -238,6 +238,14 @@ In general, sentiment analysis can be a useful exploration of data, but it is hi
 
 It should also be noted that the above demonstration is largely conceptual only, and while fun, overly simplified. For starters, trying to classify words as simply positive or negative itself is not a straightforward endeavor.  As we noted at the beginning, context matters, and in general you'd want to take it into account.  Modern methods of sentiment analysis would use approaches like word2vec or deep learning to predict a sentiment probability, as opposed to a simple word match. 
 
+## Exercise
+
+### Step 0
+
+Install the <span class="pack">janeaustenr</span> package and load it.
+
+### Step 1
+
 
 [^text]: Don't name your column 'text' in practice. It is a base function in R, and the tidyverse will have problems with distinguishing the function from the column name.  I only do so for pedagogical reasons.
 
