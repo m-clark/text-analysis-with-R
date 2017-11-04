@@ -24,7 +24,7 @@
 
 
 
-<meta name="date" content="2017-10-12">
+<meta name="date" content="2017-11-04">
 
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta name="apple-mobile-web-app-capable" content="yes">
@@ -163,6 +163,13 @@ code > span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Inf
 <li class="chapter" data-level="" data-path="sentiment-analysis-is-sick-yo.html"><a href="sentiment-analysis-is-sick-yo.html#romeo-juliet"><i class="fa fa-check"></i>Romeo &amp; Juliet</a></li>
 </ul></li>
 <li class="chapter" data-level="" data-path="sentiment-analysis-is-sick-yo.html"><a href="sentiment-analysis-is-sick-yo.html#sentiment-analysis-summary"><i class="fa fa-check"></i>Sentiment Analysis Summary</a></li>
+<li class="chapter" data-level="" data-path="sentiment-analysis-is-sick-yo.html"><a href="sentiment-analysis-is-sick-yo.html#exercise"><i class="fa fa-check"></i>Exercise</a><ul>
+<li class="chapter" data-level="" data-path="sentiment-analysis-is-sick-yo.html"><a href="sentiment-analysis-is-sick-yo.html#step-0-install-the-packages"><i class="fa fa-check"></i>Step 0: Install the packages</a></li>
+<li class="chapter" data-level="" data-path="sentiment-analysis-is-sick-yo.html"><a href="sentiment-analysis-is-sick-yo.html#step-1-initial-inspection"><i class="fa fa-check"></i>Step 1: Initial inspection</a></li>
+<li class="chapter" data-level="" data-path="sentiment-analysis-is-sick-yo.html"><a href="sentiment-analysis-is-sick-yo.html#step-2-data-prep"><i class="fa fa-check"></i>Step 2: Data prep</a></li>
+<li class="chapter" data-level="" data-path="sentiment-analysis-is-sick-yo.html"><a href="sentiment-analysis-is-sick-yo.html#step-3-get-sentiment"><i class="fa fa-check"></i>Step 3: Get sentiment</a></li>
+<li class="chapter" data-level="" data-path="sentiment-analysis-is-sick-yo.html"><a href="sentiment-analysis-is-sick-yo.html#step-4-visualize"><i class="fa fa-check"></i>Step 4: Visualize</a></li>
+</ul></li>
 </ul></li>
 <li class="chapter" data-level="" data-path="pos-taggin.html"><a href="pos-taggin.html"><i class="fa fa-check"></i>POS taggin’</a><ul>
 <li class="chapter" data-level="" data-path="pos-taggin.html"><a href="pos-taggin.html#basic-idea-1"><i class="fa fa-check"></i>Basic idea</a></li>
@@ -180,7 +187,7 @@ code > span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Inf
 <li class="chapter" data-level="" data-path="topic-modeling.html"><a href="topic-modeling.html#shakespeare"><i class="fa fa-check"></i>Shakespeare</a></li>
 </ul></li>
 <li class="chapter" data-level="" data-path="topic-modeling.html"><a href="topic-modeling.html#extensions"><i class="fa fa-check"></i>Extensions</a></li>
-<li class="chapter" data-level="" data-path="topic-modeling.html"><a href="topic-modeling.html#exercise"><i class="fa fa-check"></i>Exercise</a></li>
+<li class="chapter" data-level="" data-path="topic-modeling.html"><a href="topic-modeling.html#exercise-1"><i class="fa fa-check"></i>Exercise</a></li>
 </ul></li>
 <li class="chapter" data-level="" data-path="summary.html"><a href="summary.html"><i class="fa fa-check"></i>Summary</a></li>
 <li class="chapter" data-level="" data-path="shakespeare-start-to-finish.html"><a href="shakespeare-start-to-finish.html"><i class="fa fa-check"></i>Shakespeare Start to Finish</a><ul>
@@ -456,7 +463,137 @@ negative positive
 <h2>Sentiment Analysis Summary</h2>
 <p>In general, sentiment analysis can be a useful exploration of data, but it is highly dependent on the context and tools used. Note also that ‘sentiment’ can be anything, it doesn’t have to be positive vs. negative. Any vocabulary may be applied, and so it has more utility than the usual implementation.</p>
 <p>It should also be noted that the above demonstration is largely conceptual only, and while fun, overly simplified. For starters, trying to classify words as simply positive or negative itself is not a straightforward endeavor. As we noted at the beginning, context matters, and in general you’d want to take it into account. Modern methods of sentiment analysis would use approaches like word2vec or deep learning to predict a sentiment probability, as opposed to a simple word match.</p>
+</div>
+<div id="exercise" class="section level2">
+<h2>Exercise</h2>
+<div id="step-0-install-the-packages" class="section level3">
+<h3>Step 0: Install the packages</h3>
+<p>If you haven’t already, install the <span class="pack">tidytext</span> package. Install the <span class="pack">janeaustenr</span> package and load both of them<a href="#fn7" class="footnoteRef" id="fnref7"><sup>7</sup></a>.</p>
+</div>
+<div id="step-1-initial-inspection" class="section level3">
+<h3>Step 1: Initial inspection</h3>
+<p>First you’ll want to look at what we’re dealing with, so take a gander at <span class="objclass">austenbooks</span>.</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">library</span>(tidytext); <span class="kw">library</span>(janeaustenr)
+<span class="kw">austen_books</span>()</code></pre></div>
+<pre><code># A tibble: 73,422 x 2
+                    text                book
+ *                 &lt;chr&gt;              &lt;fctr&gt;
+ 1 SENSE AND SENSIBILITY Sense &amp; Sensibility
+ 2                       Sense &amp; Sensibility
+ 3        by Jane Austen Sense &amp; Sensibility
+ 4                       Sense &amp; Sensibility
+ 5                (1811) Sense &amp; Sensibility
+ 6                       Sense &amp; Sensibility
+ 7                       Sense &amp; Sensibility
+ 8                       Sense &amp; Sensibility
+ 9                       Sense &amp; Sensibility
+10             CHAPTER 1 Sense &amp; Sensibility
+# ... with 73,412 more rows</code></pre>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">austen_books</span>() <span class="op">%&gt;%</span><span class="st"> </span>
+<span class="st">  </span><span class="kw">distinct</span>(book)</code></pre></div>
+<pre><code># A tibble: 6 x 1
+                 book
+               &lt;fctr&gt;
+1 Sense &amp; Sensibility
+2   Pride &amp; Prejudice
+3      Mansfield Park
+4                Emma
+5    Northanger Abbey
+6          Persuasion</code></pre>
+<p>We will examine only one text. In addition, for this exercise we’ll take a little bit of a different approach, looking for a specific kind of sentiment using the NRC database. It contains 10 distinct sentiments.</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">get_sentiments</span>(<span class="st">&quot;nrc&quot;</span>) <span class="op">%&gt;%</span><span class="st"> </span><span class="kw">distinct</span>(sentiment)</code></pre></div>
+<pre><code># A tibble: 10 x 1
+      sentiment
+          &lt;chr&gt;
+ 1        trust
+ 2         fear
+ 3     negative
+ 4      sadness
+ 5        anger
+ 6     surprise
+ 7     positive
+ 8      disgust
+ 9          joy
+10 anticipation</code></pre>
+<p>Now, select from any of those sentiments you like (or more than one), and one of the texts as follows.</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">nrc_sadness &lt;-<span class="st"> </span><span class="kw">get_sentiments</span>(<span class="st">&quot;nrc&quot;</span>) <span class="op">%&gt;%</span><span class="st"> </span>
+<span class="st">  </span><span class="kw">filter</span>(sentiment <span class="op">==</span><span class="st"> &quot;positive&quot;</span>)
 
+ja_book =<span class="st"> </span><span class="kw">austen_books</span>() <span class="op">%&gt;%</span>
+<span class="st">    </span><span class="kw">filter</span>(book <span class="op">==</span><span class="st"> &quot;Emma&quot;</span>)</code></pre></div>
+</div>
+<div id="step-2-data-prep" class="section level3">
+<h3>Step 2: Data prep</h3>
+<p>Now we do a little prep, and I’ll save you the trouble. You can just run the following.</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">ja_book =<span class="st">  </span>ja_book <span class="op">%&gt;%</span>
+<span class="st">  </span><span class="kw">mutate</span>(<span class="dt">chapter =</span> <span class="kw">str_detect</span>(text, <span class="kw">regex</span>(<span class="st">&quot;^chapter [</span><span class="ch">\\</span><span class="st">divxlc]&quot;</span>, <span class="dt">ignore_case =</span> <span class="ot">TRUE</span>)),
+         <span class="dt">chapter =</span> <span class="kw">cumsum</span>(chapter),
+         <span class="dt">line_book =</span> <span class="kw">row_number</span>()) <span class="op">%&gt;%</span>
+<span class="st">  </span><span class="kw">unnest_tokens</span>(word, text)</code></pre></div>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">ja_book =<span class="st">  </span>ja_book <span class="op">%&gt;%</span>
+<span class="st">  </span><span class="kw">mutate</span>(<span class="dt">chapter =</span> <span class="kw">str_detect</span>(text, <span class="kw">regex</span>(<span class="st">&quot;^chapter [</span><span class="ch">\\</span><span class="st">divxlc]&quot;</span>, <span class="dt">ignore_case =</span> <span class="ot">TRUE</span>)),
+         <span class="dt">chapter =</span> <span class="kw">cumsum</span>(chapter),
+         <span class="dt">line_book =</span> <span class="kw">row_number</span>()) <span class="op">%&gt;%</span>
+<span class="st">  </span><span class="kw">group_by</span>(chapter) <span class="op">%&gt;%</span><span class="st"> </span>
+<span class="st">  </span><span class="kw">mutate</span>(<span class="dt">line_chapter =</span> <span class="kw">row_number</span>()) <span class="op">%&gt;%</span><span class="st"> </span>
+<span class="st">  </span><span class="co"># ungroup()</span>
+<span class="st">  </span><span class="kw">unnest_tokens</span>(word, text)</code></pre></div>
+</div>
+<div id="step-3-get-sentiment" class="section level3">
+<h3>Step 3: Get sentiment</h3>
+<p>Now, on your own, try the inner join approach we used previously to match the sentiments to the text. Don’t try to overthink this. The third pipe step will use the <span class="func">count</span> function with the <code>word</code> column and also the argument <code>sort=TRUE</code>. Note this is just to look at your result, we aren’t assigning it to an object yet.</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">ja_book <span class="op">%&gt;%</span>
+<span class="st">  </span>? <span class="op">%&gt;%</span>
+<span class="st">  </span>?</code></pre></div>
+<p>The following shows my negative evaluation of <span class="emph">Mansfield Park</span>.</p>
+<pre><code># A tibble: 1,007 x 2
+         word     n
+        &lt;chr&gt; &lt;int&gt;
+ 1    feeling   375
+ 2        ill   315
+ 3        bad   245
+ 4       evil   240
+ 5     mother   178
+ 6      doubt   138
+ 7      worse   120
+ 8   distress   115
+ 9 impossible   114
+10      leave   112
+# ... with 997 more rows</code></pre>
+</div>
+<div id="step-4-visualize" class="section level3">
+<h3>Step 4: Visualize</h3>
+<p>Now let’s do a visualization for sentiment. So redo your inner join but we’ll create a data frame that has the information we need.</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">plot_data =<span class="st"> </span>ja_book <span class="op">%&gt;%</span>
+<span class="st">  </span><span class="kw">inner_join</span>(nrc_bad) <span class="op">%&gt;%</span>
+<span class="st">  </span><span class="kw">group_by</span>(chapter, line_book, line_chapter) <span class="op">%&gt;%</span><span class="st"> </span>
+<span class="st">  </span><span class="kw">count</span>() <span class="op">%&gt;%</span>
+<span class="st">  </span><span class="kw">group_by</span>(chapter) <span class="op">%&gt;%</span><span class="st"> </span>
+<span class="st">  </span><span class="kw">mutate</span>(<span class="dt">negativity =</span> <span class="kw">cumsum</span>(n)) <span class="op">%&gt;%</span><span class="st"> </span>
+<span class="st">  </span><span class="kw">group_by</span>(line_chapter) <span class="op">%&gt;%</span>
+<span class="st">  </span><span class="kw">mutate</span>(<span class="dt">mean_negativity=</span><span class="kw">mean</span>(n))
+  
+plot_data</code></pre></div>
+<pre><code># A tibble: 4,398 x 6
+# Groups:   line_chapter [453]
+   chapter line_book line_chapter     n negativity mean_negativity
+     &lt;int&gt;     &lt;int&gt;        &lt;int&gt; &lt;int&gt;      &lt;int&gt;           &lt;dbl&gt;
+ 1       1        17            7     2          2        3.411765
+ 2       1        18            8     4          6        2.647059
+ 3       1        20           10     1          7        3.307692
+ 4       1        24           14     1          8        2.882353
+ 5       1        26           16     2         10        2.538462
+ 6       1        27           17     3         13        2.666667
+ 7       1        28           18     3         16        3.578947
+ 8       1        29           19     2         18        2.312500
+ 9       1        34           24     3         21        2.166667
+10       1        41           31     1         22        2.866667
+# ... with 4,388 more rows</code></pre>
+<p>At this point you have enough to play with, so I leave you to plot whatever you want.</p>
+<p>The following<a href="#fn8" class="footnoteRef" id="fnref8"><sup>8</sup></a> shows both the total negativity within a chapter, as well as the per line negativity within a chapter. We can see that there is less negativity towards the end of chapters. We can also see that there appears to be more negativity in later chapters (darker lines).</p>
+<p><img src="text_analysis_files/figure-html/negativity_plot-1.svg" width="800" style="display: block; margin: auto;" /></p>
+
+</div>
 </div>
 </div>
 <div class="footnotes">
@@ -464,6 +601,8 @@ negative positive
 <ol start="5">
 <li id="fn5"><p>Don’t name your column ‘text’ in practice. It is a base function in R, and the tidyverse will have problems with distinguishing the function from the column name. I only do so for pedagogical reasons.<a href="sentiment-analysis-is-sick-yo.html#fnref5">↩</a></p></li>
 <li id="fn6"><p>There are almost always encoding issues in my experience.<a href="sentiment-analysis-is-sick-yo.html#fnref6">↩</a></p></li>
+<li id="fn7"><p>This exercise is more or less taken directly from the <a href="http://tidytextmining.com/sentiment.html">tidytext book</a>.<a href="sentiment-analysis-is-sick-yo.html#fnref7">↩</a></p></li>
+<li id="fn8"><p>This visualization goes against many of my principles. I like it anyway.<a href="sentiment-analysis-is-sick-yo.html#fnref8">↩</a></p></li>
 </ol>
 </div>
             </section>

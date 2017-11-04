@@ -240,13 +240,180 @@ It should also be noted that the above demonstration is largely conceptual only,
 
 ## Exercise
 
-### Step 0
+### Step 0: Install the packages
 
-Install the <span class="pack">janeaustenr</span> package and load it.
+If you haven't already, install the <span class="pack">tidytext</span> package. Install the <span class="pack">janeaustenr</span> package and load both of them[^lazy].
 
-### Step 1
+### Step 1: Initial inspection
+
+First you'll want to look at what we're dealing with, so take a gander at <span class="objclass">austenbooks</span>.
+
+```{r ja_inspect}
+library(tidytext); library(janeaustenr)
+austen_books()
+austen_books() %>% 
+  distinct(book)
+```
+
+We will examine only one text.  In addition, for this exercise we'll take a little bit of a different approach, looking for a specific kind of sentiment using the NRC database. It contains 10 distinct sentiments.
+
+```{r nrc_sentiment}
+get_sentiments("nrc") %>% distinct(sentiment)
+```
+
+Now, select from any of those sentiments you like (or more than one), and one of the texts as follows.
+
+```{r nrc_init, eval=FALSE}
+nrc_sadness <- get_sentiments("nrc") %>% 
+  filter(sentiment == "positive")
+
+ja_book = austen_books() %>%
+    filter(book == "Emma")
+```
+
+```{r nrc_init_, echo=FALSE}
+nrc_bad <- get_sentiments("nrc") %>% 
+  filter(sentiment %in% c('fear', 'negative', 'sadness', 'anger', 'disgust'))
+
+ja_book = austen_books() %>%
+    filter(book == "Mansfield Park")
+```
+
+### Step 2: Data prep
+
+Now we do a little prep, and I'll save you the trouble.  You can just run the following.
+
+```{r ja_prep, eval=FALSE}
+ja_book =  ja_book %>%
+  mutate(chapter = str_detect(text, regex("^chapter [\\divxlc]", ignore_case = TRUE)),
+         chapter = cumsum(chapter),
+         line_book = row_number()) %>%
+  unnest_tokens(word, text)
+```
+
+```{r ja_prep2}
+ja_book =  ja_book %>%
+  mutate(chapter = str_detect(text, regex("^chapter [\\divxlc]", ignore_case = TRUE)),
+         chapter = cumsum(chapter),
+         line_book = row_number()) %>%
+  group_by(chapter) %>% 
+  mutate(line_chapter = row_number()) %>% 
+  # ungroup()
+  unnest_tokens(word, text)
+```
+
+### Step 3: Get sentiment
+
+Now, on your own, try the inner join approach we used previously to match the sentiments to the text. Don't try to overthink this.  The third pipe step will use the <span class="func">count</span> function with the `word` column and also the argument `sort=TRUE`.  Note this is just to look at your result, we aren't assigning it to an object yet.
+
+```{r ja_join_sentiment_example, eval=FALSE}
+ja_book %>%
+  ? %>%
+  ?
+```
+
+The following shows my negative evaluation of <span class="emph">Mansfield Park</span>.
+
+```{r ja_join_sentiment, echo=FALSE}
+ja_book %>%
+  inner_join(nrc_bad) %>%
+  count(word, sort = TRUE)
+```
+
+
+### Step 4: Visualize
+
+Now let's do a visualization for sentiment. So redo your inner join but we'll create a data frame that has the information we need.
+
+```{r negativity_data}
+plot_data = ja_book %>%
+  inner_join(nrc_bad) %>%
+  group_by(chapter, line_book, line_chapter) %>% 
+  count() %>%
+  group_by(chapter) %>% 
+  mutate(negativity = cumsum(n)) %>% 
+  group_by(line_chapter) %>%
+  mutate(mean_negativity=mean(n))
+  
+plot_data
+```
+
+At this point you have enough to play with, so I leave you to plot whatever you want.
+
+The following[^badplot] shows both the total negativity within a chapter, as well as the per line negativity within a chapter. We can see that there is less negativity towards the end of chapters.  We can also see that there appears to be more negativity in later chapters (darker lines).
+
+```{r negativity_plot, echo=FALSE, fig.height=6, fig.width=8, dpi=100, fig.retina=2}
+# neither plotly nor ggplot can handle this dual scale and coloring scheme; plotly comes 
+# library(ggplot2)
+#
+# # library(viridis)
+# plot_data %>%
+#   ungroup() %>%
+#   mutate(colspec = viridis::viridis(n=n_distinct(plot_data$chapter), begin=1, end=0)[chapter]) %>%
+#   ggplot(aes(x=line_chapter, y=negativity)) +
+#   geom_point(aes(y=n*30), color='#ff5500', alpha=.2, size=2) +
+#   # geom_line(aes(y=n*30, color=I(colspec), group=chapter), alpha=.2, size=2) +
+#   geom_line(aes(color=I(colspec), group=chapter)) +
+#   scale_y_continuous(breaks = c(0,200,400,600),
+#                      limits = c(0,650),
+#                      sec.axis = sec_axis(~./30, name = "Per line count")) + # this is an utterly pointless feature
+#   theme(legend.position='none') +
+#   theme_trueMinimal()
+
+plot_data %>%
+  ungroup() %>%
+  mutate(colspec = viridis::plasma(n=n_distinct(plot_data$chapter), begin=1, end=0)[chapter]) %>%
+  ggplot(aes(x=line_chapter, y=negativity)) +
+  geom_point(aes(y=mean_negativity*85, color=I(colspec)), alpha=.05, size=2) +
+  # scale_color_viridis(option='C', discrete=T) +
+  geom_line(aes(color=I(colspec), group=factor(chapter)), alpha=.9, lwd=.75) +
+  # geom_point(aes(y=mean_negativity*85), stat='identity', color='#ff5500', alpha=.25) +
+  labs(x='Line number', y='Negativity') + 
+  ggtitle('Negativity in Mansfield Park') +
+  scale_y_continuous(breaks = c(0,200,400,600),
+                     limits = c(0,800),
+                     sec.axis = sec_axis(~./85, name = "Per line mean negativity")) + 
+  theme(legend.position='none') +
+  theme_trueMinimal()
+# ggplotly()
+
+ay <- list(
+  tickfont = list(color = "gray50"),
+  overlaying = "y",
+  side = "right",
+  title = "",
+  titleangle = -90 # not only added in the dumbest option possible, there is no way to undo it.
+)
+# 
+plot_data %>% ungroup() %>%
+  mutate(colspec = viridis::inferno(n=n_distinct(plot_data$chapter), begin=1, end=0)[chapter]) %>%
+  plot_ly(colors=~rev(colspec), mode='lines') %>%
+  add_markers(x=~line_chapter,
+              y=~mean_negativity,
+              color=~colspec,
+              marker=list(colorscale=~ I(colspec)),
+              opacity=.1,
+              size = I(10),
+              yaxis = "y2",
+              showlegend=F) %>%
+  add_lines(x=~line_chapter, 
+            y=~negativity,
+            color=~colspec,
+            opacity=1,
+            line=list(width=3),
+            showlegend=F) %>%
+  layout(title = "Negativity in Mansfield Park",
+         yaxis2 = ay,
+         xaxis = list(title="line number")) %>%
+  theme_plotly()
+```
+
 
 
 [^text]: Don't name your column 'text' in practice. It is a base function in R, and the tidyverse will have problems with distinguishing the function from the column name.  I only do so for pedagogical reasons.
 
 [^encoding]: There are almost always encoding issues in my experience.
+
+[^lazy]: This exercise is more or less taken directly from the [tidytext book](http://tidytextmining.com/sentiment.html).
+
+[^badplot]: This depiction goes against many of my visualization principles. I like it anyway.
