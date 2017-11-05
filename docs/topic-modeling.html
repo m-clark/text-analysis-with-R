@@ -51,12 +51,12 @@
 <link href="libs/dt-core-1.10.12/css/jquery.dataTables.min.css" rel="stylesheet" />
 <link href="libs/dt-core-1.10.12/css/jquery.dataTables.extra.css" rel="stylesheet" />
 <script src="libs/dt-core-1.10.12/js/jquery.dataTables.min.js"></script>
-<script src="libs/plotly-binding-4.7.0/plotly.js"></script>
+<script src="libs/plotly-binding-4.7.1/plotly.js"></script>
 <script src="libs/typedarray-0.1/typedarray.min.js"></script>
 <link href="libs/crosstalk-1.0.0/css/crosstalk.css" rel="stylesheet" />
 <script src="libs/crosstalk-1.0.0/js/crosstalk.min.js"></script>
-<link href="libs/plotlyjs-1.27.1/plotly-htmlwidgets.css" rel="stylesheet" />
-<script src="libs/plotlyjs-1.27.1/plotly-latest.min.js"></script>
+<link href="libs/plotlyjs-1.29.2/plotly-htmlwidgets.css" rel="stylesheet" />
+<script src="libs/plotlyjs-1.29.2/plotly-latest.min.js"></script>
 <script src="libs/d3-3.5.3/./d3.min.js"></script>
 <link href="libs/d3heatmapcore-0.0.0/heatmapcore.css" rel="stylesheet" />
 <script src="libs/d3heatmapcore-0.0.0/heatmapcore.js"></script>
@@ -156,10 +156,8 @@ code > span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Inf
 <li class="chapter" data-level="" data-path="sentiment-analysis-is-sick-yo.html"><a href="sentiment-analysis-is-sick-yo.html#context-sarcasm-etc."><i class="fa fa-check"></i>Context, sarcasm, etc.</a></li>
 <li class="chapter" data-level="" data-path="sentiment-analysis-is-sick-yo.html"><a href="sentiment-analysis-is-sick-yo.html#lexicons"><i class="fa fa-check"></i>Lexicons</a></li>
 </ul></li>
-<li class="chapter" data-level="" data-path="sentiment-analysis-is-sick-yo.html"><a href="sentiment-analysis-is-sick-yo.html#sentiment-analysis-example"><i class="fa fa-check"></i>Sentiment Analysis Example</a><ul>
+<li class="chapter" data-level="" data-path="sentiment-analysis-is-sick-yo.html"><a href="sentiment-analysis-is-sick-yo.html#sentiment-analysis-examples"><i class="fa fa-check"></i>Sentiment Analysis Examples</a><ul>
 <li class="chapter" data-level="" data-path="sentiment-analysis-is-sick-yo.html"><a href="sentiment-analysis-is-sick-yo.html#the-first-thing-the-baby-did-wrong"><i class="fa fa-check"></i>The first thing the baby did wrong</a></li>
-</ul></li>
-<li class="chapter" data-level="" data-path="sentiment-analysis-is-sick-yo.html"><a href="sentiment-analysis-is-sick-yo.html#sentiment-analysis-exercise"><i class="fa fa-check"></i>Sentiment Analysis Exercise</a><ul>
 <li class="chapter" data-level="" data-path="sentiment-analysis-is-sick-yo.html"><a href="sentiment-analysis-is-sick-yo.html#romeo-juliet"><i class="fa fa-check"></i>Romeo &amp; Juliet</a></li>
 </ul></li>
 <li class="chapter" data-level="" data-path="sentiment-analysis-is-sick-yo.html"><a href="sentiment-analysis-is-sick-yo.html#sentiment-analysis-summary"><i class="fa fa-check"></i>Sentiment Analysis Summary</a></li>
@@ -187,11 +185,14 @@ code > span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Inf
 <li class="chapter" data-level="" data-path="topic-modeling.html"><a href="topic-modeling.html#shakespeare"><i class="fa fa-check"></i>Shakespeare</a></li>
 </ul></li>
 <li class="chapter" data-level="" data-path="topic-modeling.html"><a href="topic-modeling.html#extensions"><i class="fa fa-check"></i>Extensions</a></li>
-<li class="chapter" data-level="" data-path="topic-modeling.html"><a href="topic-modeling.html#exercise-1"><i class="fa fa-check"></i>Exercise</a></li>
+<li class="chapter" data-level="" data-path="topic-modeling.html"><a href="topic-modeling.html#topic-model-exercise"><i class="fa fa-check"></i>Topic Model Exercise</a><ul>
+<li class="chapter" data-level="" data-path="topic-modeling.html"><a href="topic-modeling.html#movie-reviews"><i class="fa fa-check"></i>Movie reviews</a></li>
+<li class="chapter" data-level="" data-path="topic-modeling.html"><a href="topic-modeling.html#associated-press-articles"><i class="fa fa-check"></i>Associated Press articles</a></li>
+</ul></li>
 </ul></li>
 <li class="chapter" data-level="" data-path="summary.html"><a href="summary.html"><i class="fa fa-check"></i>Summary</a></li>
 <li class="chapter" data-level="" data-path="shakespeare-start-to-finish.html"><a href="shakespeare-start-to-finish.html"><i class="fa fa-check"></i>Shakespeare Start to Finish</a><ul>
-<li class="chapter" data-level="" data-path="shakespeare-start-to-finish.html"><a href="shakespeare-start-to-finish.html#act-i.-scrape-moby-and-gutenberg-shakespeare"><i class="fa fa-check"></i>ACT I. Scrape Moby and Gutenberg Shakespeare</a><ul>
+<li class="chapter" data-level="" data-path="shakespeare-start-to-finish.html"><a href="shakespeare-start-to-finish.html#act-i.-scrape-mit-and-gutenberg-shakespeare"><i class="fa fa-check"></i>ACT I. Scrape MIT and Gutenberg Shakespeare</a><ul>
 <li class="chapter" data-level="" data-path="shakespeare-start-to-finish.html"><a href="shakespeare-start-to-finish.html#scene-i.-scrape-main-works"><i class="fa fa-check"></i>Scene I. Scrape main works</a></li>
 <li class="chapter" data-level="" data-path="shakespeare-start-to-finish.html"><a href="shakespeare-start-to-finish.html#scene-ii.-sonnets"><i class="fa fa-check"></i>Scene II. Sonnets</a></li>
 <li class="chapter" data-level="" data-path="shakespeare-start-to-finish.html"><a href="shakespeare-start-to-finish.html#scene-iii.-save-and-write-out"><i class="fa fa-check"></i>Scene III. Save and write out</a></li>
@@ -261,7 +262,7 @@ code > span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Inf
 <h2>Topic Model Example</h2>
 <div id="shakespeare" class="section level3">
 <h3>Shakespeare</h3>
-<p>In this example, we’ll look at Shakespeare’s plays and poems, using a topic model with 10 topics. For our needs we’ll use the <span class="pack">topicModels</span> package for the analysis, and mostly others for post-processing. Due to the large number of terms, this could take a while to run depending on your machine (maybe a minute or two). We can also see how things compare with the academic classifications for the texts.</p>
+<p>In this example, we’ll look at Shakespeare’s plays and poems, using a topic model with 10 topics. For our needs we’ll use the <span class="pack">topicmodels</span> package for the analysis, and mostly others for post-processing. Due to the large number of terms, this could take a while to run depending on your machine (maybe a minute or two). We can also see how things compare with the academic classifications for the texts.</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">load</span>(<span class="st">&#39;Data/shakes_dtm_stemmed.RData&#39;</span>)
 <span class="kw">library</span>(topicmodels)
 shakes_<span class="dv">10</span> =<span class="st"> </span><span class="kw">LDA</span>(<span class="kw">convert</span>(shakes_dtm, <span class="dt">to =</span> <span class="st">&quot;topicmodels&quot;</span>), <span class="dt">k =</span> <span class="dv">10</span>)</code></pre></div>
@@ -306,10 +307,21 @@ shakes_<span class="dv">10</span> =<span class="st"> </span><span class="kw">LDA
 <li>Other: There are still other ways to examine topics.</li>
 </ul>
 </div>
-<div id="exercise-1" class="section level2">
-<h2>Exercise</h2>
-<p><a href="https://ldavis.cpsievert.me/reviews/reviews.html" class="uri">https://ldavis.cpsievert.me/reviews/reviews.html</a></p>
+<div id="topic-model-exercise" class="section level2">
+<h2>Topic Model Exercise</h2>
+<div id="movie-reviews" class="section level3">
+<h3>Movie reviews</h3>
+<p>Perform a topic model on the <a href="http://www.cs.cornell.edu/people/pabo/movie-review-data/">Cornell Movie review data</a>. I’ve done some initial cleaning (e.g. removing stopwords, punctuation, etc.), and have both a tidy data frame and document term matrix for you to use. The former is provided if you want to do additional processing. But otherwise, just use the <span class="pack">topicmodels</span> package and perform your own analysis on the DTM. You can compare to <a href="https://ldavis.cpsievert.me/reviews/reviews.html">this result</a>.</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">load</span>(<span class="st">&#39;data/movie_reviews.RData&#39;</span>)
+<span class="kw">library</span>(topicmodels)</code></pre></div>
+</div>
+<div id="associated-press-articles" class="section level3">
+<h3>Associated Press articles</h3>
+<p>Do some topic modeling on articles from the Associated Press data from the First Text Retrieval Conference in 1992. The following will load the DTM, so you are ready to go. See how your result compares with that of <a href="http://www.cs.columbia.edu/~blei/lda-c/ap-topics.pdf">Dave Blei</a>, based on 100 topics.</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">library</span>(topicmodels)
+<span class="kw">data</span>(<span class="st">&quot;AssociatedPress&quot;</span>)</code></pre></div>
 
+</div>
 </div>
 </div>
 <div class="footnotes">

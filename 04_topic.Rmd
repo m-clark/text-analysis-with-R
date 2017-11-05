@@ -18,7 +18,7 @@ When it comes to text analysis, most of the time in topic modeling is spent on p
 
 ### Shakespeare
 
-In this example, we'll look at Shakespeare's plays and poems, using a topic model with 10 topics.  For our needs we'll use the <span class="pack">topicModels</span> package for the analysis, and mostly others for post-processing.  Due to the large number of terms, this could take a while to run depending on your machine (maybe a minute or two).  We can also see how things compare with the academic classifications for the texts.
+In this example, we'll look at Shakespeare's plays and poems, using a topic model with 10 topics.  For our needs we'll use the <span class="pack">topicmodels</span> package for the analysis, and mostly others for post-processing.  Due to the large number of terms, this could take a while to run depending on your machine (maybe a minute or two).  We can also see how things compare with the academic classifications for the texts.
 
 ```{r tm_chapter_topic_model, eval=F}
 load('Data/shakes_dtm_stemmed.RData')
@@ -239,9 +239,76 @@ There are extensions of LDA used in topic modeling that will allow your analysis
 - Other: There are still other ways to examine topics.
 
 
-## Exercise
+## Topic Model Exercise
 
-https://ldavis.cpsievert.me/reviews/reviews.html
+### Movie reviews
+
+Perform a topic model on the [Cornell Movie review data](http://www.cs.cornell.edu/people/pabo/movie-review-data/).  I've done some initial cleaning (e.g. removing stopwords, punctuation, etc.), and have both a tidy data frame and document term matrix for you to use. The former is provided if you want to do additional processing.  But otherwise, just use the <span class="pack">topicmodels</span> package and perform your own analysis on the DTM.  You can compare to [this result](https://ldavis.cpsievert.me/reviews/reviews.html).
+
+```{r eval=FALSE, echo=FALSE}
+# devtools::install_github("cpsievert/LDAvisData")
+data(reviews, package = "LDAvisData")
+library(tm)
+# stop_words <- stopwords("SMART")
+
+# pre-processing:
+reviews <- gsub("'", "", reviews)  # remove apostrophes
+reviews <- gsub("[[:punct:]]", " ", reviews)  # replace punctuation with space
+reviews <- gsub("[[:cntrl:]]", " ", reviews)  # replace control characters with space
+reviews <- gsub("^[[:space:]]+", "", reviews) # remove whitespace at beginning of documents
+reviews <- gsub("[[:space:]]+$", "", reviews) # remove whitespace at end of documents
+reviews <- tolower(reviews)  # force to lowercase
+
+# tokenize on space and output as a list:
+doc.list <- strsplit(reviews, "[[:space:]]+")
+
+# # compute the table of terms:
+# term.table <- table(unlist(doc.list))
+# term.table <- sort(term.table, decreasing = TRUE)
+# 
+# # remove terms that are stop words or occur fewer than 5 times:
+# del <- names(term.table) %in% stop_words | term.table < 5
+# term.table <- term.table[!del]
+# vocab <- names(term.table)
+# 
+# # now put the documents into the format required by the lda package:
+# get.terms <- function(x) {
+#   index <- match(x, vocab)
+#   index <- index[!is.na(index)]
+#   rbind(as.integer(index - 1), as.integer(rep(1, length(index))))
+# }
+# documents <- lapply(doc.list, get.terms)
+
+docdf = stack(doc.list)
+library(tidytext)
+reviews_df = docdf %>% 
+  rename(word=values,
+         review=ind) %>% 
+  anti_join(stop_words) %>% 
+  filter(!str_detect(word, pattern='^[0-9]+')) %>% 
+  group_by(review) %>% 
+  count(word)
+reviews_dtm = reviews_df %>% 
+  cast_dtm(term=word, document=review, value=n)
+reviews_dtm
+save(reviews_df, reviews_dtm, file='data/movie_reviews.RData')
+```
+
+```{r load_reviews, eval=FALSE}
+load('data/movie_reviews.RData')
+library(topicmodels)
+```
+
+
+### Associated Press articles
+
+Do some topic modeling on articles from the Associated Press data from the First Text Retrieval Conference in 1992.  The following will load the DTM, so you are ready to go.  See how your result compares with that of [Dave Blei](http://www.cs.columbia.edu/~blei/lda-c/ap-topics.pdf), based on 100 topics. 
+
+
+```{r ap_data, eval=FALSE}
+library(topicmodels)
+data("AssociatedPress")
+```
 
 
 [^howmanytopics]: There isn't a lot to work with in the realm of choosing an 'optimal' number of topics, but I investigated it via a measure called <span class="emph">perplexity</span>.  It bottomed out at around 50 topics.  Usually such an approach is done through cross-validation.  However, the solution chosen has no guarantee to produce human interpretable topics.

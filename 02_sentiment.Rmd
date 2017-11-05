@@ -26,35 +26,36 @@ Now consider the following.
 sentiments %>% filter(word=='sick') 
 ```
 
-Despite the above assigned sentiments, the word *sick* has been used at least since 1960s surfing culture as slang for positive.  A basic approach to sentiment analysis as described here will not be able to detect slang or other context like sarcasm.  However, with lots of training data for a particular context may allow one to correctly predict such sentiment.  In addition, there are, for example, slang lexicons, or one can simply add their own complements to any available lexicon.
+Despite the above assigned sentiments, the word *sick* has been used at least since 1960s surfing culture as slang for positive affect.  A basic approach to sentiment analysis as described here will not be able to detect slang or other context like sarcasm.  However, lots of training data for a particular context may allow one to correctly predict such sentiment.  In addition, there are, for example, slang lexicons, or one can simply add their own complements to any available lexicon.
 
 ### Lexicons
 
 In addition, the lexicons are going to maybe be applicable to *general* usage of English in the western world.  Some might wonder where exactly these came from or who decided that the word *abacus* should be affiliated with 'trust'. You may start your path by typing `?sentiments` at the console if you have the <span class="pack">tidytext</span> package loaded.
 
-## Sentiment Analysis Example
+## Sentiment Analysis Examples
 
 
 ### The first thing the baby did wrong
 
-We demonstrate sentiment analysis with the text *The first thing the baby did wrong*, which is a very popular brief guide to parenting written by world renown psychologist [Donald Barthelme][Donald Barthelme] who, in his spare time, also wrote postmodern literature.  This particular text talks about an issue with the baby, whose name is Born Dancin', and who likes to tear pages out of books. Attempts are made by her parents to rectify the situation, without much success, but things are finally resolved at the end.  The ultimate goal will be to see how sentiment in the text evolves over time.
+We demonstrate sentiment analysis with the text *The first thing the baby did wrong*, which is a very popular brief guide to parenting written by world renown psychologist [Donald Barthelme][Donald Barthelme] who, in his spare time, also wrote postmodern literature.  This particular text talks about an issue with the baby, whose name is Born Dancin', and who likes to tear pages out of books. Attempts are made by her parents to rectify the situation, without much success, but things are finally resolved at the end.  The ultimate goal will be to see how sentiment in the text evolves over time, and in general we'd expect things to end more positively than they began.
 
-How do we start? Let's look at the <span class="objclass">sentiments</span> data set in the <span class="pack">tidytext</span> package.
+How do we start? Let's look again at the <span class="objclass">sentiments</span> data set in the <span class="pack">tidytext</span> package.
 
 
 ```{r inspect_sentiments}
-library(tidytext)
 sentiments %>% slice(sample(1:nrow(sentiments)))
 ```
 
-The <span class="objclass">bing</span> lexicon is just *positive* or *negative*. The AFINN is numerical, with ratings -5:5 that are in the <span class="objclass">score</span> column. The others get more imaginative, but also more problematic. Why *assimilate* is *superfluous* is beyond me. It clearly should be negative given the [Borg](https://en.wikipedia.org/wiki/Borg_%28Star_Trek%29) connotations.
+The <span class="objclass">bing</span> lexicon provides only *positive* or *negative* labels. The AFINN, on the other hand, is numerical, with ratings -5:5 that are in the <span class="objclass">score</span> column. The others get more imaginative, but also more problematic. Why *assimilate* is *superfluous* is beyond me. It clearly should be negative given the [Borg](https://en.wikipedia.org/wiki/Borg_%28Star_Trek%29) connotations.
 
 ```{r superfluous}
 sentiments %>% 
   filter(sentiment=='superfluous')
 ```
 
-But I digress.  We start with the raw text, reading it in line by line.  In what follows we read in all the texts (three) in a given directory, such that each element of 'text' is the work itself, i.e. `text` is a list column[^text]. The <span class="func">unnest</span> function will more or less unravel the work to paragraph form.
+#### Read in the text files
+
+But I digress.  We start with the raw text, reading it in line by line.  In what follows we read in all the texts (three) in a given directory, such that each element of 'text' is the work itself, i.e. `text` is a list column[^text]. The <span class="func">unnest</span> function will unravel the works to where each entry is essentially a paragraph form.
 
 ```{r baby_sentiment_importraw, echo=T}
 library(tidytext)
@@ -65,28 +66,34 @@ barth0 =
   unnest(text) 
 ```
 
+#### Iterative processing
+
 One of the things stressed in this document is the iterative nature of text analysis.  You will consistently take two steps forward, and then one or two back as you find issues that need to be addressed. For example in a subsequent step I found there were encoding issues[^encoding], so the following attempts to fix them.  In addition we want to <span class="emph">tokenize</span> the documents such that our <span class="emph">tokens</span> are sentences (e.g. as opposed to words or paragraphs). The reason for this is that I will be summarizing the sentiment at sentence level.
 
 
 ```{r barth_fix_encoding, echo=1:2, eval=1:2}
-# Fix encoding, convert to sentences
+# Fix encoding, convert to sentences; you may get a warning message
 barth = barth0 %>% 
   mutate(text = sapply(text, stringi::stri_enc_toutf8, is_unknown_8bit=TRUE, validate=T)) %>% 
-  unnest_tokens(sentence, text, token='sentences')
+  unnest_tokens(output=sentence, input=text, token='sentences')
 
 save(barth, file='data/barth_sentences.RData')
 ```
 
-The next step is to drill down to just the document we want, and tokenize to the word level.  However, I create a sentence id so that we can group on it later.
+#### Tokenization
+
+The next step is to drill down to just the document we want, and subsequently tokenize to the word level.  However, I also create a sentence id so that we can group on it later.
 
 ```{r get_the_baby}
 # get baby doc, convert to words
 baby = barth %>% 
   filter(work=='baby.txt') %>% 
   mutate(sentence_id = 1:n()) %>% 
-  unnest_tokens(word, sentence, drop=F) %>% 
+  unnest_tokens(output=word, input=sentence, token='words', drop=F) %>% 
   ungroup 
 ```
+
+#### Get sentiments
 
 Now that the data has been prepped, getting the sentiments is ridiculously easy.  But that is how it is with text analysis.  All the hard work is spent with the data processing.  Here all we need is an <span class="emph">inner join</span> of our words with a sentiment lexicon of choice. This process will only retain words that are also in the lexicon.  I use the numeric-based lexicon here. At that point we get a sum score of sentiment by sentence.
 
@@ -98,35 +105,42 @@ baby_sentiment = baby %>%
   group_by(sentence_id, sentence) %>% 
   summarise(score=sum(score)) %>% 
   ungroup
-
 ```
 
-The following plots sentiment over sentence (note that not every sentence will receive a sentiment score). You can read the sentence by hovering over the dot.
+The following visualizes sentiment over the progression of sentences (note that not every sentence will receive a sentiment score). You can read the sentence by hovering over the dot. The <span style="color:#5500ff">&#9644;</span> is the running average.
 
 ```{r plot_sentiment, echo=FALSE}
 # plot sentiment over sentences
 baby_sentiment %>%
+  mutate(running_avg = cumsum(score)/row_number()) %>% 
   plot_ly(width='50%') %>% 
-  add_paths(x=~sentence_id, y=~score,
-            color=I('#00aaff')) %>%
+  add_lines(x=~sentence_id, y=~running_avg,
+            color=I('#5500ff'), 
+            line = list(shape = "spline"),
+            opacity=.5,
+            name='running average',
+            showlegend=T) %>%
+  add_lines(x=~sentence_id, y=~score,
+            color=I('#00aaff'), 
+            line = list(shape = "spline"),
+            showlegend=F) %>%
   add_markers(x=~sentence_id, y=~score, 
               color=I('#ff5500'),
               size=I(15),
               hoverinfo=~ 'text', 
               text=~str_wrap(sentence),
               showlegend=F) %>% 
-  theme_plotly()
+  theme_plotly() %>% 
+  config(displayModeBar = F)
 ```
 
 In general the sentiment starts out negative as the problem is explained. It bounces back and forth a bit but ends on a positive note.  You'll see that some sentences' context are not captured.  For example, sentence 16 is 'But it didn't do any good'.  However *good* is going to be marked as a positive sentiment in any lexicon by default. In addition, the token length will matter.  Longer sentences are more likely to have some sentiment, for example.
 
 
 
-## Sentiment Analysis Exercise
-
 ### Romeo & Juliet
 
-For this exercise I'll invite you to more or less follow along, as there is notable pre-processing that must be done.  We'll look at sentiment in Shakespeare's Romeo and Juliet.  I have a cleaner version in the raw texts folder, but we can take the opportunity to use the <span class="pack">gutenbergr</span> package to download it directly from Project Gutenberg, a storehouse for works that have entered the public domain.
+For this example I'll invite you to more or less follow along, as there is notable pre-processing that must be done.  We'll look at sentiment in Shakespeare's Romeo and Juliet.  I have a cleaner version in the raw texts folder, but we can take the opportunity to use the <span class="pack">gutenbergr</span> package to download it directly from Project Gutenberg, a storehouse for works that have entered the public domain.
 
 ```{r rnj_load, echo=-c(3,5)}
 library(gutenbergr)
@@ -166,7 +180,7 @@ DT::datatable(select(rnj_filtered, sentenceID, sentence),
 <br> 
 
 
-The following unnests the data to word tokens.  In addition, you can remove stopwords like a, an, the etc. However, some of the stopwords have sentiments, so you would get a bit of a different result if you retain them.  As Black Sheep once said, the choice is yours, and you can deal with this, or you can deal with that.
+The following unnests the data to word tokens.  In addition, you can remove stopwords like a, an, the etc., and tidytext comes with a <span class="objclass">stop_words</span> data frame. However, some of the stopwords have sentiments, so you would get a bit of a different result if you retain them.  As Black Sheep once said, the choice is yours, and you can deal with this, or you can deal with that.
 
 
 ```{r rnj_stopwords}
@@ -200,7 +214,7 @@ table(rnj_sentiment_bing$sentiment)
 
 
 
-Looks like this one is going to be a downer. The following visualizes (via <span class="pack">plotly</span>) the positive and negative sentiment scores as one progresses sentence by sentence through the work.
+Looks like this one is going to be a downer. The following visualizes the positive and negative sentiment scores as one progresses sentence by sentence through the work. It uses the <span class="pack">plotly</span> package (note the theme is my own function, you'd need to supply your own).
 
 ```{r rnj_sentiment_as_game}
 rnj_sentiment_bing %>% 
@@ -225,7 +239,8 @@ rnj_sentiment_bing %>%
          negativity = cumsum(sentiment=='negative')) %>% 
   plot_ly() %>% 
   add_lines(x=~sentenceID, y=~positivity-negativity) %>% 
-  theme_plotly()
+  theme_plotly() %>% 
+  config(displayModeBar = F)
 ```
 
 <br>
@@ -420,7 +435,7 @@ plot_data %>%
 
 
 
-[^text]: Don't name your column 'text' in practice. It is a base function in R, and the tidyverse will have problems with distinguishing the function from the column name.  I only do so for pedagogical reasons.
+[^text]: I suggest not naming your column 'text' in practice. It is a base function in R, and using it within the tidyverse may result in problems distinguishing the function from the column name (similar to `n()` function and the `n` column created by <span class="func">count</span> and <span class="func">tally</span>).  I only do so for pedagogical reasons.
 
 [^encoding]: There are almost always encoding issues in my experience.
 

@@ -51,12 +51,12 @@
 <link href="libs/dt-core-1.10.12/css/jquery.dataTables.min.css" rel="stylesheet" />
 <link href="libs/dt-core-1.10.12/css/jquery.dataTables.extra.css" rel="stylesheet" />
 <script src="libs/dt-core-1.10.12/js/jquery.dataTables.min.js"></script>
-<script src="libs/plotly-binding-4.7.0/plotly.js"></script>
+<script src="libs/plotly-binding-4.7.1/plotly.js"></script>
 <script src="libs/typedarray-0.1/typedarray.min.js"></script>
 <link href="libs/crosstalk-1.0.0/css/crosstalk.css" rel="stylesheet" />
 <script src="libs/crosstalk-1.0.0/js/crosstalk.min.js"></script>
-<link href="libs/plotlyjs-1.27.1/plotly-htmlwidgets.css" rel="stylesheet" />
-<script src="libs/plotlyjs-1.27.1/plotly-latest.min.js"></script>
+<link href="libs/plotlyjs-1.29.2/plotly-htmlwidgets.css" rel="stylesheet" />
+<script src="libs/plotlyjs-1.29.2/plotly-latest.min.js"></script>
 <script src="libs/d3-3.5.3/./d3.min.js"></script>
 <link href="libs/d3heatmapcore-0.0.0/heatmapcore.css" rel="stylesheet" />
 <script src="libs/d3heatmapcore-0.0.0/heatmapcore.js"></script>
@@ -156,10 +156,8 @@ code > span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Inf
 <li class="chapter" data-level="" data-path="sentiment-analysis-is-sick-yo.html"><a href="sentiment-analysis-is-sick-yo.html#context-sarcasm-etc."><i class="fa fa-check"></i>Context, sarcasm, etc.</a></li>
 <li class="chapter" data-level="" data-path="sentiment-analysis-is-sick-yo.html"><a href="sentiment-analysis-is-sick-yo.html#lexicons"><i class="fa fa-check"></i>Lexicons</a></li>
 </ul></li>
-<li class="chapter" data-level="" data-path="sentiment-analysis-is-sick-yo.html"><a href="sentiment-analysis-is-sick-yo.html#sentiment-analysis-example"><i class="fa fa-check"></i>Sentiment Analysis Example</a><ul>
+<li class="chapter" data-level="" data-path="sentiment-analysis-is-sick-yo.html"><a href="sentiment-analysis-is-sick-yo.html#sentiment-analysis-examples"><i class="fa fa-check"></i>Sentiment Analysis Examples</a><ul>
 <li class="chapter" data-level="" data-path="sentiment-analysis-is-sick-yo.html"><a href="sentiment-analysis-is-sick-yo.html#the-first-thing-the-baby-did-wrong"><i class="fa fa-check"></i>The first thing the baby did wrong</a></li>
-</ul></li>
-<li class="chapter" data-level="" data-path="sentiment-analysis-is-sick-yo.html"><a href="sentiment-analysis-is-sick-yo.html#sentiment-analysis-exercise"><i class="fa fa-check"></i>Sentiment Analysis Exercise</a><ul>
 <li class="chapter" data-level="" data-path="sentiment-analysis-is-sick-yo.html"><a href="sentiment-analysis-is-sick-yo.html#romeo-juliet"><i class="fa fa-check"></i>Romeo &amp; Juliet</a></li>
 </ul></li>
 <li class="chapter" data-level="" data-path="sentiment-analysis-is-sick-yo.html"><a href="sentiment-analysis-is-sick-yo.html#sentiment-analysis-summary"><i class="fa fa-check"></i>Sentiment Analysis Summary</a></li>
@@ -187,11 +185,14 @@ code > span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Inf
 <li class="chapter" data-level="" data-path="topic-modeling.html"><a href="topic-modeling.html#shakespeare"><i class="fa fa-check"></i>Shakespeare</a></li>
 </ul></li>
 <li class="chapter" data-level="" data-path="topic-modeling.html"><a href="topic-modeling.html#extensions"><i class="fa fa-check"></i>Extensions</a></li>
-<li class="chapter" data-level="" data-path="topic-modeling.html"><a href="topic-modeling.html#exercise-1"><i class="fa fa-check"></i>Exercise</a></li>
+<li class="chapter" data-level="" data-path="topic-modeling.html"><a href="topic-modeling.html#topic-model-exercise"><i class="fa fa-check"></i>Topic Model Exercise</a><ul>
+<li class="chapter" data-level="" data-path="topic-modeling.html"><a href="topic-modeling.html#movie-reviews"><i class="fa fa-check"></i>Movie reviews</a></li>
+<li class="chapter" data-level="" data-path="topic-modeling.html"><a href="topic-modeling.html#associated-press-articles"><i class="fa fa-check"></i>Associated Press articles</a></li>
+</ul></li>
 </ul></li>
 <li class="chapter" data-level="" data-path="summary.html"><a href="summary.html"><i class="fa fa-check"></i>Summary</a></li>
 <li class="chapter" data-level="" data-path="shakespeare-start-to-finish.html"><a href="shakespeare-start-to-finish.html"><i class="fa fa-check"></i>Shakespeare Start to Finish</a><ul>
-<li class="chapter" data-level="" data-path="shakespeare-start-to-finish.html"><a href="shakespeare-start-to-finish.html#act-i.-scrape-moby-and-gutenberg-shakespeare"><i class="fa fa-check"></i>ACT I. Scrape Moby and Gutenberg Shakespeare</a><ul>
+<li class="chapter" data-level="" data-path="shakespeare-start-to-finish.html"><a href="shakespeare-start-to-finish.html#act-i.-scrape-mit-and-gutenberg-shakespeare"><i class="fa fa-check"></i>ACT I. Scrape MIT and Gutenberg Shakespeare</a><ul>
 <li class="chapter" data-level="" data-path="shakespeare-start-to-finish.html"><a href="shakespeare-start-to-finish.html#scene-i.-scrape-main-works"><i class="fa fa-check"></i>Scene I. Scrape main works</a></li>
 <li class="chapter" data-level="" data-path="shakespeare-start-to-finish.html"><a href="shakespeare-start-to-finish.html#scene-ii.-sonnets"><i class="fa fa-check"></i>Scene II. Sonnets</a></li>
 <li class="chapter" data-level="" data-path="shakespeare-start-to-finish.html"><a href="shakespeare-start-to-finish.html#scene-iii.-save-and-write-out"><i class="fa fa-check"></i>Scene III. Save and write out</a></li>
@@ -257,7 +258,20 @@ code > span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Inf
 </div>
 <div id="prerequisites" class="section level3">
 <h3>Prerequisites</h3>
-<p>The document is for the most part very applied in nature, and doesn’t assume much beyond familiarity with the R statistical computing environment. It would be useful if you are familiar with the <a href="https://www.tidyverse.org/">tidyverse</a>, or at least <span class="pack">dplyr</span> specifically, or some of the code may be difficult to understand.</p>
+<p>The document is for the most part very applied in nature, and doesn’t assume much beyond familiarity with the R statistical computing environment. It would be useful if you are familiar with the <a href="https://www.tidyverse.org/">tidyverse</a>, or at least <span class="pack">dplyr</span> specifically, otherwise some of the code may be difficult to understand (and is required if you want to run it).</p>
+<p>Here are some of the packages used in this document:</p>
+<ul>
+<li><span class="pack">tidyverse</span></li>
+<li><span class="pack">janeaustenr</span></li>
+<li><span class="pack">gutenbergr</span></li>
+<li><span class="pack">stringr</span></li>
+<li><span class="pack">readr</span></li>
+<li><span class="pack">tidytext</span></li>
+<li><span class="pack">openNLP</span></li>
+<li><span class="pack">NLP</span></li>
+<li><span class="pack">tm</span></li>
+<li><span class="pack">topicmodels</span></li>
+</ul>
 <p>Note the following color coding used in this document:</p>
 <ul>
 <li><span class="emph">emphasis</span></li>
