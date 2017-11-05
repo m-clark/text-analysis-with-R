@@ -14,7 +14,7 @@ Additionally, we'll have exercises to practice, but those comfortable enough to 
 
 ### Prerequisites
 
-The document is for the most part very applied in nature, and doesn't assume much beyond familiarity with the R statistical computing environment.
+The document is for the most part very applied in nature, and doesn't assume much beyond familiarity with the R statistical computing environment.  It would be useful if you are familiar with the [tidyverse](https://www.tidyverse.org/), or at least <span class="pack">dplyr</span> specifically, or some of the code may be difficult to understand.
 
 Note the following color coding used in this document:
 

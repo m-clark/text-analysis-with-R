@@ -24,7 +24,7 @@
 
 
 
-<meta name="date" content="2017-11-04">
+<meta name="date" content="2017-11-05">
 
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta name="apple-mobile-web-app-capable" content="yes">
@@ -144,7 +144,7 @@ code > span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Inf
 <li class="chapter" data-level="" data-path="string-theory.html"><a href="string-theory.html#typical-uses"><i class="fa fa-check"></i>Typical Uses</a></li>
 <li class="chapter" data-level="" data-path="string-theory.html"><a href="string-theory.html#dplyr-helper-functions"><i class="fa fa-check"></i>dplyr helper functions</a></li>
 </ul></li>
-<li class="chapter" data-level="" data-path="string-theory.html"><a href="string-theory.html#examples"><i class="fa fa-check"></i>Examples</a><ul>
+<li class="chapter" data-level="" data-path="string-theory.html"><a href="string-theory.html#text-processing-examples"><i class="fa fa-check"></i>Text Processing Examples</a><ul>
 <li class="chapter" data-level="" data-path="string-theory.html"><a href="string-theory.html#example-1"><i class="fa fa-check"></i>Example 1</a></li>
 <li class="chapter" data-level="" data-path="string-theory.html"><a href="string-theory.html#example-2"><i class="fa fa-check"></i>Example 2</a></li>
 </ul></li>
@@ -383,6 +383,7 @@ df</code></pre></div>
 </tbody>
 </table>
 <p>The <span class="func">model.matrix</span> function exposes the underlying matrix that is actually used in the regression analysis. You’d get a coefficient for each column of that matrix. As such, even the intercept must be represented in some fashion. For categorical data, the default coding scheme is <span class="emph">dummy coding</span>. A reference category is arbitrarily chosen (it doesn’t matter which, and you can always change it), while the other categories are represented by indicator variables, where a 1 represents the corresponding label and everything else is zero. For details on this coding scheme or others, consult any basic statistical modeling book.</p>
+<p>In addition, you’ll note that in all text-specific analysis, the underlying information is numeric. For example, with topic models, the base data structure is a document-term matrix of counts.</p>
 </div>
 <div id="characters-vs.factors" class="section level3">
 <h3>Characters vs. Factors</h3>
@@ -413,7 +414,7 @@ df</code></pre></div>
 <li><span class="func">strtoi</span>: convert a string to integer if it can be (faster than as.integer)</li>
 <li><span class="func">adist</span>: string distances</li>
 </ul>
-<p>I probably use paste/paste0 more than most things when dealing with text, as string concatenation comes up so often.</p>
+<p>I probably use <span class="func">paste</span>/<span class="func">paste0</span> more than most things when dealing with text, as string concatenation comes up so often. The following provides some demonstration.</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">paste</span>(<span class="kw">c</span>(<span class="st">&#39;a&#39;</span>, <span class="st">&#39;b&#39;</span>, <span class="st">&#39;cd&#39;</span>), <span class="dt">collapse=</span><span class="st">&#39;|&#39;</span>)</code></pre></div>
 <pre><code>[1] &quot;a|b|cd&quot;</code></pre>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">paste</span>(<span class="kw">c</span>(<span class="st">&#39;a&#39;</span>, <span class="st">&#39;b&#39;</span>, <span class="st">&#39;cd&#39;</span>), <span class="dt">collapse=</span><span class="st">&#39;&#39;</span>)</code></pre></div>
@@ -426,9 +427,9 @@ df</code></pre></div>
 </div>
 <div id="packages" class="section level3">
 <h3>Packages</h3>
-<p>A couple packages will probably take care of the vast majority of your standard text processing needs. Note that even if they aren’t adding anything to the functionality of the base R functions, they typically will have been optimized in some fashion</p>
+<p>A couple packages will probably take care of the vast majority of your standard text processing needs. Note that even if they aren’t adding anything to the functionality of the base R functions, they typically will have been optimized in some fashion, particularly with regard to speed.</p>
 <ul>
-<li><span class="pack">stringr</span>/<span class="pack">stringi</span>: more or less the same stuff you’ll find with <span class="func">substr</span>, <span class="func">grep</span> etc. except easier to use or faster. Also add useful functionality not in base R (e.g. <span class="func">str_to_title</span>)</li>
+<li><span class="pack">stringr</span>/<span class="pack">stringi</span>: More or less the same stuff you’ll find with <span class="func">substr</span>, <span class="func">grep</span> etc. except easier to use and/or faster. They also add useful functionality not in base R (e.g. <span class="func">str_to_title</span>). The <span class="pack">stringr</span> package is mostly a wrapper for the <span class="pack">stringi</span> functions, with some additional functions.</li>
 <li><span class="pack">tidyr</span>: has functions such as <span class="func">unite</span>, <span class="func">separate</span>, <span class="func">replace_na</span> that can often come in handy when working with data frames</li>
 <li><span class="pack">glue</span>: a newer package that can be seen as a fancier <span class="func">paste</span>. Most likely will be useful when creating functions or shiny apps in which variable text output is desired</li>
 </ul>
@@ -460,9 +461,13 @@ span</code></pre></div>
 <h4>Categorical Time</h4>
 <p>In regression modeling with few time points, one often has to decide on whether to treat the year as categorical (factor) or numeric (continuous). This greatly depends on how you want to tell your data story or other practical concerns. For example, if you have five years in your data, treating <span class="objclass">year</span> as categorical means you are interested in accounting for unspecified things that go on in a given year. If you treat it as numeric, you are more interested in trends. Either is fine.</p>
 </div>
-<div id="encoding" class="section level4">
-<h4>Encoding</h4>
+<div id="web" class="section level4">
+<h4>Web</h4>
+<p>A major resource for text is of course the web. Packages like <span class="pack">rvest</span>,<span class="pack">httr</span>, <span class="pack">xml2</span>, and many other packages specific to website <span class="emph">APIs</span> are available to help you here. See the <a href="https://cran.r-project.org/web/views/WebTechnologies.html">R task view for web technologies</a> as a starting point.</p>
+<div id="encoding" class="section level5">
+<h5>Encoding</h5>
 <p>Encoding can be a sizable PITA sometimes, and will often come up when dealing with webscraping and other languages. The <span class="pack">rvest</span> and <span class="pack">stringr</span> packages may be able to get you past some issues at least. See their respective functions <span class="func">repair_encoding</span> and <span class="func">str_conv</span> as starting points on this issue.</p>
+</div>
 </div>
 </div>
 <div id="summary-of-basic-text-functionality" class="section level3">
@@ -477,7 +482,8 @@ span</code></pre></div>
 <p>Here is an example:</p>
 <p><code>^r.*shiny[0-9]$</code></p>
 <p>What is <em>that</em> you may ask? Well here is an example of strings it would and wouldn’t match.</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">grepl</span>(<span class="kw">c</span>(<span class="st">&#39;r is the shiny&#39;</span>, <span class="st">&#39;r is the shiny1&#39;</span>, <span class="st">&#39;r shines brightly&#39;</span>), <span class="dt">pattern=</span><span class="st">&#39;^r.*shiny[0-9]$&#39;</span>)</code></pre></div>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">string =<span class="st"> </span><span class="kw">c</span>(<span class="st">&#39;r is the shiny&#39;</span>, <span class="st">&#39;r is the shiny1&#39;</span>, <span class="st">&#39;r shines brightly&#39;</span>)
+<span class="kw">grepl</span>(string, <span class="dt">pattern=</span><span class="st">&#39;^r.*shiny[0-9]$&#39;</span>)</code></pre></div>
 <pre><code>[1] FALSE  TRUE FALSE</code></pre>
 <p>What the regex is esoterically attempting to match is any string that starts with ‘r’ and ends with ‘shiny_’ where _ is some single digit. Specifically it breaks down as follows:</p>
 <ul>
@@ -499,9 +505,9 @@ span</code></pre></div>
 <li><strong>()</strong> : groupings</li>
 <li><strong>|</strong> : logical or e.g. [a-z]|[0-9] (a lower case letter or a number)</li>
 <li><strong>?</strong> : preceding item is optional, and will be matched at most once. Typically used for ‘look ahead’ and ‘look behind’</li>
-<li><strong>\</strong> : escape a character, like if you actually wanted to search for a period, you’d use \., though in R you need \\, i.e. double slashes, for escape.</li>
+<li><strong>\</strong> : escape a character, like if you actually wanted to search for a period instead of using it as a regex pattern, you’d use \., though in R you need \\, i.e. double slashes, for escape.</li>
 </ul>
-<p>In addition, there are certain predefined characters that can be called:</p>
+<p>In addition, in R there are certain predefined characters that can be called:</p>
 <ul>
 <li><strong>[:punct:]</strong> : punctuation</li>
 <li><strong>[:blank:]</strong> : spaces and tabs</li>
@@ -516,7 +522,7 @@ span</code></pre></div>
 </div>
 <div id="dplyr-helper-functions" class="section level3">
 <h3>dplyr helper functions</h3>
-<p>The <span class="pack">dplyr</span> package comes with some poorly documented<a href="#fn2" class="footnoteRef" id="fnref2"><sup>2</sup></a> but quite useful helper functions that essentially serve as human-readable regex, which is a very good thing. These functions allow you to select variables<a href="#fn3" class="footnoteRef" id="fnref3"><sup>3</sup></a> based on their names. They are just calling <span class="func">grep</span> in the end.</p>
+<p>The <span class="pack">dplyr</span> package comes with some poorly documented<a href="#fn2" class="footnoteRef" id="fnref2"><sup>2</sup></a> but quite useful helper functions that essentially serve as human-readable regex, which is a very good thing. These functions allow you to select variables<a href="#fn3" class="footnoteRef" id="fnref3"><sup>3</sup></a> based on their names. They are usually just calling base R functions in the end.</p>
 <ul>
 <li><span class="func">starts_with</span>: starts with a prefix (same as regex ‘^blah’)</li>
 <li><span class="func">ends_with</span>: ends with a prefix (same as regex ‘blah$’)</li>
@@ -528,8 +534,8 @@ span</code></pre></div>
 </ul>
 </div>
 </div>
-<div id="examples" class="section level2">
-<h2>Examples</h2>
+<div id="text-processing-examples" class="section level2">
+<h2>Text Processing Examples</h2>
 <div id="example-1" class="section level3">
 <h3>Example 1</h3>
 <p>Let’s say you’re dealing with some data that has been handled typically, that is to say, poorly. For example, you have a variable in your data representing whether something is from the north or south region.</p>
@@ -576,11 +582,12 @@ span</code></pre></div>
 df <span class="op">%&gt;%</span><span class="st"> </span>
 <span class="st">  </span><span class="kw">mutate</span>(<span class="dt">region =</span> <span class="kw">str_trim</span>(region),
          <span class="dt">region =</span> <span class="kw">str_to_title</span>(region))</code></pre></div>
-<p>The <span class="func">str_trim</span> function trims white space from either side, while <span class="func">str_to_title</span> converts everything to first letter capitalized.</p>
+<p>The <span class="func">str_trim</span> function trims white space from either side (or both), while <span class="func">str_to_title</span> converts everything to first letter capitalized.</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">table</span>(df_corrected<span class="op">$</span>region)</code></pre></div>
 <pre><code>
 North South 
   285   215 </code></pre>
+<p>Compare that to how you would have done it before knowing how to use text processing tools. One might have spent several minutes with some find and replace approach in a spreadsheet, or maybe even several <code>if... else</code> statements in R until all problematic cases were taken care of. Not very efficient.</p>
 </div>
 <div id="example-2" class="section level3">
 <h3>Example 2</h3>
@@ -605,25 +612,34 @@ North South
 4  4  -0.43  -0.15  -1.28  -0.69  -0.34
 5  5   0.05  -1.69  -1.11   2.31   0.36
 6  6  -1.07   0.81  -0.89  -0.19   0.14</code></pre>
-<p>We just have to use the <span class="func">num_range</span> helper function within the function that tells <span class="func">rename_at</span> what it should be renaming, and let <span class="func">str_replace</span> do the rest.</p>
+<p>Let’s parse what it’s specifically doing.</p>
+<ul>
+<li><span class="func">rename_at</span> allows us to rename specific columns</li>
+<li>Which columns? X1 through X:5. The <span class="func">num_range</span> helper function creates the character strings X1, X2, X3, X4, and X5.</li>
+<li>Now that we have the names, we use vars to tell <span class="func">rename_at</span> which ones. It would have allowed additional sets of variables as well.</li>
+<li><span class="func">rename_at</span> needs a function to apply to each of those column names. In this case the function is <span class="func">str_replace</span>, to replace patterns of strings with some other string</li>
+<li>The specific arguments to <span class="func">str_replace</span> (pattern to be replaced, replacement pattern) are also supplied.</li>
+</ul>
+<p>So in the end we just have to use the <span class="func">num_range</span> helper function within the function that tells <span class="func">rename_at</span> what it should be renaming, and let <span class="func">str_replace</span> do the rest.</p>
 </div>
 </div>
 <div id="exercises" class="section level2">
 <h2>Exercises</h2>
 <ol style="list-style-type: decimal">
-<li><p>In your own words, state the difference between a character string and a factor variable.</p></li>
+<li><p>In your own words, state the difference between a character string and a factor variable. <br></p></li>
 <li><p>The following application of paste produces this result.</p></li>
 </ol>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">paste</span>(<span class="kw">c</span>(<span class="st">&#39;A&#39;</span>, <span class="st">&#39;1&#39;</span>, <span class="st">&#39;Q&#39;</span>), <span class="kw">c</span>(<span class="st">&#39;B&#39;</span>, <span class="st">&#39;2&#39;</span>, <span class="st">&#39;z&#39;</span>))</code></pre></div>
 <pre><code>[1] &quot;A B&quot; &quot;1 2&quot; &quot;Q z&quot;</code></pre>
 <p>How might you paste them so that there is an underscore <code>_</code> between characters and no space?</p>
+<p>Now try to produce <code>&quot;A - B&quot; &quot;1 - 2&quot; &quot;Q - z&quot;</code>. <br></p>
 <ol start="3" style="list-style-type: decimal">
-<li>Use regex to grab the Star Wars names that have a number.</li>
+<li>Use regex to grab the Star Wars names that have a number. Use both <span class="func">grep</span> and <span class="func">grepl</span> and compare the results</li>
 </ol>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">grep</span>(starwars<span class="op">$</span>name, <span class="dt">pattern =</span> ?)</code></pre></div>
-<p>Now use your hacking skills to determine which one is the tallest.</p>
+<p>Now use your hacking skills to determine which one is the tallest. <br></p>
 <ol start="4" style="list-style-type: decimal">
-<li>Use the <span class="pack">dplyr</span> helper functions to grab all the columns in the <span class="objclass">starwars</span> data set with <code>color</code> in the name but without referring to them directly. The following shows a generic example. There are several ways to do this. Try two if you can.</li>
+<li>Load the <span class="pack">dplyr</span> package, and use the its <a href="string-theory.html#dplyr-helper-functions">helper functions</a> to grab all the columns in the <span class="objclass">starwars</span> data set (comes with the package) with <code>color</code> in the name but without referring to them directly. The following shows a generic example. There are several ways to do this. Try two if you can.</li>
 </ol>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">starwars <span class="op">%&gt;%</span><span class="st"> </span>
 <span class="st">  </span><span class="kw">select</span>(<span class="kw">helper_function</span>(<span class="st">&#39;pattern&#39;</span>))</code></pre></div>
@@ -635,7 +651,7 @@ North South
 <ol start="1">
 <li id="fn1"><p>I also don’t think it necessary to have separate functions for str_* functions in <span class="pack">stringr</span> depending on whether, e.g. I want ‘all’ matches (practically every situation) or just the first (very rarely). It could have just been an additional argument with default <code>all=TRUE</code>.<a href="string-theory.html#fnref1">↩</a></p></li>
 <li id="fn2"><p>At least they’re exposed now.<a href="string-theory.html#fnref2">↩</a></p></li>
-<li id="fn3"><p>And maybe some day, the rows. For now you’ll have to use a <span class="func">grepl</span>/<span class="func">str_detect</span> approach.<a href="string-theory.html#fnref3">↩</a></p></li>
+<li id="fn3"><p>For rows you’ll have to use a <span class="func">grepl</span>/<span class="func">str_detect</span> approach. For example, <code>filter(grepl(col1, pattern='^X'))</code> would subset to only rows where col1 starts with X.<a href="string-theory.html#fnref3">↩</a></p></li>
 <li id="fn4"><p>This is a very common issue among Excel users, and just one of the many reasons not to use it.<a href="string-theory.html#fnref4">↩</a></p></li>
 </ol>
 </div>

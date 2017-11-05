@@ -331,9 +331,10 @@ plot_data = ja_book %>%
   group_by(chapter, line_book, line_chapter) %>% 
   count() %>%
   group_by(chapter) %>% 
-  mutate(negativity = cumsum(n)) %>% 
+  mutate(negativity = cumsum(n),
+         mean_chapter_negativity=mean(negativity)) %>% 
   group_by(line_chapter) %>%
-  mutate(mean_negativity=mean(n))
+  mutate(mean_line_negativity=mean(n))
   
 plot_data
 ```
@@ -360,52 +361,61 @@ The following[^badplot] shows both the total negativity within a chapter, as wel
 #   theme(legend.position='none') +
 #   theme_trueMinimal()
 
+plot_data = ungroup(plot_data)
 plot_data %>%
-  ungroup() %>%
-  mutate(colspec = viridis::plasma(n=n_distinct(plot_data$chapter), begin=1, end=0)[chapter]) %>%
+  mutate(colspec = viridis::plasma(n=n_distinct(plot_data$chapter), begin=1, end=0)[chapter],
+         colspec2 = viridis::plasma(n=n_distinct(plot_data$line_chapter), begin=0, end=1)[factor(line_chapter)]) %>%
   ggplot(aes(x=line_chapter, y=negativity)) +
-  geom_point(aes(y=mean_negativity*85, color=I(colspec)), alpha=.05, size=2) +
+  geom_point(aes(y=mean_line_negativity*85, color=I(colspec2)), alpha=.05) +
   # scale_color_viridis(option='C', discrete=T) +
   geom_line(aes(color=I(colspec), group=factor(chapter)), alpha=.9, lwd=.75) +
-  # geom_point(aes(y=mean_negativity*85), stat='identity', color='#ff5500', alpha=.25) +
+  # geom_point(aes(y=mean_line_negativity*85), stat='identity', color='#ff5500', alpha=.25) +
   labs(x='Line number', y='Negativity') + 
   ggtitle('Negativity in Mansfield Park') +
   scale_y_continuous(breaks = c(0,200,400,600),
-                     limits = c(0,800),
+                     limits = c(0,900),
                      sec.axis = sec_axis(~./85, name = "Per line mean negativity")) + 
   theme(legend.position='none') +
   theme_trueMinimal()
 # ggplotly()
 
-ay <- list(
-  tickfont = list(color = "gray50"),
-  overlaying = "y",
-  side = "right",
-  title = "",
-  titleangle = -90 # not only added in the dumbest option possible, there is no way to undo it.
-)
-# 
-plot_data %>% ungroup() %>%
-  mutate(colspec = viridis::inferno(n=n_distinct(plot_data$chapter), begin=1, end=0)[chapter]) %>%
-  plot_ly(colors=~rev(colspec), mode='lines') %>%
-  add_markers(x=~line_chapter,
-              y=~mean_negativity,
-              color=~colspec,
-              marker=list(colorscale=~ I(colspec)),
-              opacity=.1,
-              size = I(10),
-              yaxis = "y2",
-              showlegend=F) %>%
-  add_lines(x=~line_chapter, 
-            y=~negativity,
-            color=~colspec,
-            opacity=1,
-            line=list(width=3),
-            showlegend=F) %>%
-  layout(title = "Negativity in Mansfield Park",
-         yaxis2 = ay,
-         xaxis = list(title="line number")) %>%
-  theme_plotly()
+# ay <- list(
+#   tickfont = list(color = "gray50"),
+#   overlaying = "y",
+#   side = "right",
+#   title = "Per line mean negativity",
+#   titleangle = -90 # not only added in the dumbest option possible, there is no way to undo it.
+# )
+#
+
+# plotly, the visualization package, fails at color, colorbars, layering; it literally can
+# not take a literal argument and apply it, and I grow weary
+# plot_data %>% ungroup() %>%
+#   mutate(colspec = viridis::plasma(n=n_distinct(plot_data$chapter), begin=1, end=0)[chapter]) %>%
+#   plot_ly(colors=~rev(colspec)) %>%
+#   add_lines(x=~line_chapter,
+#             y=~negativity,
+#             color=~colspec,
+#             line=list(colors=~I(colspec)),
+#             # hoverinfo='none',
+#             opacity=1,
+#             line=list(width=3),
+#             showlegend=F, text=~chapter) %>%
+#   add_markers(x=~line_chapter,
+#               y=~mean_line_negativity,
+#               color=~colspec,
+#               # marker=list(colorscale=~ I(colspec)),
+#               opacity=.25,
+#               size = I(7),
+#               yaxis = "y2",
+#               showlegend=F, 
+#               text=~chapter) %>%
+#   # hide_colorbar() %>%  # good christ!!!
+#   layout(title = "Negativity in Mansfield Park",
+#          yaxis2 = ay,
+#          xaxis = list(title="Line number"),
+#          yaxis = list(title="Negativity")) %>%
+#   theme_plotly()
 ```
 
 
