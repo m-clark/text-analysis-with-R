@@ -263,6 +263,13 @@ The <span class="pack">dplyr</span> package comes with some poorly documented[^p
 - <span class="func">one_of</span>: variables in character vector. (if you need to quote variable names, e.g. within a function)
 - <span class="func">everything</span>: all variables.  (a good way to spend time doing something only to accomplish what you would have by doing nothing, or a way to reorder variables)
 
+<div class='note'>
+For more on using <span class="pack">stringr</span> and regular expressions in R, you may find [this cheatsheet](https://github.com/rstudio/cheatsheets/raw/master/strings.pdf) useful.
+
+<img class='img-note' src="img/R.ico" style="display:block; margin: 0 auto;"> 
+</div>
+
+
 ## Text Processing Examples
 
 ### Example 1

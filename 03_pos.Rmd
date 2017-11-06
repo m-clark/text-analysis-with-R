@@ -1,4 +1,4 @@
-# POS taggin'
+# Part of Speech Tagging
 
 As an initial review of parts of speech, if you need a refresher the following Schoolhouse Rocks videos should get you squared away:
 

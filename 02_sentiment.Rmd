@@ -1,4 +1,4 @@
-# Sentiment Analysis is Sick Yo
+# Sentiment Analysis
 
 
 ## Basic idea

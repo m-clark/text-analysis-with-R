@@ -29,6 +29,12 @@
     text-decoration: none;
     background: 0 0;
 }
+.book .book-body .page-wrapper .page-inner section.normal a:hover {
+    color: #3D68FF;  /*1B4D9E #4183c4; changed for contrast and complement*/
+    text-decoration: none;
+    text-shadow: 0 0 1px #3D68FF;
+    background: 0 0;
+}
 .body-inner {
     background-color: #fffff8;
 }
@@ -109,4 +115,17 @@ i {
     margin: 0 0 1.275em;
     padding: .85em 1em;
     background: #fafafa;
+}
+
+
+.book .book-body .page-wrapper .page-inner section.normal .note {
+  background-color: #fafafa;
+  /*background-image: url('../img/R.ico');*/
+  font-size: 80% ;
+  font-weight: 500;
+  max-width: 75%;
+  border-width: 10px;
+  border-color: #bfbfbf;
+  box-shadow: 10px 10px 5px #EBEBEB; /*#888888*/
+  padding: 1em;
 }
