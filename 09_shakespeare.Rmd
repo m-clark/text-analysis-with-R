@@ -1,12 +1,12 @@
 # Shakespeare Start to Finish
 
-The following attempts to demonstrate the usual difficulties one encounters dealing with text by procuring and processing the works of Shakespeare.  The source is [MIT](http://shakespeare.mit.edu/) which has made the 'complete' works available on the web since 1993, plus one other from Gutenberg.  The initial issue is simply getting the works from the web.  Subsequently there is metadata, character names, stopwords etc. to be removed. At that point we can stem and count the words in each work, which, when complete, puts us at the point we are ready for analysis.
+The following attempts to demonstrate the usual difficulties one encounters dealing with text by procuring and processing the works of Shakespeare.  The source is [MIT](http://shakespeare.mit.edu/), which has made the 'complete' works available on the web since 1993, plus one other from Gutenberg.  The initial issue is simply getting the works from the web.  Subsequently there is metadata, character names, stopwords etc. to be removed. At that point we can stem and count the words in each work, which, when complete, puts us at the point we are ready for analysis.
 
 The primary packages used are <span class="pack">tidytext</span>, <span class="pack">stringr</span>, and when things are ready for analysis, <span class="pack">quanteda.</span>
 
 
 
-## ACT I. Scrape Moby and Gutenberg Shakespeare
+## ACT I. Scrape MIT and Gutenberg Shakespeare
 
 ### Scene I. Scrape main works
 
@@ -38,7 +38,7 @@ works_urls = c(main, other)
 works_urls[1:3]
 ```
 
-Now we just paste the main site url to the work urls and download them.  Here is where we come across our first snag.  The <span class="func">html_text</span> function has what I would call a bug but what the author feels is a feature.  [Basically it ignores line breaks of the form <br> in certain situations](https://github.com/hadley/rvest/issues/175).  This means it will smash text together that shouldn't be, thereby making *any* analysis of it fairly useless[^bug].  Luckily, [\@rentrop](https://github.com/rentrop) provided a solution, which is in `r/fix_read_html.R`.
+Now we just paste the main site url to the work urls and download them.  Here is where we come across our first snag.  The <span class="func">html_text</span> function has what I would call a bug but what the author feels is a feature.  [Basically it ignores line breaks of the form `<br>` in certain situations](https://github.com/hadley/rvest/issues/175).  This means it will smash text together that shouldn't be, thereby making *any* analysis of it fairly useless[^bug].  Luckily, [\@rentrop](https://github.com/rentrop) provided a solution, which is in `r/fix_read_html.R`.
 
 ```{r scrape_shakes, eval=FALSE}
 works0 = lapply(works_urls, function(x) read_html(paste0('http://shakespeare.mit.edu/', x)))
@@ -49,26 +49,26 @@ html_text_collapse(works0[[1]]) #works
 works = lapply(works0, html_text_collapse)
 
 
-names(works) = c("All's Well That Ends Well" "As You Like It" "Comedy of Errors"
-                 "Cymbeline" "Love's Labour's Lost" "Measure for Measure"
-                 "The Merry Wives of Windsor" "The Merchant of Venice" "A Midsummer Night's Dream"
-                 "Much Ado about Nothing" "Pericles Prince of Tyre" "The Taming of the Shrew"
-                 "The Tempest" "Troilus and Cressida" "Twelfth Night"
-                 "The Two Gentlemen of Verona" "The Winter's Tale" "King Henry IV Part 1"
-                 "King Henry IV Part 2" "Henry V" "Henry VI Part 1"
-                 "Henry VI Part 2" "Henry VI Part 3" "Henry VIII"
-                 "King John" "Richard II" "Richard III"
-                 "Antony and Cleopatra" "Coriolanus" "Hamlet"
-                 "Julius Caesar" "King Lear" "Macbeth"
-                 "Othello" "Romeo and Juliet" "Timon of Athens"
-                 "Titus Andronicus" "Sonnets" "A Lover's Complaint"
-                 "The Rape of Lucrece" "Venus and Adonis" "Elegy")
+names(works) = c("All's Well That Ends Well", "As You Like It", "Comedy of Errors"
+                 "Cymbeline", "Love's Labour's Lost", "Measure for Measure"
+                 "The Merry Wives of Windsor", "The Merchant of Venice", "A Midsummer Night's Dream"
+                 "Much Ado about Nothing", "Pericles Prince of Tyre", "The Taming of the Shrew"
+                 "The Tempest", "Troilus and Cressida", "Twelfth Night"
+                 "The Two Gentlemen of Verona", "The Winter's Tale", "King Henry IV Part 1"
+                 "King Henry IV Part 2", "Henry V", "Henry VI Part 1"
+                 "Henry VI Part 2", "Henry VI Part 3", "Henry VIII"
+                 "King John", "Richard II", "Richard III"
+                 "Antony and Cleopatra", "Coriolanus", "Hamlet"
+                 "Julius Caesar", "King Lear", "Macbeth"
+                 "Othello", "Romeo and Juliet", "Timon of Athens"
+                 "Titus Andronicus", "Sonnets", "A Lover's Complaint"
+                 "The Rape of Lucrece", "Venus and Adonis", "Elegy")
 ```
 
 
 ### Scene II. Sonnets 
 
-We hit a slight nuisance with the Sonnets. The Sonnets have a bit of a different structure than the plays. All links are in a single page, with a different form for the url, and each sonnet has its own page.
+We now hit a slight nuisance with the Sonnets. The Sonnets have a bit of a different structure than the plays. All links are in a single page, with a different form for the url, and each sonnet has its own page.
 
 ```{r scrape_sonnets, eval=F}
 sonnet_urls = paste0('http://shakespeare.mit.edu/', grep(works_urls0, pattern='sonnet', value=T)) %>%
@@ -91,7 +91,7 @@ works$Sonnets = sonnet
 
 Now we can save our results so we won't have to repeat any of the previous scraping.  We want to save the main text object as an RData file, and write out the texts to their own file.  When dealing with text, you'll regularly want to save stages so you can avoid repeating what you don't have to, as often you will need to go back after discovering new issues further down the line.
 
-```{r initial_save, eval=F}
+```{r initial_save, eval=F, echo=1}
 save(works, file='data/texts_raw/shakes/moby_from_web.RData')
 
 # This will spit the text to the console unfortunately
@@ -105,7 +105,7 @@ purrr::map2(works,
 
 After the above is done, it's not required to redo, so we can always get what we need.  I'll start with the raw text as files, as that is one of the more common ways one deals with documents.  When text is nice and clean, this can be fairly straightforward.
 
-The  function at the end comes from the <span class="pack">tidyr</span> package. Up to that line, each element in the <span class="objclass">text</span> column is the entire text, while the column itself is thus a 'list-column'. In other words we have a 42 x 2 matrix. But to do what we need, we'll want to have access to each line, and the <span class="func">unnest</span> function unpacks each line within the title. The first few lines of the result is shown after.
+The  function at the end comes from the <span class="pack">tidyr</span> package. Up to that line, each element in the <span class="objclass">text</span> column is the entire text, while the column itself is thus a 'list-column'. In other words we have a 42 x 2 matrix. But to do what we need, we'll want to have access to each line, and the <span class="func">unnest</span> function unpacks each line within the title. The first few lines of the result are shown after.
 
 ```{r read_shakes_works, echo=-5, eval=FALSE}
 library(tidyverse); library(stringr)
@@ -141,7 +141,7 @@ DT::datatable(shakes0[1:20,],
 
 ### Scene V. Add additional works 
 
-It is typical to be gathering texts from multiple sources. In this case, we'll get *The Phoenix and the Turtle* from the Project Gutenberg website.  There is an R package that will allow us to work directly with the site, making the process straightforward[^r4everything].  I also considered two other works, but I refrained from "The Two Noble Kinsmen" because like many other of Shakespeare's versions on Gutenberg, it's basically written in a different language.  I also refrained from  *The Passionate Pilgrim* because it's mostly not Shakespeare.
+It is typical to be gathering texts from multiple sources. In this case, we'll get *The Phoenix and the Turtle* from the Project Gutenberg website.  There is an R package that will allow us to work directly with the site, making the process straightforward[^r4everything].  I also considered two other works, but I refrained from "The Two Noble Kinsmen" because like many other of Shakespeare's versions on Gutenberg, it's basically written in a different language.  I also refrained from *The Passionate Pilgrim* because it's mostly not Shakespeare.
 
 When first doing this project, I actually started with Gutenberg, but it became a notable PITA. The texts were inconsistent in source, and sometimes reproduced printing errors purposely, which would have compounded typical problems.  I thought it could have been solved by using the *Complete Works of Shakespeare* but the download only came with that title, meaning one would have to hunt for and delineate each separate work.  This might not have been too big of an issue, except that there is no table of contents, nor consistent naming of titles across different printings.  The MIT approach, on the other hand, was a few lines of code. This represents a common issue in text analysis when dealing with sources, a different option may save a lot of time in the end.
 
@@ -511,7 +511,7 @@ textstat_simil(dfm_weight(shakes_dtm, 'relFreq'), margin = "documents", method =
 
 <br>
 
-We can already begin to see the clusters of documents.  For example, the more historical are the clump in the upper left.  The oddball is [*The Phoenix and the Turtle*](https://en.wikipedia.org/wiki/The_Phoenix_and_the_Turtle), though *Lover's Complaint* and the *Elegy* are also less similar than standard Shakespeare.  The Phoenix and the Turtle is about the death of ideal love, represented by the Phoenix and Turtledove, for which there is a funeral.  It actually is considered by scholars to be in stark contrast to his other output. Elegy itself is actually written for a funeral. [*A Lover's Complaint*](https://en.wikipedia.org/wiki/A_Lover%27s_Complaint) is considered an inferior work by the Bard, so perhaps what we're seeing is a reflection of that lack of quality.  In general, we're seeing things that we might expect.
+We can already begin to see the clusters of documents.  For example, the more historical are the clump in the upper left.  The oddball is [*The Phoenix and the Turtle*](https://en.wikipedia.org/wiki/The_Phoenix_and_the_Turtle), though *Lover's Complaint* and the *Elegy* are also less similar than standard Shakespeare.  The Phoenix and the Turtle is about the death of ideal love, represented by the Phoenix and Turtledove, for which there is a funeral.  It actually is considered by scholars to be in stark contrast to his other output. Elegy itself is actually written for a funeral. [*A Lover's Complaint*](https://en.wikipedia.org/wiki/A_Lover%27s_Complaint) is thought to be an inferior work by the Bard by some critics, so perhaps what we're seeing is a reflection of that lack of quality.  In general, we're seeing things that we might expect.
 
 #### Readability
 
@@ -659,7 +659,7 @@ I'd say we're now ready for topic model.  That didn't take too much did it?
 
 #### Running the model and exploring the topics
 
-We'll run run one with 10 topics.  We can also see how things compare with the usual classifications for the texts.  Also, this will take a while to run depending on your machine (maybe a minute or two).
+We'll run one with 10 topics.  We can also see how things compare with the usual classifications for the texts.  Also, this will take a while to run depending on your machine (maybe a minute or two).
 
 
 ```{r topic_model, echo=1:2, eval=F}
@@ -821,7 +821,7 @@ t(topics(shakes_10, 2)) %>%
 
 <br>
 
-For example, base just on term frequency, Hamlet is most likely to be associated with Topic `r t(topicmodels::topics(shakes_10, 3))['Hamlet',1]`. That topic is associated with the (stemmed words) `r topicmodels::get_terms(shakes_10, 20)[, t(topicmodels::topics(shakes_10, 3))['Hamlet',1]]`.  Hamlet is also one that is actually a decent mix, with its second topic expressed being Topic `r t(topicmodels::topics(shakes_10, 3))['Hamlet', 2]`, with common terms `r topicmodels::get_terms(shakes_10, 20)[, t(topicmodels::topics(shakes_10, 3))['Hamlet', 2]]`. They both have `r intersect(topicmodels::get_terms(shakes_10, 20)[, t(topicmodels::topics(shakes_10, 3))['Hamlet',1]], topicmodels::get_terms(shakes_10, 20)[, t(topicmodels::topics(shakes_10, 3))['Hamlet', 2]])` among their top 20 terms. Sounds about right for Hamlet.  The other measures pick up on things like Dane and Denmark.
+For example, based just on term frequency, Hamlet is most likely to be associated with Topic `r t(topicmodels::topics(shakes_10, 3))['Hamlet',1]`. That topic is affiliated with the (stemmed words) `r topicmodels::get_terms(shakes_10, 20)[, t(topicmodels::topics(shakes_10, 3))['Hamlet',1]]`.  Hamlet is also one that is actually a decent mix, with its second topic expressed being Topic `r t(topicmodels::topics(shakes_10, 3))['Hamlet', 2]`, with common terms `r topicmodels::get_terms(shakes_10, 20)[, t(topicmodels::topics(shakes_10, 3))['Hamlet', 2]]`. They both have `r intersect(topicmodels::get_terms(shakes_10, 20)[, t(topicmodels::topics(shakes_10, 3))['Hamlet',1]], topicmodels::get_terms(shakes_10, 20)[, t(topicmodels::topics(shakes_10, 3))['Hamlet', 2]])` among their top 20 terms. Sounds about right for Hamlet.  The other measures pick up on things like Dane and Denmark.
 
 The following visualization shows a heatmap for the topic probabilities of each document.  Darker values mean higher probability for a document expressing that topic.  I've also added a cluster analysis based on the cosine distance matrix, and the resulting dendrogram[^clustering].  The colored bar on the right represents the given classification of a work as history, tragedy, comedy, or poem.
 
