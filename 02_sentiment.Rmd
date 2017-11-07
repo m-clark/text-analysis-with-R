@@ -251,7 +251,9 @@ In general it's a close game until perhaps the midway point, when negativity tak
 
 In general, sentiment analysis can be a useful exploration of data, but it is highly dependent on the context and tools used.  Note also that 'sentiment' can be anything, it doesn't have to be positive vs. negative.  Any vocabulary may be applied, and so it has more utility than the usual implementation. 
 
-It should also be noted that the above demonstration is largely conceptual only, and while fun, overly simplified. For starters, trying to classify words as simply positive or negative itself is not a straightforward endeavor.  As we noted at the beginning, context matters, and in general you'd want to take it into account.  Modern methods of sentiment analysis would use approaches like word2vec or deep learning to predict a sentiment probability, as opposed to a simple word match. 
+It should also be noted that the above demonstration is largely conceptual and descriptive. While fun, it's a bit simplified. For starters, trying to classify words as simply positive or negative itself is not a straightforward endeavor.  As we noted at the beginning, context matters, and in general you'd want to take it into account.  Modern methods of sentiment analysis would use approaches like word2vec or deep learning to predict a sentiment probability, as opposed to a simple word match.  Even in the above, matching sentiments to texts would probably only be a precursor to building a model predicting sentiment, which could then be applied to new data.
+
+
 
 ## Exercise
 

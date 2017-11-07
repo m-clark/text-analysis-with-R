@@ -81,7 +81,10 @@ t(topics(shakes_10, 2)) %>%
 
 <br>
 
-For example, Hamlet is most likely to be associated with Topic `r t(topicmodels::topics(shakes_10, 3))['Hamlet',1]`. That topic is associated with the (stemmed words) `r topicmodels::get_terms(shakes_10, 20)[, t(topicmodels::topics(shakes_10, 3))['Hamlet',1]]`.  Hamlet is also one of the few documents that is actually a decent mix, with its second topic expressed being Topic `r t(topicmodels::topics(shakes_10, 3))['Hamlet', 2]`, with common terms `r topicmodels::get_terms(shakes_10, 20)[, t(topicmodels::topics(shakes_10, 3))['Hamlet', 2]]`. They both have `r intersect(topicmodels::get_terms(shakes_10, 20)[, t(topicmodels::topics(shakes_10, 3))['Hamlet',1]], topicmodels::get_terms(shakes_10, 20)[, t(topicmodels::topics(shakes_10, 3))['Hamlet', 2]])` among their top 20 terms. Sounds about right for Hamlet.
+
+For example, based just on term frequency, Hamlet is most likely to be associated with Topic `r t(topicmodels::topics(shakes_10, 3))['Hamlet',1]`. That topic is affiliated with the (stemmed words) `r topicmodels::get_terms(shakes_10, 20)[, t(topicmodels::topics(shakes_10, 3))['Hamlet',1]]`.  Sounds about right for Hamlet.
+
+<!-- Hamlet is also one that is actually a decent mix, with its second topic expressed being Topic `r t(topicmodels::topics(shakes_10, 3))['Hamlet', 2]`, with common terms `r topicmodels::get_terms(shakes_10, 20)[, t(topicmodels::topics(shakes_10, 3))['Hamlet', 2]]`. They both have `r intersect(topicmodels::get_terms(shakes_10, 20)[, t(topicmodels::topics(shakes_10, 3))['Hamlet',1]], topicmodels::get_terms(shakes_10, 20)[, t(topicmodels::topics(shakes_10, 3))['Hamlet', 2]])` among their top 20 terms. -->
 
 The following visualization shows a heatmap for the topic probabilities of each document.  Darker values mean higher probability for a document expressing that topic.  I've also added a cluster analysis based on the cosine distance matrix, and the resulting dendrogram. The colored bar on the right represents the given classification of a work as history, tragedy, comedy, or poem.
 
@@ -170,12 +173,12 @@ shakes_10@gamma %>%
   round(3) %>%
   heatmaply::heatmaply(Rowv=row_dend,
                        Colv=F,
-                       colors='Oranges',
+                       colors=colorRampPalette(c('#fffff8', palettes$tyrian_purple2$tyrian_purple)),
                        row_side_colors = data.frame(shakes_types$class),
                        row_side_palette = plasma,
                        k_row= 4,
                        # RowSideColors = 'Set2',
-                       labRow=shakes_10@documents,
+                       labRow=rev(labels(row_dend)),
                        labCol=paste0('Topic ', 1:10),
                        hide_colorbar=T,
                        grid_gap=2,
@@ -213,7 +216,7 @@ topic_class %>%
   select(-text, -class) %>% 
   heatmaply::heatmaply(Rowv=NA,
                        Colv=NA,
-                       labRow=topic_class$text,
+                       labRow=rev(topic_class$text),
                        labCol=apply(get_terms(shakes_10, 10), 2, paste0, collapse='\n')[order_topics],
                        column_text_angle=0, 
                        colors=colorRampPalette(c('#fffff8', palettes$tyrian_purple2$tyrian_purple)),

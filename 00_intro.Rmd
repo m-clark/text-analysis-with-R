@@ -14,20 +14,29 @@ Additionally, we'll have exercises to practice, but those comfortable enough to 
 
 ### Prerequisites
 
-The document is for the most part very applied in nature, and doesn't assume much beyond familiarity with the R statistical computing environment.  It would be useful if you are familiar with the [tidyverse](https://www.tidyverse.org/), or at least <span class="pack">dplyr</span> specifically, otherwise some of the code may be difficult to understand (and is required if you want to run it).
+The document is for the most part very applied in nature, and doesn't assume much beyond familiarity with the R statistical computing environment.  For programming purposes, it would be useful if you are familiar with the [tidyverse](https://www.tidyverse.org/), or at least <span class="pack">dplyr</span> specifically, otherwise some of the code may be difficult to understand (and is required if you want to run it).
 
 Here are some of the packages used in this document:
 
-- <span class="pack">tidyverse</span>
-- <span class="pack">janeaustenr</span>
-- <span class="pack">gutenbergr</span>
-- <span class="pack">stringr</span>
-- <span class="pack">readr</span>
-- <span class="pack">tidytext</span>
-- <span class="pack">openNLP</span>
-- <span class="pack">NLP</span>
-- <span class="pack">tm</span>
-- <span class="pack">topicmodels</span>
+- Throughout
+    - <span class="pack">tidyverse</span>
+    - <span class="pack">tidytext</span>
+
+- Strings
+    - <span class="pack">stringr</span>
+    - <span class="pack">lubridate</span>
+    
+- Sentiment 
+    - <span class="pack">gutenbergr</span>
+    - <span class="pack">janeaustenr</span>
+- POS
+    - <span class="pack">openNLP</span>
+    - <span class="pack">NLP</span>
+    - <span class="pack">tm</span>
+    
+- Topic Models
+    - <span class="pack">topicmodels</span>
+    - <span class="pack">quanteda</span>
        
 
 Note the following color coding used in this document:

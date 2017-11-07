@@ -136,7 +136,7 @@ code > span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Inf
 </ul></li>
 <li class="chapter" data-level="" data-path="string-theory.html"><a href="string-theory.html#basic-text-functionality"><i class="fa fa-check"></i>Basic Text Functionality</a><ul>
 <li class="chapter" data-level="" data-path="string-theory.html"><a href="string-theory.html#base-r"><i class="fa fa-check"></i>Base R</a></li>
-<li class="chapter" data-level="" data-path="string-theory.html"><a href="string-theory.html#packages"><i class="fa fa-check"></i>Packages</a></li>
+<li class="chapter" data-level="" data-path="string-theory.html"><a href="string-theory.html#useful-packages"><i class="fa fa-check"></i>Useful packages</a></li>
 <li class="chapter" data-level="" data-path="string-theory.html"><a href="string-theory.html#other"><i class="fa fa-check"></i>Other</a></li>
 <li class="chapter" data-level="" data-path="string-theory.html"><a href="string-theory.html#summary-of-basic-text-functionality"><i class="fa fa-check"></i>Summary of basic text functionality</a></li>
 </ul></li>
@@ -259,19 +259,35 @@ code > span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Inf
 </div>
 <div id="prerequisites" class="section level3">
 <h3>Prerequisites</h3>
-<p>The document is for the most part very applied in nature, and doesn’t assume much beyond familiarity with the R statistical computing environment. It would be useful if you are familiar with the <a href="https://www.tidyverse.org/">tidyverse</a>, or at least <span class="pack">dplyr</span> specifically, otherwise some of the code may be difficult to understand (and is required if you want to run it).</p>
+<p>The document is for the most part very applied in nature, and doesn’t assume much beyond familiarity with the R statistical computing environment. For programming purposes, it would be useful if you are familiar with the <a href="https://www.tidyverse.org/">tidyverse</a>, or at least <span class="pack">dplyr</span> specifically, otherwise some of the code may be difficult to understand (and is required if you want to run it).</p>
 <p>Here are some of the packages used in this document:</p>
 <ul>
+<li>Throughout
+<ul>
 <li><span class="pack">tidyverse</span></li>
-<li><span class="pack">janeaustenr</span></li>
-<li><span class="pack">gutenbergr</span></li>
-<li><span class="pack">stringr</span></li>
-<li><span class="pack">readr</span></li>
 <li><span class="pack">tidytext</span></li>
+</ul></li>
+<li>Strings
+<ul>
+<li><span class="pack">stringr</span></li>
+<li><span class="pack">lubridate</span></li>
+</ul></li>
+<li>Sentiment
+<ul>
+<li><span class="pack">gutenbergr</span></li>
+<li><span class="pack">janeaustenr</span></li>
+</ul></li>
+<li>POS
+<ul>
 <li><span class="pack">openNLP</span></li>
 <li><span class="pack">NLP</span></li>
 <li><span class="pack">tm</span></li>
+</ul></li>
+<li>Topic Models
+<ul>
 <li><span class="pack">topicmodels</span></li>
+<li><span class="pack">quanteda</span></li>
+</ul></li>
 </ul>
 <p>Note the following color coding used in this document:</p>
 <ul>
@@ -286,7 +302,7 @@ code > span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Inf
 <div id="initial-steps" class="section level2">
 <h2>Initial Steps</h2>
 <ol start="0" style="list-style-type: decimal">
-<li>Download the zip file here. Be mindful of where you put it.</li>
+<li>Download the zip file <a href="">here</a>. Be mindful of where you put it.</li>
 <li>Unzip it. Be mindful of where you put the resulting folder.</li>
 <li>Open RStudio.</li>
 <li>File/Open Project and click on the blue icon in the folder you just created.</li>
