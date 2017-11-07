@@ -288,7 +288,7 @@ sample(chars)[1:3]
 
 ### Scene II. Old, Middle, & Modern English
 
-While Shakespeare is considered [Early Modern English](https://en.wikipedia.org/wiki/Early_Modern_English), some text may be more historical, so I include Middle and Old English stopwords, as they were readily available from the <span class="pack">cltk</span> Python module ([link](https://github.com/cltk/cltk)).  I also added some things to the modern English list like "thou'ldst" that I found lingering after initial passes. I first started using the works from Gutenberg, and there, the Old English might have had some utility.  As the text there were inconsistently translated and otherwise problematic, I abandoned using them.  Here, the Old English vocabularly applied to these texts it only removes 'wit', so I refrain from using it.
+While Shakespeare is considered [Early Modern English](https://en.wikipedia.org/wiki/Early_Modern_English), some text may be more historical, so I include Middle and Old English stopwords, as they were readily available from the <span class="pack">cltk</span> Python module ([link](https://github.com/cltk/cltk)).  I also added some things to the modern English list like "thou'ldst" that I found lingering after initial passes. I first started using the works from Gutenberg, and there, the Old English might have had some utility.  As the text there were inconsistently translated and otherwise problematic, I abandoned using them.  Here, the Old English vocabulary applied to these texts it only removes 'wit', so I refrain from using it.
 
 ```{r old_middle_modern_english}
 # old and me from python cltk module; 
@@ -792,7 +792,7 @@ json = createJSON(phi = exp(shakes_10@beta),
 serVis(json, out.dir = 'docs/vis', open.browser = F)  # have to redo if book folder is cleaned can only adjust plot height/width directly in .js file
 ```
 
-<iframe src="vis/index.html" width="100%" height="862px" frameborder="0"
+<iframe src="https://m-clark.github.io/workshops/text_analysis/vis/index.html" width="100%" height="862px" frameborder="0"
     scrolling="yes"
     marginheight="0"
     marginwidth="0" title="LDAvis results">
@@ -909,7 +909,7 @@ topic_class %>%
                        labRow=topic_class$text,
                        labCol=apply(get_terms(shakes_10, 10), 2, paste0, collapse='\n')[order_topics],
                        column_text_angle=0, 
-                       colors=colorRampPalette(c('white', palettes$tyrian_purple2$tyrian_purple)),
+                       colors=colorRampPalette(c('#fffff8', palettes$tyrian_purple2$tyrian_purple)),
                        # subplot_widths=c(1),
                        plot_method = 'plotly',
                        fontsize_row=8,
@@ -960,7 +960,7 @@ class_probs %>%
                        labRow=class_probs$class,
                        labCol=apply(get_terms(shakes_10, 10), 2, paste0, collapse='\n'),
                        # colors=viridis::inferno(500),
-                       colors='Oranges',
+                       colors=colorRampPalette(c('#fffff8', palettes$tyrian_purple2$tyrian_purple)),
                        plot_method = 'plotly',
                        xaxis_font_size = 8,
                        yaxis_font_size=12, 
@@ -979,7 +979,7 @@ Aside from the poems, the classes are a good mix of topics, and appear to have s
 
 #### Summary of Topic Models
 
-And I grow weary...
+This is where the summary would go, but I grow weary...
 
 <br>
 <br>
