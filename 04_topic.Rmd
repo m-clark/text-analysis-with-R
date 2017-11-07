@@ -216,7 +216,7 @@ topic_class %>%
                        labRow=topic_class$text,
                        labCol=apply(get_terms(shakes_10, 10), 2, paste0, collapse='\n')[order_topics],
                        column_text_angle=0, 
-                       colors='Oranges',
+                       colors=colorRampPalette(c('#fffff8', palettes$tyrian_purple2$tyrian_purple)),
                        # subplot_widths=c(1),
                        plot_method = 'plotly',
                        fontsize_row=8,
