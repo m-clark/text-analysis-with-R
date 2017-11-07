@@ -155,7 +155,8 @@ works_not_included = c("The Phoenix and the Turtle")   # add others if desired
 gute0 = gutenberg_works(title %in% works_not_included)
 gute = lapply(gute0$gutenberg_id, gutenberg_download)
 gute = mapply(function(x, y) mutate(x, id=y) %>% select(-gutenberg_id), 
-              gute, works_not_included, 
+              x=gute, 
+              y=works_not_included, 
               SIMPLIFY=F)
 
 shakes = shakes0 %>%
@@ -169,6 +170,7 @@ shakes = shakes0 %>%
 save(shakes, file='data/texts_raw/shakes/shakes_df.RData')
 ```
 
+
 ## ACT II. Preliminary Cleaning
 
 If you think we're even remotely getting close to being ready for analysis, I say Ha! to you. Our journey has only just begun (cue the Carpenters). 
@@ -177,7 +179,7 @@ Now we can start thinking about prepping the data for eventual analysis. One of 
 
 ### Scene I. Remove initial text/metadata
 
-First on our to-do list is to get rid of all the preliminary text of titles, authorship etc.  This is fairly easy when you think that every text will start with ACT I, or in the case of the Sonnets, the word 'Sonnet'.  We want to drop all text up to those points.  I've created a [function](https://github.com/m-clark/text-analysis-with-R/blob/master/r/detect_first_act.R) that will do that, and then just apply it to each works tibble[^tibblefail].  For the poems and *A Funeral Elegy for Master William Peter*, we look instead for the line where his name or initials start the line.
+First on our to-do list is to get rid of all the preliminary text of titles, authorship, and similar.  This is fairly straightforward when you realize the text we want will be associated with something like `ACT I`, or in the case of the Sonnets, the word `Sonnet`.  So the idea it to drop all text up to those points.  I've created a [function](https://github.com/m-clark/text-analysis-with-R/blob/master/r/detect_first_act.R) that will do that, and then just apply it to each works tibble[^tibblefail].  For the poems and *A Funeral Elegy for Master William Peter*, we look instead for the line where his name or initials start the line.
 
 ```{r remove_preliminary_text, echo=-(1:2)}
 load('data/texts_raw/shakes/shakes_df.RData')
@@ -215,9 +217,9 @@ titles =  c("A Lover's Complaint", "All's Well That Ends Well", "As You Like It"
             "The Rape of Lucrece", "Venus and Adonis", "A Funeral Elegy", "The Phoenix and the Turtle")
 
 shakes_trim = shakes_trim %>%
-  filter(text != '',                     # empties
-         !text %in% titles,              # titles
-         !str_detect(text, '^ACT|^SCENE|^Enter|^Exit|^Exeunt|^Sonnet')  # acts etc.
+  filter(text != '',                     # remove empties
+         !text %in% titles,              # remove titles
+         !str_detect(text, '^ACT|^SCENE|^Enter|^Exit|^Exeunt|^Sonnet')  # remove acts etc.
          )
 
 shakes_trim %>% filter(id=='Romeo_and_Juliet') # we'll get prologue later
@@ -241,11 +243,11 @@ save(shakes_types, file='data/shakespeare_classification.RData') # save for late
 
 ## ACT III. Stop words
 
-As we've noted before, we'll want to get rid of stop words, things like articles, possessive pronouns, and other very common words.  In this case, we also want to include character names.  However, the big wrinkle here is that this is not everyday English, so we need to get ye, thee, thine etc.  In addition there are things that need to be replaced like o'er to over, which may then also be removed. In short, this is not so straightforward.
+As we've noted before, we'll want to get rid of stop words, things like articles, possessive pronouns, and other very common words.  In this case, we also want to include character names.  However, the big wrinkle here is that this is not English as currently spoken, so we need to remove 'ye', 'thee', 'thine' etc.  In addition there are things that need to be replaced, like o'er to over, which may then also be removed. In short, this is not so straightforward.
 
 ### Scene I. Character names
 
-We'll get the list of character names from [opensourceshakespeare.org](http://opensourceshakespeare.org/) via <span class="pack">rvest</span>, but I added some from the poems and others that came through, e.g. abbreviated names.
+We'll get the list of character names from [opensourceshakespeare.org](http://opensourceshakespeare.org/) via <span class="pack">rvest</span>, but I added some from the poems and others that still came through the processing one way or another, e.g. abbreviated names.
 
 ```{r character_names, eval=FALSE, echo=-1}
 library(rvest)
@@ -260,7 +262,7 @@ shakes_char = shakes_char %>%
 save(shakes_char, file='data/shakespeare_characters.RData')
 ```
 
-A new snag is that some characters with multiple names may be represented (typically) by the first or last or in the case of three, the middle, e.g. Sir Toby Belch. Others are still difficultly named e.g. RICHARD PLANTAGENET (DUKE OF GLOUCESTER). The following should capture everything by splitting the names on spaces, removing parentheses, and keeping unique terms.
+A new snag is that some characters with multiple names may be represented (typically) by the first or last name, or in the case of three, the middle, e.g. Sir Toby Belch. Others are still difficultly named e.g. RICHARD PLANTAGENET (DUKE OF GLOUCESTER). The following should capture everything by splitting the names on spaces, removing parentheses, and keeping unique terms.
 
 ```{r character_names_clean, echo=-1}
 load('data/shakespeare_characters.RData')
@@ -286,7 +288,7 @@ sample(chars)[1:3]
 
 ### Scene II. Old, Middle, & Modern English
 
-While Shakespeare is considered [Early Modern English](https://en.wikipedia.org/wiki/Early_Modern_English), some text may be more historical, so I include Middle and Old English stopwords, as they were readily available from the <span class="pack">cltk</span> Python module ([link](https://github.com/cltk/cltk)) and also found.  I also added some things to the ME list like "thou'ldst" that I found lingering after initial passes. In my initial use of Gutenberg texts, the Old English might have had some utility, but with these texts it only removes 'wit', so I refrain from using it.
+While Shakespeare is considered [Early Modern English](https://en.wikipedia.org/wiki/Early_Modern_English), some text may be more historical, so I include Middle and Old English stopwords, as they were readily available from the <span class="pack">cltk</span> Python module ([link](https://github.com/cltk/cltk)).  I also added some things to the modern English list like "thou'ldst" that I found lingering after initial passes. I first started using the works from Gutenberg, and there, the Old English might have had some utility.  As the text there were inconsistently translated and otherwise problematic, I abandoned using them.  Here, the Old English vocabularly applied to these texts it only removes 'wit', so I refrain from using it.
 
 ```{r old_middle_modern_english}
 # old and me from python cltk module; 
@@ -311,7 +313,7 @@ em_stops = data_frame(word=str_conv(em_stops0, 'UTF8'),
 
 ### Scene III. Remove stopwords
 
-We're now ready to start removing words. However, right now, we have lines not words.  We can use the <span class="pack">tidytext</span> function <span class="func">unnest_tokens</span>, which is like <span class="func">unnest</span> from <span class="pack">tidyr</span>, but works on different tokens, e.g. words, sentences, or paragraphs. Note that by default, the function will make all words lower case.
+We're now ready to start removing words. However, right now, we have lines not words.  We can use the <span class="pack">tidytext</span> function <span class="func">unnest_tokens</span>, which is like <span class="func">unnest</span> from <span class="pack">tidyr</span>, but works on different tokens, e.g. words, sentences, or paragraphs. Note that by default, the function will make all words lower case to make matching more efficient.
 
 ```{r unnest_words}
 library(tidytext)
@@ -321,7 +323,7 @@ shakes_words = shakes_trim %>%
 save(shakes_words, file='data/shakes_words_df_4text2vec.RData')
 ```
 
-We also will be doing a little stemming here. I'm getting rid of suffixes that end with the suffix after an apostrophe.  Many of the remaining words will either be stopwords or need to be further stemmed later. I also created a middle/modern English stemmer for words that are not caught otherwise (<span class="func">me_st_stem</span>).  Again this is the sort of thing you discover after initial passes (e.g. 'criedst'). We can do that, then the <span class="func">anti_join</span> of all the stopwords.
+We also will be doing a little stemming here. I'm getting rid of suffixes that end with the suffix after an apostrophe.  Many of the remaining words will either be stopwords or need to be further stemmed later. I also created a middle/modern English stemmer for words that are not caught otherwise (<span class="func">me_st_stem</span>).  Again this is the sort of thing you discover after initial passes (e.g. 'criedst'). After that, we can use the <span class="func">anti_join</span> remove the stopwords.
 
 ```{r anti_join}
 source('r/st_stem.R')
@@ -348,7 +350,7 @@ any(shakes_words$word == 'mayst')
 
 ## ACT IV. Other fixes
 
-Now we're ready to finally do the word counts.  Just kidding! There is *still* work to do the for the remainder, and you'll continue to spot things after runs.  A big issue is the words that end in 'st' and 'est', and others that are not consistently spelled or otherwise need to be dealt with.  For example, 'crost' will not be stemmed to 'cross', as 'crossed' would be.  Finally, I limit the result to any words that have more than two characters, as my inspection suggested these be left-over suffixes or otherwise would be considered stopwords anyway.
+Now we're ready to finally do the word counts.  Just kidding! There is *still* work to do for the remainder, and you'll continue to spot things after runs.  One remaining issue is the words that end in 'st' and 'est', and others that are not consistently spelled or otherwise need to be dealt with.  For example, 'crost' will not be stemmed to 'cross', as 'crossed' would be.  Finally, I limit the result to any words that have more than two characters, as my inspection suggested these are left-over suffixes, or otherwise would be considered stopwords anyway.
 
 
 ```{r other_fixes}
@@ -385,7 +387,7 @@ We are finally ready to get to the fun stuff.  Finally! And now things get easy.
 
 ### Scene I. Count the terms
 
-We can get term counts with standard <span class="pack">dplyr</span> approaches, and <span class="pack">tidytext</span> will take that and do the other things we might want. Specifically, we can use the latter to create the document term matrix which will be used in other analysis.  The function <span class="func">cast_dfm</span> will create a dfm class object, or 'document-feature' matrix, which is the same thing but recognizes this sort of stuff is not specific to words.  With word counts in hand, now would be a good save point since they'll serve as the basis for other things.
+We can get term counts with standard <span class="pack">dplyr</span> approaches, and packages like <span class="pack">tidytext</span> will take that and also do some other things we might want. Specifically, we can use the latter to create the document-term matrix (DTM) that will be used in other analysis.  The function <span class="func">cast_dfm</span> will create a <span class="objclass">dfm</span> class object, or 'document-feature' matrix class object (from <span class="pack">quanteda</span>), which is the same thing but recognizes this sort of stuff is not specific to words.  With word counts in hand, would be good save to save at this point, since they'll serve as the basis for other processing.
 
 ```{r term_counts, results='hold', eval=-8}
 term_counts = shakes_words %>%
@@ -407,9 +409,9 @@ Now things are looking like Shakespeare, with love for everyone[^love].  You'll 
 
 ### Scene II. Stemming
 
-Now we'll <span class="emph"></span> the words.  While this is actually a pre-processing step, one that we'd do along with (typically after) stopword removal.  I do it here to mostly demonstrate how to use <span class="pack">quanteda</span> to do it, as it can also be used to remove stopwords and do many of the other things we did with <span class="pack">tidytext</span>.
+Now we'll <span class="emph">stem</span> the words. This is actually more of a pre-processing step, one that we'd do along with (and typically after) stopword removal.  I do it here to mostly demonstrate how to use <span class="pack">quanteda</span> to do it, as it can also be used to remove stopwords and do many of the other things we did with <span class="pack">tidytext</span>.
 
-Stemming will make words like eye and eyes just *ey*, or convert war, wars and warring to *war*. In other words it will reduce variations of a word to a common root form, or 'word stem'.  We could have done this in a step prior to counting the terms, but then you only have the stemmed result to work with for the document term matrix from then on.  Depending on your situation, you may or may not want to stem, or maybe you'd want to compare results.  The <span class="pack">quanteda</span> package will actually stem with the DTM and collapse the word counts accordingly.   I note the difference in words before and after.
+Stemming will make words like eye and eyes just *ey*, or convert war, wars and warring to *war*. In other words it will reduce variations of a word to a common root form, or 'word stem'.  We could have done this in a step prior to counting the terms, but then you only have the stemmed result to work with for the document term matrix from then on.  Depending on your situation, you may or may not want to stem, or maybe you'd want to compare results.  The <span class="pack">quanteda</span> package will actually stem with the DTM (i.e. work on the column names) and collapse the word counts accordingly.   I note the difference in words before and after stemming.
 
 ```{r stem, echo=-(1:4), results='hold'}
 load('data/shakes_words_df.RData')
@@ -436,7 +438,7 @@ top20 = topfeatures(shakes_dtm, 20)
 
 #### Top features
 
-Let's start looking more in depth.  The following shows the 10 most common words and their respective counts. This is also an easy way to find candidates to add to the stopword list.  Note that dai and prai are stems for day and pray. Love occurs `r round(top20[1]/top20[2], 2)` times as much as the most frequent word!
+Let's start looking at the data more intently.  The following shows the 10 most common words and their respective counts. This is also an easy way to find candidates to add to the stopword list.  Note that dai and prai are stems for day and pray. Love occurs `r round(top20[1]/top20[2], 2)` times as much as the most frequent word!
 
 ```{r top_10}
 top10 = topfeatures(shakes_dtm, 10)
@@ -480,9 +482,15 @@ g = data_frame(term = names(top20), freq = top20) %>%
     percentage = freq/ncol(shakes_dtm)
   ) %>% 
   ggplot() + 
-  geom_text(aes(x=term, y=percentage, size=percentage, label=term, color=term),  
+  geom_text(aes(x=term, 
+                y=percentage,
+                size=percentage, 
+                label=term, 
+                angle=45,         # ignored by plotly
+                color=term),  
             # color='#ff5500', 
             hjust=-.1,
+            
             show.legend = F) + 
   scale_size_continuous(range=c(2,8)) +
   ylim(c(0,.25)) +
@@ -490,14 +498,15 @@ g = data_frame(term = names(top20), freq = top20) %>%
   theme(axis.text.x = element_blank(),
         axis.ticks.x= element_blank(), 
         legend.position='none')     # for plotly's sake
-ggplotly(width='auto', hoverinfo='none') %>% 
-  lazerhawk::theme_plotly() 
+g
+# ggplotly(width='auto', hoverinfo='none') %>% 
+#   lazerhawk::theme_plotly() 
 ```
 
 
 #### Similarity
 
-The <span class="pack">quanteda</span> package has some built in similarity measures such as [cosine similarity](https://en.wikipedia.org/wiki/Cosine_similarity), which you can treat similarly to the standard correlation (also available).  I display it visually to better get a sense of things.
+The <span class="pack">quanteda</span> package has some built in similarity measures such as [cosine similarity](https://en.wikipedia.org/wiki/Cosine_similarity), which you can think of similarly to the standard correlation (also available as an option).  I display it visually to better get a sense of things.
 
 ```{r similarity, echo=1, eval=2:3}
 textstat_simil(shakes_dtm, margin = "documents", method = "cosine") 
@@ -511,7 +520,7 @@ textstat_simil(dfm_weight(shakes_dtm, 'relFreq'), margin = "documents", method =
 
 <br>
 
-We can already begin to see the clusters of documents.  For example, the more historical are the clump in the upper left.  The oddball is [*The Phoenix and the Turtle*](https://en.wikipedia.org/wiki/The_Phoenix_and_the_Turtle), though *Lover's Complaint* and the *Elegy* are also less similar than standard Shakespeare.  The Phoenix and the Turtle is about the death of ideal love, represented by the Phoenix and Turtledove, for which there is a funeral.  It actually is considered by scholars to be in stark contrast to his other output. Elegy itself is actually written for a funeral. [*A Lover's Complaint*](https://en.wikipedia.org/wiki/A_Lover%27s_Complaint) is thought to be an inferior work by the Bard by some critics, so perhaps what we're seeing is a reflection of that lack of quality.  In general, we're seeing things that we might expect.
+We can already begin to see the clusters of documents.  For example, the more historical are the clump in the upper left.  The oddball is [*The Phoenix and the Turtle*](https://en.wikipedia.org/wiki/The_Phoenix_and_the_Turtle), though *Lover's Complaint* and the *Elegy* are also less similar than standard Shakespeare.  The Phoenix and the Turtle is about the death of ideal love, represented by the Phoenix and Turtledove, for which there is a funeral.  It actually is considered by scholars to be in stark contrast to his other output. [Elegy](https://en.wikipedia.org/wiki/Shakespeare_apocrypha#A_Funeral_Elegy) itself is actually written for a funeral, but probably not by Shakespeare. [*A Lover's Complaint*](https://en.wikipedia.org/wiki/A_Lover%27s_Complaint) is thought to be an inferior work by the Bard by some critics, and maybe not even authored by him, so perhaps what we're seeing is a reflection of that lack of quality.  In general, we're seeing things that we might expect.
 
 #### Readability
 
@@ -528,7 +537,7 @@ raw_texts =
 raw_texts
 ```
 
-With raw texts, we need to make them an official <span class="objclass">corpus</span> object to proceed more easily.  The <span class="func">corpus</span> function from <span class="pack">quanteda</span> won't read directly from a list column or a list at all, so we'll convert it via the <span class="pack">tm</span> package, which more or less defeats the purpose of using the <span class="pack">quanteda</span> package except that the <span class="func">textstat_readability</span> function gives us what we want, but I digress.
+With raw texts, we need to convert them to a <span class="objclass">corpus</span> object to proceed more easily.  The <span class="func">corpus</span> function from <span class="pack">quanteda</span> won't read directly from a list column or a list at all, so we'll convert it via the <span class="pack">tm</span> package, which more or less defeats the purpose of using the <span class="pack">quanteda</span> package, except that the <span class="func">textstat_readability</span> function gives us what we want, but I digress.
 
 Unfortunately the concept of <span class="emph">readability</span> is ill-defined, and as such, there are dozens of measures available dating back nearly 75 years.  The following is based on the Coleman-Liau grade score (higher grade = more difficult).  The conclusion here is first, Shakespeare isn't exactly a difficult read, and two, the poems may be more so relative to the other works.
 
@@ -659,7 +668,7 @@ I'd say we're now ready for topic model.  That didn't take too much did it?
 
 #### Running the model and exploring the topics
 
-We'll run one with 10 topics.  We can also see how things compare with the usual classifications for the texts.  Also, this will take a while to run depending on your machine (maybe a minute or two).
+We'll run one with 10 topics.  As in the previous example in this document, we'll use <span class="pack">topicmodels</span> and the <span class="func">LDA</span> function. Later, we'll also compare our results with the traditional classifications of the texts.  Note that this will take a while to run depending on your machine (maybe a minute or two).
 
 
 ```{r topic_model, echo=1:2, eval=F}
@@ -767,6 +776,7 @@ As another approach, consider the <span class="emph">saliency</span> and <span c
 <br>
 
 ```{r ldavis, eval=FALSE, echo=FALSE}
+# may need to redo LDA just for this visual depending on what's been updated/changed
 library(LDAvis)
 json = createJSON(phi = exp(shakes_10@beta), 
                    theta = shakes_10@gamma, 
@@ -779,7 +789,7 @@ json = createJSON(phi = exp(shakes_10@beta),
                                     barheight = 250),
                    term.frequency = colSums(shakes_dtm),
                    R=10)
-serVis(json, out.dir = '_book/vis', open.browser = F)  # have to redo if book folder is cleaned can only adjust plot height/width directly in .js file
+serVis(json, out.dir = 'docs/vis', open.browser = F)  # have to redo if book folder is cleaned can only adjust plot height/width directly in .js file
 ```
 
 <iframe src="vis/index.html" width="100%" height="862px" frameborder="0"
@@ -791,7 +801,7 @@ serVis(json, out.dir = '_book/vis', open.browser = F)  # have to redo if book fo
 
 <br> 
 
-Given all these measures, one can now see how well they match what the topics the documents would be most associated with.  
+Given all these measures, one can assess how well they match what topics the documents would be most associated with.  
 
 ```{r tm10_results_topic_classification, eval=FALSE}
 t(topics(shakes_10, 3))
@@ -821,7 +831,7 @@ t(topics(shakes_10, 2)) %>%
 
 <br>
 
-For example, based just on term frequency, Hamlet is most likely to be associated with Topic `r t(topicmodels::topics(shakes_10, 3))['Hamlet',1]`. That topic is affiliated with the (stemmed words) `r topicmodels::get_terms(shakes_10, 20)[, t(topicmodels::topics(shakes_10, 3))['Hamlet',1]]`.  Hamlet is also one that is actually a decent mix, with its second topic expressed being Topic `r t(topicmodels::topics(shakes_10, 3))['Hamlet', 2]`, with common terms `r topicmodels::get_terms(shakes_10, 20)[, t(topicmodels::topics(shakes_10, 3))['Hamlet', 2]]`. They both have `r intersect(topicmodels::get_terms(shakes_10, 20)[, t(topicmodels::topics(shakes_10, 3))['Hamlet',1]], topicmodels::get_terms(shakes_10, 20)[, t(topicmodels::topics(shakes_10, 3))['Hamlet', 2]])` among their top 20 terms. Sounds about right for Hamlet.  The other measures pick up on things like Dane and Denmark.
+For example, based just on term frequency, Hamlet is most likely to be associated with Topic `r t(topicmodels::topics(shakes_10, 3))['Hamlet',1]`. That topic is affiliated with the (stemmed words) `r topicmodels::get_terms(shakes_10, 20)[, t(topicmodels::topics(shakes_10, 3))['Hamlet',1]]`.  Hamlet is also one that is actually a decent mix, with its second topic expressed being Topic `r t(topicmodels::topics(shakes_10, 3))['Hamlet', 2]`, with common terms `r topicmodels::get_terms(shakes_10, 20)[, t(topicmodels::topics(shakes_10, 3))['Hamlet', 2]]`. They both have `r intersect(topicmodels::get_terms(shakes_10, 20)[, t(topicmodels::topics(shakes_10, 3))['Hamlet',1]], topicmodels::get_terms(shakes_10, 20)[, t(topicmodels::topics(shakes_10, 3))['Hamlet', 2]])` among their top 20 terms. Sounds about right for Hamlet.  The other measures pick up on words like Dane and Denmark.
 
 The following visualization shows a heatmap for the topic probabilities of each document.  Darker values mean higher probability for a document expressing that topic.  I've also added a cluster analysis based on the cosine distance matrix, and the resulting dendrogram[^clustering].  The colored bar on the right represents the given classification of a work as history, tragedy, comedy, or poem.
 
@@ -853,12 +863,13 @@ shakes_10@gamma %>%
   round(3) %>%
   heatmaply::heatmaply(Rowv=row_dend,
                        Colv=F,
-                       colors='Oranges',
+                       # colors='Oranges',
+                       colors=colorRampPalette(c('#fffff8', palettes$tyrian_purple2$tyrian_purple)),
                        row_side_colors = data.frame(shakes_types$class),
                        row_side_palette = plasma,
                        k_row= 4,
                        # RowSideColors = 'Set2',
-                       labRow=shakes_10@documents,
+                       labRow=rev(labels(row_dend)),
                        labCol=paste0('Topic ', 1:10),
                        hide_colorbar=T,
                        grid_gap=2,
@@ -898,7 +909,7 @@ topic_class %>%
                        labRow=topic_class$text,
                        labCol=apply(get_terms(shakes_10, 10), 2, paste0, collapse='\n')[order_topics],
                        column_text_angle=0, 
-                       colors='Oranges',
+                       colors=colorRampPalette(c('white', palettes$tyrian_purple2$tyrian_purple)),
                        # subplot_widths=c(1),
                        plot_method = 'plotly',
                        fontsize_row=8,
