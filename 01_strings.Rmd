@@ -382,15 +382,21 @@ So in the end we just have to use the <span class="func">num_range</span> helper
 1. In your own words, state the difference between a character string and a factor variable.
 <br>
 
-2. The following application of paste produces this result.
+2. Consider the following character vector.
 
 ```{r ex_paste}
+x = c('A', '1', 'Q')
+```
+
+How might you paste the elements together so that there is an underscore `_` between characters and no space?
+
+Paste Part 2: The following application of paste produces this result.
+
+```{r ex2_paste}
 paste(c('A', '1', 'Q'), c('B', '2', 'z'))
 ```
 
-How might you paste them so that there is an underscore `_` between characters and no space?
-
-Now try to produce `"A - B" "1 - 2" "Q - z"`.
+Now try to produce `"A - B" "1 - 2" "Q - z"`.  To do this, note that one can paste any number of things together (i.e. more than two).
 <br>
 
 3. Use regex to grab the Star Wars names that have a number.  Use both <span class="func">grep</span> and <span class="func">grepl</span> and compare the results
