@@ -701,7 +701,7 @@ get_terms(shakes_10, 20) %>%
 
 <br>
 
-We can see there is a lot of overlap in these topics for top terms.  Just looking at the top 10, *love* occurs in all of them, *god* and *heart* as well, but we could have guessed this just looking at how often they occur in general. Other measures can be used to assess term importance, such as those that seek to balance the term's probability of occurrence within a document, and term *exclusivity*, or how likely a term is to occur in only one particular topic.  See the <span class="pack">stm</span> package and corresponding <span class="func">labelTopics</span> function as a way to get several alternatives.  As an example I show the results of their version of the following[^scoredefs]:
+We can see there is a lot of overlap in these topics for top terms.  Just looking at the top 10, *love* occurs in all of them, *god* and *heart* are common as well, but we could have guessed this just looking at how often they occur in general. Other measures can be used to assess term importance, such as those that seek to balance the term's probability of occurrence within a document, and term *exclusivity*, or how likely a term is to occur in only one particular topic.  See the <span class="pack">stm</span> package and corresponding <span class="func">labelTopics</span> function as a way to get several alternatives.  As an example I show the results of their version of the following[^scoredefs]:
 
 - <span class="emph">FREX</span>: **FR**equency and **EX**clusivity, it is a weighted harmonic mean of a term's rank within a topic in terms of frequency and exclusivity.
 - <span class="emph">lift</span>: Ratio of the term's probability within a topic to its probability of occurrence across all documents.  Overly sensitive to rare words.
@@ -740,11 +740,11 @@ plot_ly(x=~sc, y=~ex, data=data_frame(sc, ex, topic=paste('Topic', 1:10))) %>%
 
 ```{r lable_topics, echo=FALSE}
 library(stm)
-frex_res = calcfrex(shakes_10@beta, wordcounts=colSums(shakes_dtm))[1:10,] %>% 
+frex_res = calcfrex(shakes_10@beta, wordcounts=colSums(as.matrix(shakes_10@wordassignments)))[1:10,] %>% 
   shakes_10@terms[.] %>% 
   matrix(., 10, 10)
 # lift is definitely bugged, will just flag singletons
-lift_res = calclift(shakes_10@beta, wordcounts=colSums(shakes_dtm))[1:10,] %>%
+lift_res = calclift(shakes_10@beta, wordcounts=colSums(as.matrix(shakes_10@wordassignments)))[1:10,] %>%
   shakes_10@terms[.] %>%
   matrix(., 10, 10)
 score_res = calcscore(shakes_10@beta)[1:10,] %>%
@@ -884,7 +884,7 @@ shakes_10@gamma %>%
 
 <br>
 
-A couple things stand out.  To begin with, most works are associated with one topic[^howmanytopics].  In terms of the discovered topics, traditional classification really probably only works for the <span class="" style="color:#9C179E">historical</span> works, as they cluster together as expected (except for Henry the VIII, possibly due to it being a collaborative work).  Furthermore, <span class="" style="color:#F0F921">tragedies</span> and <span class="" style="color:#0D0887">comedies</span> might hit on the same topics, albeit from different perspectives.  In addition, at least some works are very poetical, or at least have topics in common with the <span class="" style="color:#ED7953">poems</span> (love, beauty).  If we take four clusters from the cluster analysis, the result boils down to *Phoenix* (on its own), standard poems, a mixed bag of more love-oriented works and the remaining poems, then everything else.   
+A couple things stand out.  To begin with, most works are associated with one topic[^howmanytopics].  In terms of the discovered topics, traditional classification really probably only works for the <span class="" style="color:#9C179E">historical</span> works, as they cluster together as expected (except for Henry the VIII, possibly due to it being a collaborative work).  Furthermore, <span class="" style="color:#F0F921">tragedies</span> and <span class="" style="color:#0D0887">comedies</span> might hit on the same topics, albeit from different perspectives.  In addition, at least some works are very poetical, or at least have topics in common with the <span class="" style="color:#ED7953">poems</span> (love, beauty).  If we take four clusters from the cluster analysis, the result boils down to *Phoenix*, *Complaint*, standard poems, a mixed bag of more romance-oriented works and the remaining poems, then everything else.   
 
 Alternatively, one could merely classify the works based on their probable topics, which would make more sense if clustering of the works is in fact the goal. The following visualization attempts to order them based on their most probable topic.  The order is based on the most likely topics across all documents.
 
@@ -959,7 +959,7 @@ class_probs %>%
   select(-class) %>% 
   heatmaply::heatmaply(Rowv=F,
                        Colv=F,
-                       labRow=class_probs$class,
+                       labRow=rev(class_probs$class),
                        labCol=apply(get_terms(shakes_10, 10), 2, paste0, collapse='\n'),
                        # colors=viridis::inferno(500),
                        colors=colorRampPalette(c('#fffff8', palettes$tyrian_purple2$tyrian_purple)),
