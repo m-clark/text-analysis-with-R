@@ -37,6 +37,9 @@ Here are some of the packages used in this document:
 - Topic Models
     - <span class="pack">topicmodels</span>
     - <span class="pack">quanteda</span>
+
+- Word Embedding
+    - <span class="pack">text2vec</span>
        
 
 Note the following color coding used in this document:
