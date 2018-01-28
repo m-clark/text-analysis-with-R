@@ -24,7 +24,7 @@
 
 
 
-<meta name="date" content="2018-01-27">
+<meta name="date" content="2018-01-28">
 
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta name="apple-mobile-web-app-capable" content="yes">
@@ -268,26 +268,14 @@ code > span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Inf
 <p>We start with some already tokenized data from the works of Shakespeare. We’ll treat the words as if they just come from one big Shakespeare document, and only consider the words as tokens, as opposed to using n-grams. We create an iterator object for <span class="pack">text2vec</span> functions to use, and with that in hand, create the vocabulary, keeping only those that occur at least 5 times. This example genearlly follows that of the package <a href="http://text2vec.org/glove.html">vignette</a>, which you’ll definitely want to spend some time with.</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">load</span>(<span class="st">&#39;data/shakes_words_df_4text2vec.RData&#39;</span>)
 <span class="kw">library</span>(text2vec)
-shakes_words</code></pre></div>
-<pre><code># A tibble: 915,686 x 2
-                    id         word
-                 &lt;chr&gt;        &lt;chr&gt;
- 1 A_Lover_s_Complaint          nor
- 2 A_Lover_s_Complaint        gives
- 3 A_Lover_s_Complaint           it
- 4 A_Lover_s_Complaint satisfaction
- 5 A_Lover_s_Complaint           to
- 6 A_Lover_s_Complaint          our
- 7 A_Lover_s_Complaint        blood
- 8 A_Lover_s_Complaint         that
- 9 A_Lover_s_Complaint           we
-10 A_Lover_s_Complaint         must
-# ... with 915,676 more rows</code></pre>
+## shakes_words</code></pre></div>
+<p><div id="htmlwidget-2b3c00d56b0f5d68aa9e" style="width:40%;height:auto;" class="datatables html-widget"></div>
+<script type="application/json" data-for="htmlwidget-2b3c00d56b0f5d68aa9e">{"x":{"filter":"none","data":[["A_Lover_s_Complaint","A_Lover_s_Complaint","A_Lover_s_Complaint","A_Lover_s_Complaint","A_Lover_s_Complaint","A_Lover_s_Complaint","A_Lover_s_Complaint","A_Lover_s_Complaint","A_Lover_s_Complaint","A_Lover_s_Complaint","A_Lover_s_Complaint","A_Lover_s_Complaint","A_Lover_s_Complaint","A_Lover_s_Complaint","A_Lover_s_Complaint","A_Lover_s_Complaint","A_Lover_s_Complaint","A_Lover_s_Complaint","A_Lover_s_Complaint","A_Lover_s_Complaint","A_Lover_s_Complaint","A_Lover_s_Complaint","A_Lover_s_Complaint","A_Lover_s_Complaint","A_Lover_s_Complaint","A_Lover_s_Complaint","A_Lover_s_Complaint","A_Lover_s_Complaint","A_Lover_s_Complaint","A_Lover_s_Complaint","A_Lover_s_Complaint","A_Lover_s_Complaint","A_Lover_s_Complaint","A_Lover_s_Complaint","A_Lover_s_Complaint","A_Lover_s_Complaint","A_Lover_s_Complaint","A_Lover_s_Complaint","A_Lover_s_Complaint","A_Lover_s_Complaint","A_Lover_s_Complaint","A_Lover_s_Complaint","A_Lover_s_Complaint","A_Lover_s_Complaint","A_Lover_s_Complaint","A_Lover_s_Complaint","A_Lover_s_Complaint","A_Lover_s_Complaint","A_Lover_s_Complaint","A_Lover_s_Complaint","A_Lover_s_Complaint","A_Lover_s_Complaint","A_Lover_s_Complaint","A_Lover_s_Complaint","A_Lover_s_Complaint","A_Lover_s_Complaint","A_Lover_s_Complaint","A_Lover_s_Complaint","A_Lover_s_Complaint","A_Lover_s_Complaint","A_Lover_s_Complaint","A_Lover_s_Complaint","A_Lover_s_Complaint","A_Lover_s_Complaint","A_Lover_s_Complaint","A_Lover_s_Complaint","A_Lover_s_Complaint","A_Lover_s_Complaint","A_Lover_s_Complaint","A_Lover_s_Complaint","A_Lover_s_Complaint","A_Lover_s_Complaint","A_Lover_s_Complaint","A_Lover_s_Complaint","A_Lover_s_Complaint","A_Lover_s_Complaint","A_Lover_s_Complaint","A_Lover_s_Complaint","A_Lover_s_Complaint","A_Lover_s_Complaint","A_Lover_s_Complaint","A_Lover_s_Complaint","A_Lover_s_Complaint","A_Lover_s_Complaint","A_Lover_s_Complaint","A_Lover_s_Complaint","A_Lover_s_Complaint","A_Lover_s_Complaint","A_Lover_s_Complaint","A_Lover_s_Complaint","A_Lover_s_Complaint","A_Lover_s_Complaint","A_Lover_s_Complaint","A_Lover_s_Complaint","A_Lover_s_Complaint","A_Lover_s_Complaint","A_Lover_s_Complaint","A_Lover_s_Complaint","A_Lover_s_Complaint","A_Lover_s_Complaint"],["nor","gives","it","satisfaction","to","our","blood","that","we","must","curb","it","upon","others","proof","to","be","forbod","the","sweets","that","seem","so","good","for","fear","of","harms","that","preach","in","our","behoof","o","appetite","from","judgment","stand","aloof","the","one","a","palate","hath","that","needs","will","taste","though","reason","weep","and","cry","it","is","thy","last","for","further","i","could","say","this","man's","untrue","and","knew","the","patterns","of","his","foul","beguiling","heard","where","his","plants","in","others","orchards","grew","saw","how","deceits","were","gilded","in","his","smiling","knew","vows","were","ever","brokers","to","defiling","thought","characters","and","words"]],"container":"<table class=\"display\">\n  <thead>\n    <tr>\n      <th>id<\/th>\n      <th>word<\/th>\n    <\/tr>\n  <\/thead>\n<\/table>","options":{"dom":"t","scrollY":true,"order":[],"autoWidth":false,"orderClasses":false}},"evals":[],"jsHooks":[]}</script><br/></p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">shakes_words_ls =<span class="st"> </span><span class="kw">list</span>(shakes_words<span class="op">$</span>word)
 it =<span class="st"> </span><span class="kw">itoken</span>(shakes_words_ls, <span class="dt">progressbar =</span> <span class="ot">FALSE</span>)
 shakes_vocab =<span class="st"> </span><span class="kw">create_vocabulary</span>(it)
 shakes_vocab =<span class="st"> </span><span class="kw">prune_vocabulary</span>(shakes_vocab, <span class="dt">term_count_min =</span> <span class="dv">5</span>)</code></pre></div>
-<p>Let’s take a look at what we have at this point. We’ve just created word counts. That’s it. As one can see. The next step is to create the token co-occurrence matix (TCM). The definition of whether two words occur together is arbitrary. Should we just look at previous and next word? Five behind and forward? This may affect results so you may want to play around with it.</p>
+<p>Let’s take a look at what we have at this point. We’ve just created word counts, that’s all the vocabulary object is.</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">shakes_vocab</code></pre></div>
 <pre><code>Number of docs: 1 
 0 stopwords:  ... 
@@ -305,34 +293,33 @@ Vocabulary:
 9092:          i      21097         1
 9093:        and      26032         1
 9094:        the      28831         1</code></pre>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># Use our filtered vocabulary</span>
+<p>The next step is to create the token co-occurrence matix (TCM). The definition of whether two words occur together is arbitrary. Should we just look at previous and next word? Five behind and forward? This will definitely affect results so you will want to play around with it.</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># maps words to indices</span>
 vectorizer =<span class="st"> </span><span class="kw">vocab_vectorizer</span>(shakes_vocab)
 
-<span class="co"># use window of 5 for context words</span>
+<span class="co"># use window of 10 for context words</span>
 shakes_tcm =<span class="st"> </span><span class="kw">create_tcm</span>(it, vectorizer, <span class="dt">skip_grams_window =</span> <span class="dv">10</span>)</code></pre></div>
 <p>Note that such a matrix is extremely sparse. Most words do not go with other words in the grand scheme of things. So when they do, it usually matters.</p>
 <p>Now we are ready to create the word vectors based on the GloVe model. Various options exist, so you’ll want to dive into the associated helpfiles and perhaps <a href="http://nlp.stanford.edu/projects/glove/">the original articles</a> to see how you might play around with it. The following takes roughly a minute or two on my machine. I suggest you start with <code>n_iter = 10</code> and/or <code>convergence_tol = 0.001</code> to gauge how long you might have to wait.</p>
-<p>In this setting, we can think of our word of interest as the target, and any/all other words (within the window) as the (potential) context. Word vectors are learned for both,</p>
+<p>In this setting, we can think of our word of interest as the <span class="emph">target</span>, and any/all other words (within the window) as the <span class="emph">context</span>. Word vectors are learned for both.</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">glove =<span class="st"> </span>GlobalVectors<span class="op">$</span><span class="kw">new</span>(<span class="dt">word_vectors_size =</span> <span class="dv">50</span>, <span class="dt">vocabulary =</span> shakes_vocab, <span class="dt">x_max =</span> <span class="dv">10</span>)
 shakes_wv_main =<span class="st"> </span>glove<span class="op">$</span><span class="kw">fit_transform</span>(shakes_tcm, <span class="dt">n_iter =</span> <span class="dv">1000</span>, <span class="dt">convergence_tol =</span> <span class="fl">0.00001</span>)
 
 <span class="kw">dim</span>(shakes_wv_main)
 
+shakes_wv_context =<span class="st"> </span>glove<span class="op">$</span>components
 
 <span class="kw">dim</span>(shakes_wv_context)
 
 <span class="co"># Either word-vectors matrices could, but the originators of the technique</span>
 <span class="co"># suggest the sum/mean is even better</span>
-shakes_word_vectors =<span class="st"> </span>shakes_wv_main <span class="op">+</span><span class="st"> </span><span class="kw">t</span>(shakes_wv_context)
-
-<span class="kw">save</span>(shakes_wv_main,  shakes_word_vectors, <span class="dt">file=</span><span class="st">&#39;data/glove_result.RData&#39;</span>)</code></pre></div>
-<p>Now we can start to play. The measure of interest in comparing two vectors will be <span class="emph">cosine similarity</span>, which, if you’re not familiar, you can think of it similarly to the standard correlation<a href="#fn12" class="footnoteRef" id="fnref12"><sup>12</sup></a>. Let’s see what is similar to Romeo?</p>
+shakes_word_vectors =<span class="st"> </span>shakes_wv_main <span class="op">+</span><span class="st"> </span><span class="kw">t</span>(shakes_wv_context)</code></pre></div>
+<p>Now we can start to play. The measure of interest in comparing two vectors will be <span class="emph">cosine similarity</span>, which, if you’re not familiar, you can think of it similarly to the standard correlation<a href="#fn12" class="footnoteRef" id="fnref12"><sup>12</sup></a>. Let’s see what is similar to Romeo.</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">rom =<span class="st"> </span>shakes_word_vectors[<span class="st">&quot;romeo&quot;</span>, , drop =<span class="st"> </span>F]
 <span class="co"># ham = shakes_word_vectors[&quot;hamlet&quot;, , drop = F]</span>
 
 cos_sim_rom =<span class="st"> </span><span class="kw">sim2</span>(<span class="dt">x =</span> shakes_word_vectors, <span class="dt">y =</span> rom, <span class="dt">method =</span> <span class="st">&quot;cosine&quot;</span>, <span class="dt">norm =</span> <span class="st">&quot;l2&quot;</span>)
-<span class="co"># head(sort(cos_sim_rom[,1], decreasing = T), 10)</span>
-<span class="kw">head</span>(cos_sim_rom[<span class="kw">order</span>(cos_sim_rom, <span class="dt">decreasing =</span> T),<span class="dv">1</span>], <span class="dv">10</span>) <span class="op">%&gt;%</span><span class="st"> </span><span class="kw">round</span>(<span class="dv">2</span>) <span class="op">%&gt;%</span><span class="st"> </span><span class="kw">pander</span>(<span class="dt">split.tables=</span><span class="ot">Inf</span>, <span class="dt">split.cells=</span><span class="ot">Inf</span>)</code></pre></div>
+<span class="co"># head(sort(cos_sim_rom[,1], decreasing = T), 10)</span></code></pre></div>
 <table>
 <caption>Table continues below</caption>
 <colgroup>

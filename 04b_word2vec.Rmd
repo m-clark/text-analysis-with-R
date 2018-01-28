@@ -26,35 +26,51 @@ The idea is that with vectors created just based on co-occurence we can recover 
 
 We start with some already tokenized data from the works of Shakespeare.  We'll treat the words as if they just come from one big Shakespeare document, and only consider the words as tokens, as opposed to using n-grams. We create an iterator object for <span class="pack">text2vec</span> functions to use, and with that in hand, create the vocabulary, keeping only those that occur at least 5 times.   This example genearlly follows that of the package [vignette](http://text2vec.org/glove.html), which you'll definitely want to spend some time with.
 
-```{r text2vec_init}
+```{r text2vec_init, echo=-(4:5), eval=-3}
 load('data/shakes_words_df_4text2vec.RData')
 library(text2vec)
 shakes_words
+DT::datatable(shakes_words[1:100,], options=list(dom='t', scrollY=T), rownames = F, width = '40%')
+htmltools::br()
+
 shakes_words_ls = list(shakes_words$word)
 it = itoken(shakes_words_ls, progressbar = FALSE)
 shakes_vocab = create_vocabulary(it)
 shakes_vocab = prune_vocabulary(shakes_vocab, term_count_min = 5)
 ```
 
-Let's take a look at what we have at this point.  We've just created word counts. That's it.  As one can see. The next step is to create the token co-occurrence matix (TCM).  The definition of whether two words occur together is arbitrary.  Should we just look at previous and next word? Five behind and forward?  This may affect results so you may want to play around with it.
 
-```{r text2vec_tcm}
+Let's take a look at what we have at this point.  We've just created word counts, that's all the vocabulary object is. 
+
+```{r text2vec_vocab, echo=-2}
 shakes_vocab
+# DT::datatable(shakes_vocab, options=list(dom='dt'), rownames = F, width = '25%')
+```
 
-# Use our filtered vocabulary
+
+The next step is to create the token co-occurrence matix (TCM).  The definition of whether two words occur together is arbitrary.  Should we just look at previous and next word? Five behind and forward?  This will definitely affect results so you will want to play around with it.
+
+```{r text2vec_tcm, eval=FALSE, echo=-1}
+# for reasons unknown, knitr consistently fails on this chunk; but since glove already processed no need to here
+# maps words to indices
 vectorizer = vocab_vectorizer(shakes_vocab)
 
-# use window of 5 for context words
+# use window of 10 for context words
 shakes_tcm = create_tcm(it, vectorizer, skip_grams_window = 10)
 ```
+
+```{r load_tcm, echo=FALSE, eval=FALSE}
+load('data/text2vec_shakes_tcm.RData')
+```
+
 
 Note that such a matrix is extremely sparse.  Most words do not go with other words in the grand scheme of things. So when they do, it usually matters.  
 
 Now we are ready to create the word vectors based on the GloVe model. Various options exist, so you'll want to dive into the associated helpfiles and perhaps [the original articles](http://nlp.stanford.edu/projects/glove/) to see how you might play around with it.  The following takes roughly a minute or two on my machine.  I suggest you start with `n_iter = 10` and/or `convergence_tol = 0.001` to gauge how long you might have to wait.
 
-In this setting, we can think of our word of interest as the target, and any/all other words (within the window) as the (potential) context. Word vectors are learned for both,
+In this setting, we can think of our word of interest as the <span class="emph">target</span>, and any/all other words (within the window) as the  <span class="emph">context</span>. Word vectors are learned for both.
 
-```{r text2vec_model, eval=FALSE, echo=-6}
+```{r text2vec_model, eval=FALSE, echo=-14}
 glove = GlobalVectors$new(word_vectors_size = 50, vocabulary = shakes_vocab, x_max = 10)
 shakes_wv_main = glove$fit_transform(shakes_tcm, n_iter = 1000, convergence_tol = 0.00001)
 
@@ -72,16 +88,18 @@ save(shakes_wv_main,  shakes_word_vectors, file='data/glove_result.RData')
 ```
 
 
-Now we can start to play.   The measure of interest in comparing two vectors will be <span class="emph">cosine similarity</span>, which, if you're not familiar, you can think of it similarly to the standard correlation[^shakescosine].  Let's see what is similar to Romeo?
+Now we can start to play.   The measure of interest in comparing two vectors will be <span class="emph">cosine similarity</span>, which, if you're not familiar, you can think of it similarly to the standard correlation[^shakescosine].  Let's see what is similar to Romeo.
 
-```{r text2vec_results, echo=-c(1,8)}
+```{r text2vec_results, echo=-c(1,7)}
 load('data/glove_result.RData')
 rom = shakes_word_vectors["romeo", , drop = F]
 # ham = shakes_word_vectors["hamlet", , drop = F]
 
 cos_sim_rom = sim2(x = shakes_word_vectors, y = rom, method = "cosine", norm = "l2")
 # head(sort(cos_sim_rom[,1], decreasing = T), 10)
-head(cos_sim_rom[order(cos_sim_rom, decreasing = T),1], 10) %>% round(2) %>% pander(split.tables=Inf, split.cells=Inf)
+head(cos_sim_rom[order(cos_sim_rom, decreasing = T),1], 10) %>% 
+  round(2) %>% 
+  pander(split.tables=Inf, split.cells=Inf)
 ```
 
 Obviously Romeo is most like Romeo, but after that comes the rest of the crew in the play.  Let's try love.
@@ -139,10 +157,14 @@ One can play with stuff like this all day.  For example, you may find that a Rom
 
 test = shakes_word_vectors["romeo", , drop = F] - 
   shakes_word_vectors["love", , drop = F] 
+
+test = shakes_word_vectors["italy", , drop = F] -
+  shakes_word_vectors["caesar", , drop = F] +
+  shakes_word_vectors["richard", , drop = F]
   
 cos_sim_test = sim2(x = shakes_word_vectors, y = test, method = "cosine", norm = "l2")
 # head(sort(cos_sim_test[,1], decreasing = T), 3)
-head(sort(cos_sim_test[,1], decreasing = T), 1) %>% pander(split.tables=Inf, split.cells=Inf)
+head(sort(cos_sim_test[,1], decreasing = T), 50)
 ```
 
 
