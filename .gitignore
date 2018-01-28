@@ -6,3 +6,6 @@
 *_cache
 .spyproject
 .DS_Store
+
+# very large wiki file
+data/texts_raw/text8

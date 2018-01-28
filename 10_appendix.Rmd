@@ -84,3 +84,39 @@ While R has done a lot to catch up, more advanced text analysis techniques are d
 - <span class="pack">spaCy</span>
 
 
+## A Faster LDA
+
+We noted in the Shakespeare start to finish example that there are faster alternatives than the standard LDA in <span class="pack">topicmodels</span>.  In particular, the powerful <span class="pack">text2vec</span> package contains a faster and less memory intensive implementation of LDA and dealing with text generally.  Both of which are very important if you're wanting to use R for text analysis.  The other nice thing is that it works with <span class="pack">LDAvis</span> for visualization.
+
+For the following, we'll use one of the partially cleaned document term matrix for the Shakespeare texts.  One of the things to get used to is that <span class="pack">text2vec</span> uses the newer R6 classes of R objects, hence the `$` approach you see to using specific methods.
+
+```{r text2vec_demo}
+library(text2vec)
+load('data/shakes_dtm_stemmed.RData')
+# load('data/shakes_words_df.RData') # non-stemmed
+
+# convert to the sparse matrix representation using Matrix package
+shakes_dtm = as(shakes_dtm, 'CsparseMatrix')
+
+# setup the model
+lda_model = LDA$new(n_topics = 10, doc_topic_prior = 0.1, topic_word_prior = 0.01)
+
+# fit the model
+doc_topic_distr =   lda_model$fit_transform(x = shakes_dtm, 
+                                            n_iter = 1000,
+                                            convergence_tol = 0.0001, 
+                                            n_check_convergence = 25,
+                                            progressbar = FALSE)
+
+lda_model$get_top_words(n = 10, topic_number = 1:10, lambda = 1)
+which.max(doc_topic_distr['Hamlet', ])
+
+# top-words could be sorted by “relevance” which also takes into account
+# frequency of word in the corpus (0 < lambda < 1)
+lda_model$get_top_words(n = 10, topic_number = 1:10, lambda = 0.2)
+
+# ldavis not shown
+# lda_model$plot()
+```
+
+Given that most text analysis can be very time consuming for a model, consider any approach that might give you more efficiency.

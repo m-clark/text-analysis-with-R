@@ -428,7 +428,7 @@ shakes_dtm
 ncol(shakes_dtm)
 ```
 
-The result is notably fewer columns, which will speed up any analysis, as well as a slightly more dense matrix.
+The result is notably fewer columns, which will speed up any analysis, as well as produce a slightly more dense matrix.
 
 ### Scene III. Exploration
 
@@ -668,7 +668,7 @@ I'd say we're now ready for topic model.  That didn't take too much did it?
 
 #### Running the model and exploring the topics
 
-We'll run one with 10 topics.  As in the previous example in this document, we'll use <span class="pack">topicmodels</span> and the <span class="func">LDA</span> function. Later, we'll also compare our results with the traditional classifications of the texts.  Note that this will take a while to run depending on your machine (maybe a minute or two).
+We'll run one with 10 topics.  As in the previous example in this document, we'll use <span class="pack">topicmodels</span> and the <span class="func">LDA</span> function. Later, we'll also compare our results with the traditional classifications of the texts.  Note that this will take a while to run depending on your machine (maybe a minute or two). Faster implementation can be found with <span class="pack">text2vec</span>.
 
 
 ```{r topic_model, echo=1:2, eval=F}

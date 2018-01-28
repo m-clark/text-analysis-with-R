@@ -388,7 +388,9 @@ So in the end we just have to use the <span class="func">num_range</span> helper
 x = c('A', '1', 'Q')
 ```
 
-How might you paste the elements together so that there is an underscore `_` between characters and no space?
+How might you paste the elements together so that there is an underscore `_` between characters and no space ("A_1_Q")? If you highlight the next line you'll see the hint.
+
+<span style="color:#fffff8">Revisit how we used the collapse argument within paste. `paste(..., collapse=?)`</span>
 
 Paste Part 2: The following application of paste produces this result.
 
@@ -396,7 +398,7 @@ Paste Part 2: The following application of paste produces this result.
 paste(c('A', '1', 'Q'), c('B', '2', 'z'))
 ```
 
-Now try to produce `"A - B" "1 - 2" "Q - z"`.  To do this, note that one can paste any number of things together (i.e. more than two).
+Now try to produce `"A - B" "1 - 2" "Q - z"`.  To  do this, note that one can paste any number of things together (i.e. more than two).  So try adding ' - ' to it.
 <br>
 
 3. Use regex to grab the Star Wars names that have a number.  Use both <span class="func">grep</span> and <span class="func">grepl</span> and compare the results

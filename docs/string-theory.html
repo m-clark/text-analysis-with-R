@@ -24,7 +24,7 @@
 
 
 
-<meta name="date" content="2017-12-02">
+<meta name="date" content="2018-01-27">
 
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta name="apple-mobile-web-app-capable" content="yes">
@@ -190,6 +190,9 @@ code > span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Inf
 <li class="chapter" data-level="" data-path="topic-modeling.html"><a href="topic-modeling.html#associated-press-articles"><i class="fa fa-check"></i>Associated Press articles</a></li>
 </ul></li>
 </ul></li>
+<li class="chapter" data-level="" data-path="word-embeddings.html"><a href="word-embeddings.html"><i class="fa fa-check"></i>Word Embeddings</a><ul>
+<li class="chapter" data-level="" data-path="word-embeddings.html"><a href="word-embeddings.html#shakespeare-example"><i class="fa fa-check"></i>Shakespeare example</a></li>
+</ul></li>
 <li class="chapter" data-level="" data-path="summary.html"><a href="summary.html"><i class="fa fa-check"></i>Summary</a></li>
 <li class="chapter" data-level="" data-path="shakespeare-start-to-finish.html"><a href="shakespeare-start-to-finish.html"><i class="fa fa-check"></i>Shakespeare Start to Finish</a><ul>
 <li class="chapter" data-level="" data-path="shakespeare-start-to-finish.html"><a href="shakespeare-start-to-finish.html#act-i.-scrape-mit-and-gutenberg-shakespeare"><i class="fa fa-check"></i>ACT I. Scrape MIT and Gutenberg Shakespeare</a><ul>
@@ -225,6 +228,7 @@ code > span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Inf
 </ul></li>
 <li class="chapter" data-level="" data-path="appendix.html"><a href="appendix.html#r"><i class="fa fa-check"></i>R</a></li>
 <li class="chapter" data-level="" data-path="appendix.html"><a href="appendix.html#python"><i class="fa fa-check"></i>Python</a></li>
+<li class="chapter" data-level="" data-path="appendix.html"><a href="appendix.html#a-faster-lda"><i class="fa fa-check"></i>A Faster LDA</a></li>
 </ul></li>
 <li class="divider"></li>
 <li><a href="https://m-clark.github.io/"><img src="img/mc.png" style="width:50%; padding:0px 0; display:block; margin: 0 auto;" alt="MC logo"></a></li>
@@ -638,11 +642,12 @@ North South
 <li><p>Consider the following character vector.</p></li>
 </ol>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">x =<span class="st"> </span><span class="kw">c</span>(<span class="st">&#39;A&#39;</span>, <span class="st">&#39;1&#39;</span>, <span class="st">&#39;Q&#39;</span>)</code></pre></div>
-<p>How might you paste the elements together so that there is an underscore <code>_</code> between characters and no space?</p>
+<p>How might you paste the elements together so that there is an underscore <code>_</code> between characters and no space (“A_1_Q”)? If you highlight the next line you’ll see the hint.</p>
+<p><span style="color:#fffff8">Revisit how we used the collapse argument within paste. <code>paste(..., collapse=?)</code></span></p>
 <p>Paste Part 2: The following application of paste produces this result.</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">paste</span>(<span class="kw">c</span>(<span class="st">&#39;A&#39;</span>, <span class="st">&#39;1&#39;</span>, <span class="st">&#39;Q&#39;</span>), <span class="kw">c</span>(<span class="st">&#39;B&#39;</span>, <span class="st">&#39;2&#39;</span>, <span class="st">&#39;z&#39;</span>))</code></pre></div>
 <pre><code>[1] &quot;A B&quot; &quot;1 2&quot; &quot;Q z&quot;</code></pre>
-<p>Now try to produce <code>&quot;A - B&quot; &quot;1 - 2&quot; &quot;Q - z&quot;</code>. To do this, note that one can paste any number of things together (i.e. more than two). <br></p>
+<p>Now try to produce <code>&quot;A - B&quot; &quot;1 - 2&quot; &quot;Q - z&quot;</code>. To do this, note that one can paste any number of things together (i.e. more than two). So try adding ‘-’ to it. <br></p>
 <ol start="3" style="list-style-type: decimal">
 <li>Use regex to grab the Star Wars names that have a number. Use both <span class="func">grep</span> and <span class="func">grepl</span> and compare the results</li>
 </ol>

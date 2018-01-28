@@ -24,7 +24,7 @@
 
 
 
-<meta name="date" content="2017-12-02">
+<meta name="date" content="2018-01-27">
 
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta name="apple-mobile-web-app-capable" content="yes">
@@ -190,6 +190,9 @@ code > span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Inf
 <li class="chapter" data-level="" data-path="topic-modeling.html"><a href="topic-modeling.html#associated-press-articles"><i class="fa fa-check"></i>Associated Press articles</a></li>
 </ul></li>
 </ul></li>
+<li class="chapter" data-level="" data-path="word-embeddings.html"><a href="word-embeddings.html"><i class="fa fa-check"></i>Word Embeddings</a><ul>
+<li class="chapter" data-level="" data-path="word-embeddings.html"><a href="word-embeddings.html#shakespeare-example"><i class="fa fa-check"></i>Shakespeare example</a></li>
+</ul></li>
 <li class="chapter" data-level="" data-path="summary.html"><a href="summary.html"><i class="fa fa-check"></i>Summary</a></li>
 <li class="chapter" data-level="" data-path="shakespeare-start-to-finish.html"><a href="shakespeare-start-to-finish.html"><i class="fa fa-check"></i>Shakespeare Start to Finish</a><ul>
 <li class="chapter" data-level="" data-path="shakespeare-start-to-finish.html"><a href="shakespeare-start-to-finish.html#act-i.-scrape-mit-and-gutenberg-shakespeare"><i class="fa fa-check"></i>ACT I. Scrape MIT and Gutenberg Shakespeare</a><ul>
@@ -225,6 +228,7 @@ code > span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Inf
 </ul></li>
 <li class="chapter" data-level="" data-path="appendix.html"><a href="appendix.html#r"><i class="fa fa-check"></i>R</a></li>
 <li class="chapter" data-level="" data-path="appendix.html"><a href="appendix.html#python"><i class="fa fa-check"></i>Python</a></li>
+<li class="chapter" data-level="" data-path="appendix.html"><a href="appendix.html#a-faster-lda"><i class="fa fa-check"></i>A Faster LDA</a></li>
 </ul></li>
 <li class="divider"></li>
 <li><a href="https://m-clark.github.io/"><img src="img/mc.png" style="width:50%; padding:0px 0; display:block; margin: 0 auto;" alt="MC logo"></a></li>
@@ -326,9 +330,74 @@ code > span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Inf
 <li><span class="pack">gensim</span> (topic modeling)</li>
 <li><span class="pack">spaCy</span></li>
 </ul>
+</div>
+<div id="a-faster-lda" class="section level2">
+<h2>A Faster LDA</h2>
+<p>We noted in the Shakespeare start to finish example that there are faster alternatives than the standard LDA in <span class="pack">topicmodels</span>. In particular, the powerful <span class="pack">text2vec</span> package contains a faster and less memory intensive implementation of LDA and dealing with text generally. Both of which are very important if you’re wanting to use R for text analysis. The other nice thing is that it works with <span class="pack">LDAvis</span> for visualization.</p>
+<p>For the following, we’ll use one of the partially cleaned document term matrix for the Shakespeare texts. One of the things to get used to is that <span class="pack">text2vec</span> uses the newer R6 classes of R objects, hence the <code>$</code> approach you see to using specific methods.</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">library</span>(text2vec)
+<span class="kw">load</span>(<span class="st">&#39;data/shakes_dtm_stemmed.RData&#39;</span>)
+<span class="co"># load(&#39;data/shakes_words_df.RData&#39;) # non-stemmed</span>
+
+<span class="co"># convert to the sparse matrix representation using Matrix package</span>
+shakes_dtm =<span class="st"> </span><span class="kw">as</span>(shakes_dtm, <span class="st">&#39;CsparseMatrix&#39;</span>)
+
+<span class="co"># setup the model</span>
+lda_model =<span class="st"> </span>LDA<span class="op">$</span><span class="kw">new</span>(<span class="dt">n_topics =</span> <span class="dv">10</span>, <span class="dt">doc_topic_prior =</span> <span class="fl">0.1</span>, <span class="dt">topic_word_prior =</span> <span class="fl">0.01</span>)
+
+<span class="co"># fit the model</span>
+doc_topic_distr =<span class="st">   </span>lda_model<span class="op">$</span><span class="kw">fit_transform</span>(<span class="dt">x =</span> shakes_dtm, 
+                                            <span class="dt">n_iter =</span> <span class="dv">1000</span>,
+                                            <span class="dt">convergence_tol =</span> <span class="fl">0.0001</span>, 
+                                            <span class="dt">n_check_convergence =</span> <span class="dv">25</span>,
+                                            <span class="dt">progressbar =</span> <span class="ot">FALSE</span>)</code></pre></div>
+<pre><code>INFO [2018-01-27 10:54:06] iter 25 loglikelihood = -1746173.024
+INFO [2018-01-27 10:54:07] iter 50 loglikelihood = -1683541.903
+INFO [2018-01-27 10:54:08] iter 75 loglikelihood = -1660985.396
+INFO [2018-01-27 10:54:09] iter 100 loglikelihood = -1648984.411
+INFO [2018-01-27 10:54:09] iter 125 loglikelihood = -1641481.467
+INFO [2018-01-27 10:54:10] iter 150 loglikelihood = -1638983.461
+INFO [2018-01-27 10:54:11] iter 175 loglikelihood = -1636730.733
+INFO [2018-01-27 10:54:11] iter 200 loglikelihood = -1636356.883
+INFO [2018-01-27 10:54:12] iter 225 loglikelihood = -1636487.222
+INFO [2018-01-27 10:54:12] early stopping at 225 iteration</code></pre>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">lda_model<span class="op">$</span><span class="kw">get_top_words</span>(<span class="dt">n =</span> <span class="dv">10</span>, <span class="dt">topic_number =</span> <span class="dv">1</span><span class="op">:</span><span class="dv">10</span>, <span class="dt">lambda =</span> <span class="dv">1</span>)</code></pre></div>
+<pre><code>      [,1]     [,2]     [,3]     [,4]    [,5]      [,6]      [,7]    [,8]      [,9]     [,10]   
+ [1,] &quot;prai&quot;   &quot;hear&quot;   &quot;ey&quot;     &quot;love&quot;  &quot;word&quot;    &quot;natur&quot;   &quot;night&quot; &quot;god&quot;     &quot;friend&quot; &quot;death&quot; 
+ [2,] &quot;honor&quot;  &quot;madam&quot;  &quot;sweet&quot;  &quot;dai&quot;   &quot;letter&quot;  &quot;fortun&quot;  &quot;fear&quot;  &quot;dai&quot;     &quot;hand&quot;   &quot;grace&quot; 
+ [3,] &quot;heaven&quot; &quot;bring&quot;  &quot;fair&quot;   &quot;true&quot;  &quot;hous&quot;    &quot;world&quot;   &quot;ear&quot;   &quot;england&quot; &quot;nobl&quot;   &quot;soul&quot;  
+ [4,] &quot;life&quot;   &quot;sea&quot;    &quot;heart&quot;  &quot;wit&quot;   &quot;prai&quot;    &quot;power&quot;   &quot;sleep&quot; &quot;crown&quot;   &quot;word&quot;   &quot;live&quot;  
+ [5,] &quot;matter&quot; &quot;bear&quot;   &quot;light&quot;  &quot;fair&quot;  &quot;sweet&quot;   &quot;poor&quot;    &quot;death&quot; &quot;war&quot;     &quot;stand&quot;  &quot;blood&quot; 
+ [6,] &quot;honest&quot; &quot;seek&quot;   &quot;desir&quot;  &quot;live&quot;  &quot;husband&quot; &quot;set&quot;     &quot;dead&quot;  &quot;arm&quot;     &quot;rome&quot;   &quot;life&quot;  
+ [7,] &quot;fellow&quot; &quot;heard&quot;  &quot;beauti&quot; &quot;youth&quot; &quot;woman&quot;   &quot;nobl&quot;    &quot;bid&quot;   &quot;majesti&quot; &quot;honor&quot;  &quot;dai&quot;   
+ [8,] &quot;hear&quot;   &quot;lose&quot;   &quot;black&quot;  &quot;heart&quot; &quot;reason&quot;  &quot;truth&quot;   &quot;bed&quot;   &quot;fight&quot;   &quot;leav&quot;   &quot;hope&quot;  
+ [9,] &quot;heart&quot;  &quot;strang&quot; &quot;kiss&quot;   &quot;marri&quot; &quot;hand&quot;    &quot;leav&quot;    &quot;mad&quot;   &quot;sword&quot;   &quot;deed&quot;   &quot;heaven&quot;
+[10,] &quot;friend&quot; &quot;sister&quot; &quot;sun&quot;    &quot;night&quot; &quot;talk&quot;    &quot;command&quot; &quot;hand&quot;  &quot;heart&quot;   &quot;tear&quot;   &quot;die&quot;   </code></pre>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">which.max</span>(doc_topic_distr[<span class="st">&#39;Hamlet&#39;</span>, ])</code></pre></div>
+<pre><code>[1] 7</code></pre>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># top-words could be sorted by “relevance” which also takes into account</span>
+<span class="co"># frequency of word in the corpus (0 &lt; lambda &lt; 1)</span>
+lda_model<span class="op">$</span><span class="kw">get_top_words</span>(<span class="dt">n =</span> <span class="dv">10</span>, <span class="dt">topic_number =</span> <span class="dv">1</span><span class="op">:</span><span class="dv">10</span>, <span class="dt">lambda =</span> <span class="fl">0.2</span>)</code></pre></div>
+<pre><code>      [,1]      [,2]      [,3]     [,4]      [,5]     [,6]       [,7]     [,8]      [,9]      [,10]      
+ [1,] &quot;honest&quot;  &quot;madam&quot;   &quot;ey&quot;     &quot;love&quot;    &quot;letter&quot; &quot;natur&quot;    &quot;ear&quot;    &quot;england&quot; &quot;rome&quot;    &quot;bloodi&quot;   
+ [2,] &quot;beseech&quot; &quot;sea&quot;     &quot;cheek&quot;  &quot;youth&quot;   &quot;merri&quot;  &quot;report&quot;   &quot;sleep&quot;  &quot;majesti&quot; &quot;deed&quot;    &quot;royal&quot;    
+ [3,] &quot;knave&quot;   &quot;water&quot;   &quot;black&quot;  &quot;wit&quot;     &quot;woo&quot;    &quot;spirit&quot;   &quot;beat&quot;   &quot;field&quot;   &quot;banish&quot;  &quot;graciou&quot;  
+ [4,] &quot;warrant&quot; &quot;sister&quot;  &quot;wretch&quot; &quot;signior&quot; &quot;jest&quot;   &quot;judgment&quot; &quot;night&quot;  &quot;uncl&quot;    &quot;countri&quot; &quot;high&quot;     
+ [5,] &quot;glad&quot;    &quot;women&quot;   &quot;flower&quot; &quot;count&quot;   &quot;finger&quot; &quot;worst&quot;    &quot;air&quot;    &quot;march&quot;   &quot;citi&quot;    &quot;subject&quot;  
+ [6,] &quot;action&quot;  &quot;hair&quot;    &quot;sweet&quot;  &quot;lover&quot;   &quot;choos&quot;  &quot;author&quot;   &quot;soft&quot;   &quot;lieg&quot;    &quot;son&quot;     &quot;sovereign&quot;
+ [7,] &quot;worship&quot; &quot;lose&quot;    &quot;vow&quot;    &quot;danc&quot;    &quot;ring&quot;   &quot;qualiti&quot;  &quot;knock&quot;  &quot;fight&quot;   &quot;rise&quot;    &quot;foe&quot;      
+ [8,] &quot;matter&quot;  &quot;entreat&quot; &quot;mortal&quot; &quot;song&quot;    &quot;horn&quot;   &quot;virgin&quot;   &quot;poison&quot; &quot;battl&quot;   &quot;kneel&quot;   &quot;flourish&quot; 
+ [9,] &quot;fellow&quot;  &quot;seek&quot;    &quot;wing&quot;   &quot;paint&quot;   &quot;bond&quot;   &quot;wine&quot;     &quot;shake&quot;  &quot;harri&quot;   &quot;fly&quot;     &quot;king&quot;     
+[10,] &quot;walk&quot;    &quot;passion&quot; &quot;short&quot;  &quot;wed&quot;     &quot;troth&quot;  &quot;direct&quot;   &quot;move&quot;   &quot;crown&quot;   &quot;wert&quot;    &quot;tide&quot;     </code></pre>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># ldavis not shown</span>
+<span class="co"># lda_model$plot()</span></code></pre></div>
+<p>Given that most text analysis can be very time consuming for a model, consider any approach that might give you more efficiency.</p>
 
 </div>
 </div>
+
+
+
 
 
 
