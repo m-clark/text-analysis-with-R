@@ -512,9 +512,11 @@ The <span class="pack">quanteda</span> package has some built in similarity meas
 textstat_simil(shakes_dtm, margin = "documents", method = "cosine") 
 
 textstat_simil(shakes_dtm, margin = "documents", method = "cosine") %>%
+  as.matrix() %>% 
   heatR::corrheat(show_grid = F, height = 500)
 
 textstat_simil(dfm_weight(shakes_dtm, 'relFreq'), margin = "documents", method = "correlation") %>%
+  as.matrix() %>% 
   heatR::corrheat()
 ```
 

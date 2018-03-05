@@ -12,7 +12,7 @@ bookdown::gitbook:
        <li><a rel="license" href="http://creativecommons.org/licenses/by-sa/4.0/"><img alt="Creative Commons License" style="width:50%; border-width:0; display:block; margin: 0 auto;" src="img/ccbysa_test.png" /></a></li>
    edit:
      link: https://github.com/m-clark/workshops/
-   highlight: pygments
+
 # bookdown::pdf_book:
 #   includes:
 #     in_header: preamble.tex
