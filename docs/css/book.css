@@ -8,6 +8,34 @@
   background-color: #fffff8;
 }
 
+.book .book-body {
+    background: #fffff8;
+    -webkit-transition: left 250ms ease;
+    -moz-transition: left 250ms ease;
+    -o-transition: left 250ms ease;
+    transition: left 250ms ease;
+}
+
+/* link effects */
+.book .book-body .page-wrapper .page-inner section.normal a {
+    color: #3D68FF;
+    background-image: linear-gradient(180deg,transparent 90%, #FFD43D 0);
+    background-size: 0 100%;
+    background-repeat: no-repeat;
+    text-decoration: none;
+    -webkit-transition: background-size .4s ease;
+    -moz-transition: background-size .4s ease;
+    -ms-transition: background-size .4s ease;
+    -o-transition: background-size .4s ease;
+    transition: background-size .4s ease;
+    border-bottom: 0px solid;
+}
+.book .book-body .page-wrapper .page-inner section.normal a:hover {
+  text-decoration: none;
+    background-size: 100% 100%;
+    cursor: pointer;
+}
+
 .book .book-body .page-wrapper .page-inner section.normal {
     display: block;
     background-color: #fffff8;
@@ -67,9 +95,16 @@ element .style {
   background-color: #fffff8;
 }
 
+/* Rather than resize the header, just get rid of line */
 .book.with-summary .book-header.fixed {
   background-color: #fffff8;
+  /*font-family: Stalemate Roboto Sans; ignored as all it is doing is taking from index title*/
+  border-bottom: 0 solid rgba(0,0,0,.07);  /*just remove it; this makes height in .book-header above moot*/
+  border-bottom-width: 0;
+  border-bottom-style: solid;
+  border-bottom-color: rgba(0, 0, 0, 0.07);
 }
+
 
 i {
   background-color: #fffff8;
