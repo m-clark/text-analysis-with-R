@@ -177,6 +177,14 @@ i {
     background: #fafafa;
 }
 
+.book .book-body .page-wrapper .page-inner section.normal code,
+.book .book-body .page-wrapper .page-inner section.normal pre {
+    font-family: 'Roboto Mono', Monaco, Consolas, "Liberation Mono", Menlo, 'Courier New', monospace;
+    direction: ltr;
+    border: none;
+    color: inherit;
+}
+
 
 .book .book-body .page-wrapper .page-inner section.normal .note {
   background-color: #fafafa;
