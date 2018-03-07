@@ -24,7 +24,7 @@
 
 
 
-<meta name="date" content="2018-03-05">
+<meta name="date" content="2018-03-06">
 
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta name="apple-mobile-web-app-capable" content="yes">
@@ -116,7 +116,7 @@ code > span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Inf
       <nav role="navigation">
 
 <ul class="summary">
-<li><a href="https://m-clark.github.io/workshops/text_analysis/"><span style="font-size:125%; font-variant:small-caps; font-style:italic; color:#9E1B34; font-family:Roboto">Text Analysis in R</span></a></li>
+<li class='before'><a href="https://m-clark.github.io/text-analysis-with-R/">Text Analysis in R</span></a></li>
 
 <li class="divider"></li>
 <li><a href="index.html#section"></a></li>
@@ -232,8 +232,8 @@ code > span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Inf
 <li class="chapter" data-level="" data-path="appendix.html"><a href="appendix.html#a-faster-lda"><i class="fa fa-check"></i>A Faster LDA</a></li>
 </ul></li>
 <li class="divider"></li>
-<li><a href="https://m-clark.github.io/"><img src="img/mc.png" style="width:50%; padding:0px 0; display:block; margin: 0 auto;" alt="MC logo"></a></li>
-<li><a rel="license" href="http://creativecommons.org/licenses/by-sa/4.0/"><img alt="Creative Commons License" style="width:50%; border-width:0; display:block; margin: 0 auto;" src="img/ccbysa_test.png" /></a></li>
+<li class='after'><a href="https://m-clark.github.io/"><img src="img/mc.png" style="width:50%; padding:0px 0; display:block; margin: 0 auto;" alt="MC logo"></a></li>
+<li class='after'><a rel="license" href="http://creativecommons.org/licenses/by-sa/4.0/"><img alt="Creative Commons License" style="width:50%; border-width:0; display:block; margin: 0 auto;" src="img/ccbysa_test.png" /></a></li>
 
 </ul>
 
@@ -352,16 +352,16 @@ doc_topic_distr =<span class="st">   </span>lda_model<span class="op">$</span><s
                                             <span class="dt">convergence_tol =</span> <span class="fl">0.0001</span>, 
                                             <span class="dt">n_check_convergence =</span> <span class="dv">25</span>,
                                             <span class="dt">progressbar =</span> <span class="ot">FALSE</span>)</code></pre></div>
-<pre><code>INFO [2018-01-27 10:54:06] iter 25 loglikelihood = -1746173.024
-INFO [2018-01-27 10:54:07] iter 50 loglikelihood = -1683541.903
-INFO [2018-01-27 10:54:08] iter 75 loglikelihood = -1660985.396
-INFO [2018-01-27 10:54:09] iter 100 loglikelihood = -1648984.411
-INFO [2018-01-27 10:54:09] iter 125 loglikelihood = -1641481.467
-INFO [2018-01-27 10:54:10] iter 150 loglikelihood = -1638983.461
-INFO [2018-01-27 10:54:11] iter 175 loglikelihood = -1636730.733
-INFO [2018-01-27 10:54:11] iter 200 loglikelihood = -1636356.883
-INFO [2018-01-27 10:54:12] iter 225 loglikelihood = -1636487.222
-INFO [2018-01-27 10:54:12] early stopping at 225 iteration</code></pre>
+<pre><code>INFO [2018-03-06 19:16:15] iter 25 loglikelihood = -1746173.024
+INFO [2018-03-06 19:16:16] iter 50 loglikelihood = -1683541.903
+INFO [2018-03-06 19:16:17] iter 75 loglikelihood = -1660985.396
+INFO [2018-03-06 19:16:17] iter 100 loglikelihood = -1648984.411
+INFO [2018-03-06 19:16:18] iter 125 loglikelihood = -1641481.467
+INFO [2018-03-06 19:16:19] iter 150 loglikelihood = -1638983.461
+INFO [2018-03-06 19:16:20] iter 175 loglikelihood = -1636730.733
+INFO [2018-03-06 19:16:20] iter 200 loglikelihood = -1636356.883
+INFO [2018-03-06 19:16:21] iter 225 loglikelihood = -1636487.222
+INFO [2018-03-06 19:16:21] early stopping at 225 iteration</code></pre>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">lda_model<span class="op">$</span><span class="kw">get_top_words</span>(<span class="dt">n =</span> <span class="dv">10</span>, <span class="dt">topic_number =</span> <span class="dv">1</span><span class="op">:</span><span class="dv">10</span>, <span class="dt">lambda =</span> <span class="dv">1</span>)</code></pre></div>
 <pre><code>      [,1]     [,2]     [,3]     [,4]    [,5]      [,6]      [,7]    [,8]      [,9]     [,10]   
  [1,] &quot;prai&quot;   &quot;hear&quot;   &quot;ey&quot;     &quot;love&quot;  &quot;word&quot;    &quot;natur&quot;   &quot;night&quot; &quot;god&quot;     &quot;friend&quot; &quot;death&quot; 

@@ -508,7 +508,7 @@ g
 
 The <span class="pack">quanteda</span> package has some built in similarity measures such as [cosine similarity](https://en.wikipedia.org/wiki/Cosine_similarity), which you can think of similarly to the standard correlation (also available as an option).  I display it visually to better get a sense of things.
 
-```{r similarity, echo=1, eval=2:3}
+```{r similarity, echo=1, eval=3}
 textstat_simil(shakes_dtm, margin = "documents", method = "cosine") 
 
 textstat_simil(shakes_dtm, margin = "documents", method = "cosine") %>%
@@ -565,7 +565,7 @@ shakes_read_ordered %>%
                        colorbar_xpos= .65,
                        subplot_widths=.25
                        ) %>% 
-  layout(yaxis=list(ticklen=0)) %>% 
+  plotly::layout(yaxis=list(ticklen=0)) %>%
   theme_plotly()
 # shakes_read %>% 
 #   mutate(id=raw_texts$id) %>% 
@@ -610,7 +610,7 @@ scaled_ld %>%
                        draw_cellnote=F,
                        hide_colorbar=T,
                        subplot_widths=.5) %>% 
-  layout(yaxis=list(ticklen=0)) %>% 
+  plotly::layout(yaxis=list(ticklen=0)) %>% 
   theme_plotly()
 ```
 
@@ -658,7 +658,7 @@ MTLD_df %>%
                        draw_cellnote=F,
                        hide_colorbar=T,
                        subplot_widths=.5) %>% 
-  layout(yaxis=list(ticklen=0)) %>% 
+  plotly::layout(yaxis=list(ticklen=0)) %>% 
   theme_plotly()
 ```
 
