@@ -37,10 +37,10 @@ documentclass: book
 # bibliography: refs.bib
 biblio-style: apalike
 link-citations: yes
-description: "An Introduction to  Text Analysis with R"
-cover-image: img/nineteeneightyR.png
+description: "This document covers a wide range of topics, including how to process text generally, and demonstrations of sentiment analysis, parts-of-speech tagging, topic modeling, and word embedding. Exercises are provided for most subjects."
+cover-image: 'img/nineteeneightyR.png'
 url: 'https\://m-clark.github.io/text-analysis-with-R/'  # evidently the \: is required or you'll get text in the title/toc area
-github-repo:  m-clark/
+github-repo:  'm-clark/text-analysis-with-R/'
 ---
 
 ```{r setup, include=FALSE}
