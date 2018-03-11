@@ -773,7 +773,7 @@ sapply(score_list, function(e) apply(e, 2, paste, collapse=', ')) %>%
 
 <br>
 
-As another approach, consider the <span class="emph">saliency</span> and <span class="emph">relevance</span> of term via the <span class="pack">LDAvis</span> package. While you can play with it here, it's probably easier to [open it separately](vis/index.html). Note that this has to be done separately from teh model, and may have topic numbers in a different order.
+As another approach, consider the <span class="emph">saliency</span> and <span class="emph">relevance</span> of term via the <span class="pack">LDAvis</span> package. While you can play with it here, it's probably easier to [open it separately](vis/index.html). Note that this has to be done separately from the model, and may have topic numbers in a different order.
 
 <br>
 
