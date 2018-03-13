@@ -4,9 +4,9 @@ It should be clear at this point that text can be seen as amenable to analysis a
 
 For more natural language processing tools in R, one should consult the corresponding [task view](https://www.r-pkg.org/ctv/NaturalLanguageProcessing).  However, one should be aware that it doesn't take much to strain one's computing resources with R's tools and standard approach. As an example, the Shakespeare corpus is very small by any standard, and even then it will take some time for certain statistics or topic modeling to be conducted.  As such, one should be prepared to also spend time learning ways to make computing more efficient.  Luckily, many aspects of the process may be easily distributed/parallelized.
 
-Much natural language processing is actually done with deep learning techniques, which generally requires a lot of data, notable computing resources, copious amounts of fine tuning, and often involves optimization towards a specific task.  Most of the cutting edge work there is done in Python, and as a starting point for more common text-analytic approaches, you can check out the [Natural Language Toolkit](http://www.nltk.org/book/).
+Much natural language processing is actually done with deep learning techniques, which generally requires a lot of data, notable computing resources, copious amounts of fine tuning, and often involves optimization towards a specific task.  Most of the cutting-edge work there is done in Python, and as a starting point for more common text-analytic approaches, you can check out the [Natural Language Toolkit](http://www.nltk.org/book/).
 
-Dealing with text is not always easy, but it's definitely easier than it ever has been.  The amount of tools at your disposal is vast, and more are being added all the time. One of the main take home messages is that text analysis can be a lot of fun, so enjoy the process!
+Dealing with text is not always easy, but it's definitely easier than it ever has been.  The number of tools at your disposal is vast, and more are being added all the time. One of the main take home messages is that text analysis can be a lot of fun, so enjoy the process!
 
 <br>
 

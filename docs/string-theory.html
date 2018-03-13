@@ -24,7 +24,7 @@
 
 
 
-<meta name="date" content="2018-03-11">
+<meta name="date" content="2018-03-13">
 
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta name="apple-mobile-web-app-capable" content="yes">
@@ -281,7 +281,7 @@ x</code></pre></div>
 </div>
 <div id="factors" class="section level3">
 <h3>Factors</h3>
-<p>Although not exactly precise, one can think of factors as integers with labels. So the underlying representation of a variable for <span class="objclass">sex</span> is 1:2 with labels ‘Male’ and ‘Female’. They are a special class with attributes, or metadata, that contains the information about the <span class="objclass">levels</span>.</p>
+<p>Although not exactly precise, one can think of factors as integers with labels. So, the underlying representation of a variable for <span class="objclass">sex</span> is 1:2 with labels ‘Male’ and ‘Female’. They are a special class with attributes, or metadata, that contains the information about the <span class="objclass">levels</span>.</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">x =<span class="st"> </span><span class="kw">factor</span>(<span class="kw">rep</span>(letters[<span class="dv">1</span><span class="op">:</span><span class="dv">3</span>], <span class="dt">e=</span><span class="dv">10</span>))
 <span class="kw">attributes</span>(x)</code></pre></div>
 <pre><code>$levels
@@ -444,7 +444,7 @@ df</code></pre></div>
 </div>
 <div id="other" class="section level3">
 <h3>Other</h3>
-<p>In this section I’ll add some things that come to mind that might come into play when you’re dealing with text.</p>
+<p>In this section, I’ll add some things that come to mind that might come into play when you’re dealing with text.</p>
 <div id="dates" class="section level4">
 <h4>Dates</h4>
 <p>Dates are not character strings. Though they may start that way, if you actually want to treat them as dates you’ll need to convert the string to the appropriate date class. The <span class="pack">lubridate</span> package makes dealing with dates much easier. It comes with conversion, extraction and other functionality that will be sure to save you some time.</p>
@@ -494,7 +494,7 @@ span</code></pre></div>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">string =<span class="st"> </span><span class="kw">c</span>(<span class="st">&#39;r is the shiny&#39;</span>, <span class="st">&#39;r is the shiny1&#39;</span>, <span class="st">&#39;r shines brightly&#39;</span>)
 <span class="kw">grepl</span>(string, <span class="dt">pattern=</span><span class="st">&#39;^r.*shiny[0-9]$&#39;</span>)</code></pre></div>
 <pre><code>[1] FALSE  TRUE FALSE</code></pre>
-<p>What the regex is esoterically attempting to match is any string that starts with ‘r’ and ends with ‘shiny_’ where _ is some single digit. Specifically it breaks down as follows:</p>
+<p>What the regex is esoterically attempting to match is any string that starts with ‘r’ and ends with ‘shiny_’ where _ is some single digit. Specifically, it breaks down as follows:</p>
 <ul>
 <li><strong>^</strong> : starts with, so ^r means starts with r</li>
 <li><strong>.</strong> : any character</li>
@@ -512,7 +512,7 @@ span</code></pre></div>
 <li><strong>[A-Z]</strong> : capital letters</li>
 <li><strong>+</strong> : match the preceding one or more times</li>
 <li><strong>()</strong> : groupings</li>
-<li><strong>|</strong> : logical or e.g. [a-z]|[0-9] (a lower case letter or a number)</li>
+<li><strong>|</strong> : logical or e.g. [a-z]|[0-9] (a lower-case letter or a number)</li>
 <li><strong>?</strong> : preceding item is optional, and will be matched at most once. Typically used for ‘look ahead’ and ‘look behind’</li>
 <li><strong>\</strong> : escape a character, like if you actually wanted to search for a period instead of using it as a regex pattern, you’d use \., though in R you need \\, i.e. double slashes, for escape.</li>
 </ul>
@@ -608,7 +608,7 @@ North South
 <div id="htmlwidget-473eba0a55a88ffed860" style="width:100%;height:auto;" class="datatables html-widget"></div>
 <script type="application/json" data-for="htmlwidget-473eba0a55a88ffed860">{"x":{"filter":"none","data":[[1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20],[1.18,0.34,-0.32,-0.57,0.64,-0.59,0.61,-0.42,0.15,1.03,-0.22,2.01,1.38,-1.72,0.56,0.19,0.55,0.65,-0.71,1.01],[-2.04,-1.34,-0.97,1.36,0.73,0.16,1.21,-0.73,0.84,-0.17,0.98,-0.64,-1.55,-2.02,0.1,1.33,-1.2,-0.77,0.25,0.02],[-0.03,-0.3,1.03,1.29,-0.16,-1.28,-0.43,-1.78,0.13,-0.93,-0.18,0.71,0.51,-0.24,-0.33,-1.62,-0.22,0.89,0.86,0.21],[-0.36,-0.15,0.2,-0,-1.29,0.55,-0.14,1.63,1.02,-1.71,0.16,-1.62,0.55,0.39,-1.44,0.97,0.67,-0.34,-0.6,-1.79],[0.43,0.47,0.97,0.32,-0.79,0.75,-0.54,1.64,-0.18,-1.4,1.07,1.14,0.69,-1.14,0.95,0.21,-0.42,0.08,-1.11,0.18]],"container":"<table class=\"display\">\n  <thead>\n    <tr>\n      <th>id<\/th>\n      <th>X1<\/th>\n      <th>X2<\/th>\n      <th>X3<\/th>\n      <th>X4<\/th>\n      <th>X5<\/th>\n    <\/tr>\n  <\/thead>\n<\/table>","options":{"dom":"tp","autoWidth":true,"columnDefs":[{"width":"50px","targets":0},{"className":"dt-center","targets":1},{"className":"dt-right","targets":[0,1,2,3,4,5]}],"order":[],"orderClasses":false}},"evals":[],"jsHooks":[]}</script>
 <p><br></p>
-<p>So the problem now is to change the names to be Year_1, Year_2, etc. You might think you might have to use <span class="func">colnames</span> and manually create a string of names to replace the current ones.</p>
+<p>So, the problem now is to change the names to be Year_1, Year_2, etc. You might think you might have to use <span class="func">colnames</span> and manually create a string of names to replace the current ones.</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">colnames</span>(df)[<span class="op">-</span><span class="dv">1</span>] =<span class="st"> </span><span class="kw">c</span>(<span class="st">&#39;Year_1&#39;</span>, <span class="st">&#39;Year_2&#39;</span>, <span class="st">&#39;Year_3&#39;</span>, <span class="st">&#39;Year_4&#39;</span>, <span class="st">&#39;Year_5&#39;</span>)</code></pre></div>
 <p>Or perhaps you’re thinking of the paste0 function, which works fine and saves some typing.</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">colnames</span>(df)[<span class="op">-</span><span class="dv">1</span>] =<span class="st"> </span><span class="kw">paste0</span>(<span class="st">&#39;Year_&#39;</span>, <span class="dv">1</span><span class="op">:</span><span class="dv">5</span>)</code></pre></div>
@@ -667,7 +667,7 @@ North South
 <ol start="1">
 <li id="fn1"><p>I also don’t think it necessary to have separate functions for str_* functions in <span class="pack">stringr</span> depending on whether, e.g. I want ‘all’ matches (practically every situation) or just the first (very rarely). It could have just been an additional argument with default <code>all=TRUE</code>.<a href="string-theory.html#fnref1">↩</a></p></li>
 <li id="fn2"><p>At least they’re exposed now.<a href="string-theory.html#fnref2">↩</a></p></li>
-<li id="fn3"><p>For rows you’ll have to use a <span class="func">grepl</span>/<span class="func">str_detect</span> approach. For example, <code>filter(grepl(col1, pattern='^X'))</code> would subset to only rows where col1 starts with X.<a href="string-theory.html#fnref3">↩</a></p></li>
+<li id="fn3"><p>For rows, you’ll have to use a <span class="func">grepl</span>/<span class="func">str_detect</span> approach. For example, <code>filter(grepl(col1, pattern='^X'))</code> would subset to only rows where col1 starts with X.<a href="string-theory.html#fnref3">↩</a></p></li>
 <li id="fn4"><p>This is a very common issue among Excel users, and just one of the many reasons not to use it.<a href="string-theory.html#fnref4">↩</a></p></li>
 </ol>
 </div>

@@ -10,7 +10,7 @@ As an initial review of parts of speech, if you need a refresher the following S
 - [Lolly Lolly Lolly Get Your Adverbs Here](https://youtu.be/14fXm4FOMPM)
 - [Conjunction Junction](https://youtu.be/RPoBE-E8VOc) (personal fave)
 
-Aside from those, you can also learn how bills get passed, about being a victim of gravity, a comparison of the decimal to other numeric systems used by alien species, and a host of other useful things.
+Aside from those, you can also learn how bills get passed, about being a victim of gravity, a comparison of the decimal to other numeric systems used by alien species (I recommend the Chavez remix), and a host of other useful things.
 
 ## Basic idea
 
@@ -28,7 +28,7 @@ Common analysis may then be used to predict POS given the current state of the t
 
 ## POS Examples
 
-The following approach to POS-tagging is very similar to what we did for sentiment analysis as depicted previously. We have a POS dictionary, and can use an inner join to attach the words to their POS.  Unfortunately this approach is unrealistically simplistic, as additional steps would need to be taken to ensure words are correctly classified.  For example, without more information, we are unable to tell if some words are being used as nouns or verbs (human being vs. being a problematic part of speech).  However, this example can serve as a starting point.
+The following approach to POS-tagging is very similar to what we did for sentiment analysis as depicted previously. We have a POS dictionary, and can use an inner join to attach the words to their POS.  Unfortunately, this approach is unrealistically simplistic, as additional steps would need to be taken to ensure words are correctly classified.  For example, without more information, we are unable to tell if some words are being used as nouns or verbs (human being vs. being a problematic part of speech).  However, this example can serve as a starting point.
 
 ### Barthelme & Carver
 

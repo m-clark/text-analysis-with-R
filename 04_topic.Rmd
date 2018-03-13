@@ -18,7 +18,7 @@ When it comes to text analysis, most of the time in topic modeling is spent on p
 
 ### Shakespeare
 
-In this example, we'll look at Shakespeare's plays and poems, using a topic model with 10 topics.  For our needs we'll use the <span class="pack">topicmodels</span> package for the analysis, and mostly others for post-processing.  Due to the large number of terms, this could take a while to run depending on your machine (maybe a minute or two).  We can also see how things compare with the academic classifications for the texts.
+In this example, we'll look at Shakespeare's plays and poems, using a topic model with 10 topics.  For our needs, we'll use the <span class="pack">topicmodels</span> package for the analysis, and mostly others for post-processing.  Due to the large number of terms, this could take a while to run depending on your machine (maybe a minute or two).  We can also see how things compare with the academic classifications for the texts.
 
 ```{r tm_chapter_topic_model, eval=F}
 load('Data/shakes_dtm_stemmed.RData')
@@ -230,7 +230,7 @@ topic_class %>%
   theme_plotly() 
 ```
 
-So we can see that topic modeling can be use to classify the documents themselves into groups of documents most likely to express the same sorts of topics.
+So we can see that topic modeling can be used to classify the documents themselves into groups of documents most likely to express the same sorts of topics.
 
 ## Extensions
 
@@ -314,4 +314,4 @@ data("AssociatedPress")
 ```
 
 
-[^howmanytopics]: There isn't a lot to work with in the realm of choosing an 'optimal' number of topics, but I investigated it via a measure called <span class="emph">perplexity</span>.  It bottomed out at around 50 topics.  Usually such an approach is done through cross-validation.  However, the solution chosen has no guarantee to produce human interpretable topics.
+[^howmanytopics]: There isn't a lot to work within the realm of choosing an 'optimal' number of topics, but I investigated it via a measure called <span class="emph">perplexity</span>.  It bottomed out at around 50 topics.  Usually such an approach is done through cross-validation.  However, the solution chosen has no guarantee to produce human interpretable topics.

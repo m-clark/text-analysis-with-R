@@ -3,7 +3,7 @@
 
 ## Basic idea
 
-A common and intuitive approach to text is <span class="emph">sentiment analysis</span>.  In a grand sense we are interested in the emotional content of some text, e.g. posts on Facebook, tweets, or movie reviews.  Most of the time, this is obvious when one reads it, but if you have hundreds of thousands or millions of strings to analyze, you'd like to be able to do so efficiently.
+A common and intuitive approach to text is <span class="emph">sentiment analysis</span>.  In a grand sense, we are interested in the emotional content of some text, e.g. posts on Facebook, tweets, or movie reviews.  Most of the time, this is obvious when one reads it, but if you have hundreds of thousands or millions of strings to analyze, you'd like to be able to do so efficiently.
 
 We will use the <span class="pack">tidytext</span> package for our demonstration.  It comes with a lexicon of positive and negative words that is actually a combination of multiple sources, one of which provides numeric ratings, while the others suggest different classes of sentiment.
 
@@ -68,7 +68,7 @@ barth0 =
 
 #### Iterative processing
 
-One of the things stressed in this document is the iterative nature of text analysis.  You will consistently take two steps forward, and then one or two back as you find issues that need to be addressed. For example in a subsequent step I found there were encoding issues[^encoding], so the following attempts to fix them.  In addition we want to <span class="emph">tokenize</span> the documents such that our <span class="emph">tokens</span> are sentences (e.g. as opposed to words or paragraphs). The reason for this is that I will be summarizing the sentiment at sentence level.
+One of the things stressed in this document is the iterative nature of text analysis.  You will consistently take two steps forward, and then one or two back as you find issues that need to be addressed. For example, in a subsequent step I found there were encoding issues[^encoding], so the following attempts to fix them.  In addition, we want to <span class="emph">tokenize</span> the documents such that our <span class="emph">tokens</span> are sentences (e.g. as opposed to words or paragraphs). The reason for this is that I will be summarizing the sentiment at sentence level.
 
 
 ```{r barth_fix_encoding, echo=1:2, eval=1:2}
@@ -95,7 +95,7 @@ baby = barth %>%
 
 #### Get sentiments
 
-Now that the data has been prepped, getting the sentiments is ridiculously easy.  But that is how it is with text analysis.  All the hard work is spent with the data processing.  Here all we need is an <span class="emph">inner join</span> of our words with a sentiment lexicon of choice. This process will only retain words that are also in the lexicon.  I use the numeric-based lexicon here. At that point we get a sum score of sentiment by sentence.
+Now that the data has been prepped, getting the sentiments is ridiculously easy.  But that is how it is with text analysis.  All the hard work is spent with the data processing.  Here all we need is an <span class="emph">inner join</span> of our words with a sentiment lexicon of choice. This process will only retain words that are also in the lexicon.  I use the numeric-based lexicon here. At that point, we get a sum score of sentiment by sentence.
 
 
 ```{r baby_sentiment}
@@ -134,13 +134,13 @@ baby_sentiment %>%
   config(displayModeBar = F)
 ```
 
-In general the sentiment starts out negative as the problem is explained. It bounces back and forth a bit but ends on a positive note.  You'll see that some sentences' context are not captured.  For example, sentence 16 is 'But it didn't do any good'.  However *good* is going to be marked as a positive sentiment in any lexicon by default. In addition, the token length will matter.  Longer sentences are more likely to have some sentiment, for example.
+In general, the sentiment starts out negative as the problem is explained. It bounces back and forth a bit but ends on a positive note.  You'll see that some sentences' context are not captured.  For example, sentence 16 is 'But it didn't do any good'.  However *good* is going to be marked as a positive sentiment in any lexicon by default. In addition, the token length will matter.  Longer sentences are more likely to have some sentiment, for example.
 
 
 
 ### Romeo & Juliet
 
-For this example I'll invite you to more or less follow along, as there is notable pre-processing that must be done.  We'll look at sentiment in Shakespeare's Romeo and Juliet.  I have a cleaner version in the raw texts folder, but we can take the opportunity to use the <span class="pack">gutenbergr</span> package to download it directly from Project Gutenberg, a storehouse for works that have entered the public domain.
+For this example, I'll invite you to more or less follow along, as there is notable pre-processing that must be done.  We'll look at sentiment in Shakespeare's Romeo and Juliet.  I have a cleaner version in the raw texts folder, but we can take the opportunity to use the <span class="pack">gutenbergr</span> package to download it directly from Project Gutenberg, a storehouse for works that have entered the public domain.
 
 ```{r rnj_load, echo=-c(3,5)}
 library(gutenbergr)
@@ -180,7 +180,7 @@ DT::datatable(select(rnj_filtered, sentenceID, sentence),
 <br> 
 
 
-The following unnests the data to word tokens.  In addition, you can remove stopwords like a, an, the etc., and tidytext comes with a <span class="objclass">stop_words</span> data frame. However, some of the stopwords have sentiments, so you would get a bit of a different result if you retain them.  As Black Sheep once said, the choice is yours, and you can deal with this, or you can deal with that.
+The following unnests the data to word tokens.  In addition, you can remove stopwords like a, an, the etc., and <span class="pack">tidytext</span> comes with a <span class="objclass">stop_words</span> data frame. However, some of the stopwords have sentiments, so you would get a bit of a different result if you retain them.  As Black Sheep once said, the choice is yours, and you can deal with this, or you can deal with that.
 
 
 ```{r rnj_stopwords}
@@ -245,7 +245,7 @@ rnj_sentiment_bing %>%
 
 <br>
 
-In general it's a close game until perhaps the midway point, when negativity takes over and despair sets in with the story.  By the end [[:SPOILER ALERT:]] Sean Bean is beheaded, Darth Vader reveals himself to be Luke's father, and Verbal is Keyser Söze.
+It's a close game until perhaps the midway point, when negativity takes over and despair sets in with the story.  By the end [[:SPOILER ALERT:]] Sean Bean is beheaded, Darth Vader reveals himself to be Luke's father, and Verbal is Keyser Söze.
 
 ## Sentiment Analysis Summary
 
@@ -340,7 +340,7 @@ ja_book %>%
 
 ### Step 4: Visualize
 
-Now let's do a visualization for sentiment. So redo your inner join but we'll create a data frame that has the information we need.
+Now let's do a visualization for sentiment. So redo your inner join, but we'll create a data frame that has the information we need.
 
 ```{r negativity_data}
 plot_data = ja_book %>%

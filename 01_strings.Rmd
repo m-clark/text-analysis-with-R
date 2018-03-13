@@ -34,7 +34,7 @@ Not much to it, but be aware there is no real limit to what is represented as a 
 
 ### Factors
 
-Although not exactly precise, one can think of factors as integers with labels.  So the underlying representation of a variable for <span class="objclass">sex</span> is 1:2 with labels 'Male' and 'Female'.  They are a special class with attributes, or metadata, that contains the information about the <span class="objclass">levels</span>.
+Although not exactly precise, one can think of factors as integers with labels.  So, the underlying representation of a variable for <span class="objclass">sex</span> is 1:2 with labels 'Male' and 'Female'.  They are a special class with attributes, or metadata, that contains the information about the <span class="objclass">levels</span>.
 
 ```{r factor_atts}
 x = factor(rep(letters[1:3], e=10))
@@ -150,7 +150,7 @@ One issue I have with both packages and base R is that often they return a list 
 
 ### Other
 
-In this section I'll add some things that come to mind that might come into play when you're dealing with text.
+In this section, I'll add some things that come to mind that might come into play when you're dealing with text.
 
 #### Dates
 
@@ -209,7 +209,7 @@ string = c('r is the shiny', 'r is the shiny1', 'r shines brightly')
 grepl(string, pattern='^r.*shiny[0-9]$')
 ```
 
-What the regex is esoterically attempting to match is any string that starts with 'r' and ends with 'shiny_' where _ is some single digit.  Specifically it breaks down as follows:
+What the regex is esoterically attempting to match is any string that starts with 'r' and ends with 'shiny_' where _ is some single digit.  Specifically, it breaks down as follows:
 
 - **^** : starts with, so ^r means starts with r
 - **.** : any character
@@ -229,7 +229,7 @@ Along with ^ . * [0-9] $, a couple more common ones are:
 - **[A-Z]** : capital letters
 - **+** : match the preceding one or more times
 - **()** : groupings
-- **|** : logical or e.g. [a-z]|[0-9]  (a lower case letter or a number)
+- **|** : logical or e.g. [a-z]|[0-9]  (a lower-case letter or a number)
 - **?** : preceding item is optional, and will be matched at most once. Typically used for 'look ahead' and 'look behind'
 - **\\** : escape a character, like if you actually wanted to search for a period instead of using it as a regex pattern, you'd use \\., though in R you need \\\\, i.e. double slashes, for escape.
 
@@ -340,7 +340,7 @@ DT::datatable(df, rownames=F,
 
 <br>
 
-So the problem now is to change the names to be Year_1, Year_2, etc. You might think you might have to use <span class="func">colnames</span> and manually create a string of names to replace the current ones.
+So, the problem now is to change the names to be Year_1, Year_2, etc. You might think you might have to use <span class="func">colnames</span> and manually create a string of names to replace the current ones.
 
 
 ```{r rename_chunk2, eval=FALSE}
@@ -425,6 +425,6 @@ starwars %>%
 
 [^excel]: This is a very common issue among Excel users, and just one of the many reasons not to use it.
 
-[^helperrows]: For rows you'll have to use a <span class="func">grepl</span>/<span class="func">str_detect</span> approach. For example, `filter(grepl(col1, pattern='^X'))` would subset to only rows where col1 starts with X.
+[^helperrows]: For rows, you'll have to use a <span class="func">grepl</span>/<span class="func">str_detect</span> approach. For example, `filter(grepl(col1, pattern='^X'))` would subset to only rows where col1 starts with X.
 
 [^str_all]: I also don't think it necessary to have separate functions for str_* functions in <span class="pack">stringr</span> depending on whether, e.g. I want 'all' matches (practically every situation) or just the first (very rarely). It could have just been an additional argument with default `all=TRUE`.
