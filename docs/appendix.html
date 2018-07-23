@@ -5,26 +5,26 @@
 
   <meta charset="UTF-8">
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
-  <title>In the beginning was the word ...</title>
-  <meta name="description" content="This document covers a wide range of topics, including how to process text generally, and demonstrations of sentiment analysis, parts-of-speech tagging, topic modeling, and word embedding. Exercises are provided for most subjects.">
+  <title>An Introduction to Text Processing and Analysis with R</title>
+  <meta name="description" content="This document covers a wide range of topics, including how to process text generally, and demonstrations of sentiment analysis, parts-of-speech tagging, word embeddings, and topic modeling. Exercises are provided for some topics.">
   <meta name="generator" content="bookdown 0.7 and GitBook 2.6.7">
 
-  <meta property="og:title" content="In the beginning was the word ..." />
+  <meta property="og:title" content="An Introduction to Text Processing and Analysis with R" />
   <meta property="og:type" content="book" />
   <meta property="og:url" content="https://m-clark.github.io/text-analysis-with-R/" />
   <meta property="og:image" content="https://m-clark.github.io/text-analysis-with-R/img/nineteeneightyR.png" />
-  <meta property="og:description" content="This document covers a wide range of topics, including how to process text generally, and demonstrations of sentiment analysis, parts-of-speech tagging, topic modeling, and word embedding. Exercises are provided for most subjects." />
+  <meta property="og:description" content="This document covers a wide range of topics, including how to process text generally, and demonstrations of sentiment analysis, parts-of-speech tagging, word embeddings, and topic modeling. Exercises are provided for some topics." />
   <meta name="github-repo" content="m-clark/text-analysis-with-R/" />
 
   <meta name="twitter:card" content="summary" />
-  <meta name="twitter:title" content="In the beginning was the word ..." />
+  <meta name="twitter:title" content="An Introduction to Text Processing and Analysis with R" />
   
-  <meta name="twitter:description" content="This document covers a wide range of topics, including how to process text generally, and demonstrations of sentiment analysis, parts-of-speech tagging, topic modeling, and word embedding. Exercises are provided for most subjects." />
+  <meta name="twitter:description" content="This document covers a wide range of topics, including how to process text generally, and demonstrations of sentiment analysis, parts-of-speech tagging, word embeddings, and topic modeling. Exercises are provided for some topics." />
   <meta name="twitter:image" content="https://m-clark.github.io/text-analysis-with-R/img/nineteeneightyR.png" />
 
 
 
-<meta name="date" content="2018-03-13">
+<meta name="date" content="2018-07-22">
 
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta name="apple-mobile-web-app-capable" content="yes">
@@ -65,41 +65,69 @@
 
 
 <style type="text/css">
-div.sourceCode { overflow-x: auto; }
-table.sourceCode, tr.sourceCode, td.lineNumbers, td.sourceCode {
-  margin: 0; padding: 0; vertical-align: baseline; border: none; }
-table.sourceCode { width: 100%; line-height: 100%; }
-td.lineNumbers { text-align: right; padding-right: 4px; padding-left: 4px; color: #aaaaaa; border-right: 1px solid #aaaaaa; }
-td.sourceCode { padding-left: 5px; }
-code > span.kw { color: #007020; font-weight: bold; } /* Keyword */
-code > span.dt { color: #902000; } /* DataType */
-code > span.dv { color: #40a070; } /* DecVal */
-code > span.bn { color: #40a070; } /* BaseN */
-code > span.fl { color: #40a070; } /* Float */
-code > span.ch { color: #4070a0; } /* Char */
-code > span.st { color: #4070a0; } /* String */
-code > span.co { color: #60a0b0; font-style: italic; } /* Comment */
-code > span.ot { color: #007020; } /* Other */
-code > span.al { color: #ff0000; font-weight: bold; } /* Alert */
-code > span.fu { color: #06287e; } /* Function */
-code > span.er { color: #ff0000; font-weight: bold; } /* Error */
-code > span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
-code > span.cn { color: #880000; } /* Constant */
-code > span.sc { color: #4070a0; } /* SpecialChar */
-code > span.vs { color: #4070a0; } /* VerbatimString */
-code > span.ss { color: #bb6688; } /* SpecialString */
-code > span.im { } /* Import */
-code > span.va { color: #19177c; } /* Variable */
-code > span.cf { color: #007020; font-weight: bold; } /* ControlFlow */
-code > span.op { color: #666666; } /* Operator */
-code > span.bu { } /* BuiltIn */
-code > span.ex { } /* Extension */
-code > span.pp { color: #bc7a00; } /* Preprocessor */
-code > span.at { color: #7d9029; } /* Attribute */
-code > span.do { color: #ba2121; font-style: italic; } /* Documentation */
-code > span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
-code > span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } /* CommentVar */
-code > span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
+a.sourceLine { display: inline-block; line-height: 1.25; }
+a.sourceLine { pointer-events: none; color: inherit; text-decoration: inherit; }
+a.sourceLine:empty { height: 1.2em; position: absolute; }
+.sourceCode { overflow: visible; }
+code.sourceCode { white-space: pre; position: relative; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+code.sourceCode { white-space: pre-wrap; }
+a.sourceLine { text-indent: -1em; padding-left: 1em; }
+}
+pre.numberSource a.sourceLine
+  { position: relative; }
+pre.numberSource a.sourceLine:empty
+  { position: absolute; }
+pre.numberSource a.sourceLine::before
+  { content: attr(data-line-number);
+    position: absolute; left: -5em; text-align: right; vertical-align: baseline;
+    border: none; pointer-events: all;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+    color: #aaaaaa;
+  }
+pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa;  padding-left: 4px; }
+div.sourceCode
+  {  }
+@media screen {
+a.sourceLine::before { text-decoration: underline; }
+}
+code span.al { color: #ff0000; font-weight: bold; } /* Alert */
+code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
+code span.at { color: #7d9029; } /* Attribute */
+code span.bn { color: #40a070; } /* BaseN */
+code span.bu { } /* BuiltIn */
+code span.cf { color: #007020; font-weight: bold; } /* ControlFlow */
+code span.ch { color: #4070a0; } /* Char */
+code span.cn { color: #880000; } /* Constant */
+code span.co { color: #60a0b0; font-style: italic; } /* Comment */
+code span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } /* CommentVar */
+code span.do { color: #ba2121; font-style: italic; } /* Documentation */
+code span.dt { color: #902000; } /* DataType */
+code span.dv { color: #40a070; } /* DecVal */
+code span.er { color: #ff0000; font-weight: bold; } /* Error */
+code span.ex { } /* Extension */
+code span.fl { color: #40a070; } /* Float */
+code span.fu { color: #06287e; } /* Function */
+code span.im { } /* Import */
+code span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
+code span.kw { color: #007020; font-weight: bold; } /* Keyword */
+code span.op { color: #666666; } /* Operator */
+code span.ot { color: #007020; } /* Other */
+code span.pp { color: #bc7a00; } /* Preprocessor */
+code span.sc { color: #4070a0; } /* SpecialChar */
+code span.ss { color: #bb6688; } /* SpecialString */
+code span.st { color: #4070a0; } /* String */
+code span.va { color: #19177c; } /* Variable */
+code span.vs { color: #4070a0; } /* VerbatimString */
+code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
 </style>
 
 <link rel="stylesheet" href="css/standard_html.css" type="text/css" />
@@ -244,7 +272,7 @@ code > span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Inf
       <div class="body-inner">
         <div class="book-header" role="navigation">
           <h1>
-            <i class="fa fa-circle-o-notch fa-spin"></i><a href="./"><span style="font-size:125%; font-family:Stalemate">In the beginning was the word ...</span></a>
+            <i class="fa fa-circle-o-notch fa-spin"></i><a href="./">An Introduction to Text Processing and Analysis with R</a>
           </h1>
         </div>
 
@@ -300,7 +328,7 @@ code > span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Inf
 </blockquote>
 <div id="what-we-talk-about-when-we-talk-about-love" class="section level4">
 <h4>What We Talk About When We Talk About Love</h4>
-<p>The text we use is actually <em>Beginners</em>, or the unedited version. A drink is required in order to read it with the proper context. Probably several. No. Definitely several.</p>
+<p>The text we use is actually <em>Beginners</em>, or the unedited version. A drink is required in order to read it with the proper context. Probably several. No. Definitely several.</p>
 <p><a href="http://www.newyorker.com/magazine/2007/12/24/beginners">link</a></p>
 </div>
 </div>
@@ -336,22 +364,22 @@ code > span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Inf
 <h2>A Faster LDA</h2>
 <p>We noted in the Shakespeare start to finish example that there are faster alternatives than the standard LDA in <span class="pack">topicmodels</span>. In particular, the powerful <span class="pack">text2vec</span> package contains a faster and less memory intensive implementation of LDA and dealing with text generally. Both of which are very important if you’re wanting to use R for text analysis. The other nice thing is that it works with <span class="pack">LDAvis</span> for visualization.</p>
 <p>For the following, we’ll use one of the partially cleaned document term matrix for the Shakespeare texts. One of the things to get used to is that <span class="pack">text2vec</span> uses the newer R6 classes of R objects, hence the <code>$</code> approach you see to using specific methods.</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">library</span>(text2vec)
-<span class="kw">load</span>(<span class="st">&#39;data/shakes_dtm_stemmed.RData&#39;</span>)
-<span class="co"># load(&#39;data/shakes_words_df.RData&#39;) # non-stemmed</span>
-
-<span class="co"># convert to the sparse matrix representation using Matrix package</span>
-shakes_dtm =<span class="st"> </span><span class="kw">as</span>(shakes_dtm, <span class="st">&#39;CsparseMatrix&#39;</span>)
-
-<span class="co"># setup the model</span>
-lda_model =<span class="st"> </span>LDA<span class="op">$</span><span class="kw">new</span>(<span class="dt">n_topics =</span> <span class="dv">10</span>, <span class="dt">doc_topic_prior =</span> <span class="fl">0.1</span>, <span class="dt">topic_word_prior =</span> <span class="fl">0.01</span>)
-
-<span class="co"># fit the model</span>
-doc_topic_distr =<span class="st">   </span>lda_model<span class="op">$</span><span class="kw">fit_transform</span>(<span class="dt">x =</span> shakes_dtm, 
-                                            <span class="dt">n_iter =</span> <span class="dv">1000</span>,
-                                            <span class="dt">convergence_tol =</span> <span class="fl">0.0001</span>, 
-                                            <span class="dt">n_check_convergence =</span> <span class="dv">25</span>,
-                                            <span class="dt">progressbar =</span> <span class="ot">FALSE</span>)</code></pre></div>
+<div class="sourceCode" id="cb156"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb156-1" data-line-number="1"><span class="kw">library</span>(text2vec)</a>
+<a class="sourceLine" id="cb156-2" data-line-number="2"><span class="kw">load</span>(<span class="st">&#39;data/shakes_dtm_stemmed.RData&#39;</span>)</a>
+<a class="sourceLine" id="cb156-3" data-line-number="3"><span class="co"># load(&#39;data/shakes_words_df.RData&#39;) # non-stemmed</span></a>
+<a class="sourceLine" id="cb156-4" data-line-number="4"></a>
+<a class="sourceLine" id="cb156-5" data-line-number="5"><span class="co"># convert to the sparse matrix representation using Matrix package</span></a>
+<a class="sourceLine" id="cb156-6" data-line-number="6">shakes_dtm =<span class="st"> </span><span class="kw">as</span>(shakes_dtm, <span class="st">&#39;CsparseMatrix&#39;</span>)</a>
+<a class="sourceLine" id="cb156-7" data-line-number="7"></a>
+<a class="sourceLine" id="cb156-8" data-line-number="8"><span class="co"># setup the model</span></a>
+<a class="sourceLine" id="cb156-9" data-line-number="9">lda_model =<span class="st"> </span>LDA<span class="op">$</span><span class="kw">new</span>(<span class="dt">n_topics =</span> <span class="dv">10</span>, <span class="dt">doc_topic_prior =</span> <span class="fl">0.1</span>, <span class="dt">topic_word_prior =</span> <span class="fl">0.01</span>)</a>
+<a class="sourceLine" id="cb156-10" data-line-number="10"></a>
+<a class="sourceLine" id="cb156-11" data-line-number="11"><span class="co"># fit the model</span></a>
+<a class="sourceLine" id="cb156-12" data-line-number="12">doc_topic_distr =<span class="st">   </span>lda_model<span class="op">$</span><span class="kw">fit_transform</span>(<span class="dt">x =</span> shakes_dtm, </a>
+<a class="sourceLine" id="cb156-13" data-line-number="13">                                            <span class="dt">n_iter =</span> <span class="dv">1000</span>,</a>
+<a class="sourceLine" id="cb156-14" data-line-number="14">                                            <span class="dt">convergence_tol =</span> <span class="fl">0.0001</span>, </a>
+<a class="sourceLine" id="cb156-15" data-line-number="15">                                            <span class="dt">n_check_convergence =</span> <span class="dv">25</span>,</a>
+<a class="sourceLine" id="cb156-16" data-line-number="16">                                            <span class="dt">progressbar =</span> <span class="ot">FALSE</span>)</a></code></pre></div>
 <pre><code>INFO [2018-03-06 19:16:15] iter 25 loglikelihood = -1746173.024
 INFO [2018-03-06 19:16:16] iter 50 loglikelihood = -1683541.903
 INFO [2018-03-06 19:16:17] iter 75 loglikelihood = -1660985.396
@@ -362,7 +390,7 @@ INFO [2018-03-06 19:16:20] iter 175 loglikelihood = -1636730.733
 INFO [2018-03-06 19:16:20] iter 200 loglikelihood = -1636356.883
 INFO [2018-03-06 19:16:21] iter 225 loglikelihood = -1636487.222
 INFO [2018-03-06 19:16:21] early stopping at 225 iteration</code></pre>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">lda_model<span class="op">$</span><span class="kw">get_top_words</span>(<span class="dt">n =</span> <span class="dv">10</span>, <span class="dt">topic_number =</span> <span class="dv">1</span><span class="op">:</span><span class="dv">10</span>, <span class="dt">lambda =</span> <span class="dv">1</span>)</code></pre></div>
+<div class="sourceCode" id="cb158"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb158-1" data-line-number="1">lda_model<span class="op">$</span><span class="kw">get_top_words</span>(<span class="dt">n =</span> <span class="dv">10</span>, <span class="dt">topic_number =</span> <span class="dv">1</span><span class="op">:</span><span class="dv">10</span>, <span class="dt">lambda =</span> <span class="dv">1</span>)</a></code></pre></div>
 <pre><code>      [,1]     [,2]     [,3]     [,4]    [,5]      [,6]      [,7]    [,8]      [,9]     [,10]   
  [1,] &quot;prai&quot;   &quot;hear&quot;   &quot;ey&quot;     &quot;love&quot;  &quot;word&quot;    &quot;natur&quot;   &quot;night&quot; &quot;god&quot;     &quot;friend&quot; &quot;death&quot; 
  [2,] &quot;honor&quot;  &quot;madam&quot;  &quot;sweet&quot;  &quot;dai&quot;   &quot;letter&quot;  &quot;fortun&quot;  &quot;fear&quot;  &quot;dai&quot;     &quot;hand&quot;   &quot;grace&quot; 
@@ -374,11 +402,11 @@ INFO [2018-03-06 19:16:21] early stopping at 225 iteration</code></pre>
  [8,] &quot;hear&quot;   &quot;lose&quot;   &quot;black&quot;  &quot;heart&quot; &quot;reason&quot;  &quot;truth&quot;   &quot;bed&quot;   &quot;fight&quot;   &quot;leav&quot;   &quot;hope&quot;  
  [9,] &quot;heart&quot;  &quot;strang&quot; &quot;kiss&quot;   &quot;marri&quot; &quot;hand&quot;    &quot;leav&quot;    &quot;mad&quot;   &quot;sword&quot;   &quot;deed&quot;   &quot;heaven&quot;
 [10,] &quot;friend&quot; &quot;sister&quot; &quot;sun&quot;    &quot;night&quot; &quot;talk&quot;    &quot;command&quot; &quot;hand&quot;  &quot;heart&quot;   &quot;tear&quot;   &quot;die&quot;   </code></pre>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">which.max</span>(doc_topic_distr[<span class="st">&#39;Hamlet&#39;</span>, ])</code></pre></div>
+<div class="sourceCode" id="cb160"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb160-1" data-line-number="1"><span class="kw">which.max</span>(doc_topic_distr[<span class="st">&#39;Hamlet&#39;</span>, ])</a></code></pre></div>
 <pre><code>[1] 7</code></pre>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># top-words could be sorted by “relevance” which also takes into account</span>
-<span class="co"># frequency of word in the corpus (0 &lt; lambda &lt; 1)</span>
-lda_model<span class="op">$</span><span class="kw">get_top_words</span>(<span class="dt">n =</span> <span class="dv">10</span>, <span class="dt">topic_number =</span> <span class="dv">1</span><span class="op">:</span><span class="dv">10</span>, <span class="dt">lambda =</span> <span class="fl">0.2</span>)</code></pre></div>
+<div class="sourceCode" id="cb162"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb162-1" data-line-number="1"><span class="co"># top-words could be sorted by “relevance” which also takes into account</span></a>
+<a class="sourceLine" id="cb162-2" data-line-number="2"><span class="co"># frequency of word in the corpus (0 &lt; lambda &lt; 1)</span></a>
+<a class="sourceLine" id="cb162-3" data-line-number="3">lda_model<span class="op">$</span><span class="kw">get_top_words</span>(<span class="dt">n =</span> <span class="dv">10</span>, <span class="dt">topic_number =</span> <span class="dv">1</span><span class="op">:</span><span class="dv">10</span>, <span class="dt">lambda =</span> <span class="fl">0.2</span>)</a></code></pre></div>
 <pre><code>      [,1]      [,2]      [,3]     [,4]      [,5]     [,6]       [,7]     [,8]      [,9]      [,10]      
  [1,] &quot;honest&quot;  &quot;madam&quot;   &quot;ey&quot;     &quot;love&quot;    &quot;letter&quot; &quot;natur&quot;    &quot;ear&quot;    &quot;england&quot; &quot;rome&quot;    &quot;bloodi&quot;   
  [2,] &quot;beseech&quot; &quot;sea&quot;     &quot;cheek&quot;  &quot;youth&quot;   &quot;merri&quot;  &quot;report&quot;   &quot;sleep&quot;  &quot;majesti&quot; &quot;deed&quot;    &quot;royal&quot;    
@@ -390,8 +418,8 @@ lda_model<span class="op">$</span><span class="kw">get_top_words</span>(<span cl
  [8,] &quot;matter&quot;  &quot;entreat&quot; &quot;mortal&quot; &quot;song&quot;    &quot;horn&quot;   &quot;virgin&quot;   &quot;poison&quot; &quot;battl&quot;   &quot;kneel&quot;   &quot;flourish&quot; 
  [9,] &quot;fellow&quot;  &quot;seek&quot;    &quot;wing&quot;   &quot;paint&quot;   &quot;bond&quot;   &quot;wine&quot;     &quot;shake&quot;  &quot;harri&quot;   &quot;fly&quot;     &quot;king&quot;     
 [10,] &quot;walk&quot;    &quot;passion&quot; &quot;short&quot;  &quot;wed&quot;     &quot;troth&quot;  &quot;direct&quot;   &quot;move&quot;   &quot;crown&quot;   &quot;wert&quot;    &quot;tide&quot;     </code></pre>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># ldavis not shown</span>
-<span class="co"># lda_model$plot()</span></code></pre></div>
+<div class="sourceCode" id="cb164"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb164-1" data-line-number="1"><span class="co"># ldavis not shown</span></a>
+<a class="sourceLine" id="cb164-2" data-line-number="2"><span class="co"># lda_model$plot()</span></a></code></pre></div>
 <p>Given that most text analysis can be very time consuming for a model, consider any approach that might give you more efficiency.</p>
 
 </div>
@@ -475,7 +503,7 @@ gitbook.start({
   (function () {
     var script = document.createElement("script");
     script.type = "text/javascript";
-    var src = "";
+    var src = "true";
     if (src === "" || src === "true") src = "https://cdn.bootcss.com/mathjax/2.7.1/MathJax.js?config=TeX-MML-AM_CHTML";
     if (location.protocol !== "file:" && /^https?:/.test(src))
       src = src.replace(/^https?:/, '');

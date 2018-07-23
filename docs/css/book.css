@@ -1,5 +1,32 @@
 @import url("https://fonts.googleapis.com/css?family=Roboto");
 
+/* title page */
+.title {
+  font-size: 125%;
+  font-family: Roboto;
+  font-style: normal;
+}
+
+.book .book-body .page-wrapper .page-inner section.normal h3.subtitle {
+  font-size: 250%;
+  font-family: Stalemate;
+  font-style: normal;
+}
+
+.author {
+  font-size:  125%;
+  font-style:  normal;       /* ignored thanks to bootstrap random enforecement of em*/
+  font-variant:  small-caps;
+  font-family:  'Open Sans';
+}
+
+.date {
+  font-style: normal;
+  font-family: 'Open Sans';
+}
+
+
+/* main */
 .book  {
   background-color: #fffff8;
 }
@@ -185,4 +212,40 @@ i {
   border-color: #bfbfbf;
   box-shadow: 10px 10px 5px #EBEBEB; /*#888888*/
   padding: 1em;
+}
+
+/* logical NA */
+.ot {
+ color: #337ab7;
+}
+
+/* char/string */
+.ch, .st {
+ color: #aa5500;
+}
+
+/* package */
+code span.st {
+ color: #aa5500;
+}
+
+/* float, other */
+.fl, .dv {
+ color: #23527c;
+}
+
+/* override pygments setting code to a tag */
+.book .book-body .page-wrapper .page-inner section.normal pre code a {
+  color: #585858;
+}
+
+
+/* zoom for img*/
+.zoom {
+    transition: all .3s;
+}
+
+
+.zoom:hover {
+    transform: scale(1.5); /* (150% zoom - Note: if the zoom is too large, it will go outside of the viewport) */
 }

@@ -1,6 +1,6 @@
 ---
-title: <span style="font-size:125%; font-family:Stalemate">In the beginning was the word \.\.\.</span>
-subtitle: <span style="font-size:125%; font-variant:small-caps; font-family:'Open Sans'">An Introduction to Text Processing and Analysis with R</span>
+title: An Introduction to Text Processing and Analysis with R
+subtitle: In the beginning was the word \.\.\.
 author:  |
   <span style="font-size:125%; font-variant:small-caps; font-family:'Open Sans'">Michael Clark</span> <br>
   <span class="" style="font-size:75%">http://m-clark.github.io/workshops/</span><br><br>
@@ -37,7 +37,7 @@ documentclass: book
 # bibliography: refs.bib
 biblio-style: apalike
 link-citations: yes
-description: "This document covers a wide range of topics, including how to process text generally, and demonstrations of sentiment analysis, parts-of-speech tagging, topic modeling, and word embedding. Exercises are provided for most subjects."
+description: "This document covers a wide range of topics, including how to process text generally, and demonstrations of sentiment analysis, parts-of-speech tagging, word embeddings, and topic modeling. Exercises are provided for some topics."
 cover-image: 'img/nineteeneightyR.png'
 url: 'https\://m-clark.github.io/text-analysis-with-R/'  # evidently the \: is required or you'll get text in the title/toc area
 github-repo:  'm-clark/text-analysis-with-R/'

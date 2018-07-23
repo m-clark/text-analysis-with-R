@@ -10,4 +10,4 @@ Dealing with text is not always easy, but it's definitely easier than it ever ha
 
 <br>
 
-<p style="text-align:center; font-family:'Alex Brush'; font-size:200%">Best of luck with your research! $\qquad\sim\mathbb{M}$</p> 
+<p style="text-align:center; font-family:'Alex Brush'; font-size:200%">Best of luck with your data! $\qquad\sim\mathbb{M}$</p> 

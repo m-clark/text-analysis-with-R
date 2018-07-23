@@ -1,6 +1,6 @@
 # Part of Speech Tagging
 
-As an initial review of parts of speech, if you need a refresher the following Schoolhouse Rocks videos should get you squared away:
+As an initial review of parts of speech, if you need a refresher, the following Schoolhouse Rocks videos should get you squared away:
 
 - [A noun is a person, place, or thing.](https://youtu.be/h0m89e9oZko)
 - [Interjections](https://youtu.be/YkAX7Vk3JEw)

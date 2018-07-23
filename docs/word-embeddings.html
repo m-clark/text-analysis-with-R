@@ -5,26 +5,26 @@
 
   <meta charset="UTF-8">
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
-  <title>In the beginning was the word ...</title>
-  <meta name="description" content="This document covers a wide range of topics, including how to process text generally, and demonstrations of sentiment analysis, parts-of-speech tagging, topic modeling, and word embedding. Exercises are provided for most subjects.">
+  <title>An Introduction to Text Processing and Analysis with R</title>
+  <meta name="description" content="This document covers a wide range of topics, including how to process text generally, and demonstrations of sentiment analysis, parts-of-speech tagging, word embeddings, and topic modeling. Exercises are provided for some topics.">
   <meta name="generator" content="bookdown 0.7 and GitBook 2.6.7">
 
-  <meta property="og:title" content="In the beginning was the word ..." />
+  <meta property="og:title" content="An Introduction to Text Processing and Analysis with R" />
   <meta property="og:type" content="book" />
   <meta property="og:url" content="https://m-clark.github.io/text-analysis-with-R/" />
   <meta property="og:image" content="https://m-clark.github.io/text-analysis-with-R/img/nineteeneightyR.png" />
-  <meta property="og:description" content="This document covers a wide range of topics, including how to process text generally, and demonstrations of sentiment analysis, parts-of-speech tagging, topic modeling, and word embedding. Exercises are provided for most subjects." />
+  <meta property="og:description" content="This document covers a wide range of topics, including how to process text generally, and demonstrations of sentiment analysis, parts-of-speech tagging, word embeddings, and topic modeling. Exercises are provided for some topics." />
   <meta name="github-repo" content="m-clark/text-analysis-with-R/" />
 
   <meta name="twitter:card" content="summary" />
-  <meta name="twitter:title" content="In the beginning was the word ..." />
+  <meta name="twitter:title" content="An Introduction to Text Processing and Analysis with R" />
   
-  <meta name="twitter:description" content="This document covers a wide range of topics, including how to process text generally, and demonstrations of sentiment analysis, parts-of-speech tagging, topic modeling, and word embedding. Exercises are provided for most subjects." />
+  <meta name="twitter:description" content="This document covers a wide range of topics, including how to process text generally, and demonstrations of sentiment analysis, parts-of-speech tagging, word embeddings, and topic modeling. Exercises are provided for some topics." />
   <meta name="twitter:image" content="https://m-clark.github.io/text-analysis-with-R/img/nineteeneightyR.png" />
 
 
 
-<meta name="date" content="2018-03-13">
+<meta name="date" content="2018-07-22">
 
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta name="apple-mobile-web-app-capable" content="yes">
@@ -65,41 +65,69 @@
 
 
 <style type="text/css">
-div.sourceCode { overflow-x: auto; }
-table.sourceCode, tr.sourceCode, td.lineNumbers, td.sourceCode {
-  margin: 0; padding: 0; vertical-align: baseline; border: none; }
-table.sourceCode { width: 100%; line-height: 100%; }
-td.lineNumbers { text-align: right; padding-right: 4px; padding-left: 4px; color: #aaaaaa; border-right: 1px solid #aaaaaa; }
-td.sourceCode { padding-left: 5px; }
-code > span.kw { color: #007020; font-weight: bold; } /* Keyword */
-code > span.dt { color: #902000; } /* DataType */
-code > span.dv { color: #40a070; } /* DecVal */
-code > span.bn { color: #40a070; } /* BaseN */
-code > span.fl { color: #40a070; } /* Float */
-code > span.ch { color: #4070a0; } /* Char */
-code > span.st { color: #4070a0; } /* String */
-code > span.co { color: #60a0b0; font-style: italic; } /* Comment */
-code > span.ot { color: #007020; } /* Other */
-code > span.al { color: #ff0000; font-weight: bold; } /* Alert */
-code > span.fu { color: #06287e; } /* Function */
-code > span.er { color: #ff0000; font-weight: bold; } /* Error */
-code > span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
-code > span.cn { color: #880000; } /* Constant */
-code > span.sc { color: #4070a0; } /* SpecialChar */
-code > span.vs { color: #4070a0; } /* VerbatimString */
-code > span.ss { color: #bb6688; } /* SpecialString */
-code > span.im { } /* Import */
-code > span.va { color: #19177c; } /* Variable */
-code > span.cf { color: #007020; font-weight: bold; } /* ControlFlow */
-code > span.op { color: #666666; } /* Operator */
-code > span.bu { } /* BuiltIn */
-code > span.ex { } /* Extension */
-code > span.pp { color: #bc7a00; } /* Preprocessor */
-code > span.at { color: #7d9029; } /* Attribute */
-code > span.do { color: #ba2121; font-style: italic; } /* Documentation */
-code > span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
-code > span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } /* CommentVar */
-code > span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
+a.sourceLine { display: inline-block; line-height: 1.25; }
+a.sourceLine { pointer-events: none; color: inherit; text-decoration: inherit; }
+a.sourceLine:empty { height: 1.2em; position: absolute; }
+.sourceCode { overflow: visible; }
+code.sourceCode { white-space: pre; position: relative; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+code.sourceCode { white-space: pre-wrap; }
+a.sourceLine { text-indent: -1em; padding-left: 1em; }
+}
+pre.numberSource a.sourceLine
+  { position: relative; }
+pre.numberSource a.sourceLine:empty
+  { position: absolute; }
+pre.numberSource a.sourceLine::before
+  { content: attr(data-line-number);
+    position: absolute; left: -5em; text-align: right; vertical-align: baseline;
+    border: none; pointer-events: all;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+    color: #aaaaaa;
+  }
+pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa;  padding-left: 4px; }
+div.sourceCode
+  {  }
+@media screen {
+a.sourceLine::before { text-decoration: underline; }
+}
+code span.al { color: #ff0000; font-weight: bold; } /* Alert */
+code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
+code span.at { color: #7d9029; } /* Attribute */
+code span.bn { color: #40a070; } /* BaseN */
+code span.bu { } /* BuiltIn */
+code span.cf { color: #007020; font-weight: bold; } /* ControlFlow */
+code span.ch { color: #4070a0; } /* Char */
+code span.cn { color: #880000; } /* Constant */
+code span.co { color: #60a0b0; font-style: italic; } /* Comment */
+code span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } /* CommentVar */
+code span.do { color: #ba2121; font-style: italic; } /* Documentation */
+code span.dt { color: #902000; } /* DataType */
+code span.dv { color: #40a070; } /* DecVal */
+code span.er { color: #ff0000; font-weight: bold; } /* Error */
+code span.ex { } /* Extension */
+code span.fl { color: #40a070; } /* Float */
+code span.fu { color: #06287e; } /* Function */
+code span.im { } /* Import */
+code span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
+code span.kw { color: #007020; font-weight: bold; } /* Keyword */
+code span.op { color: #666666; } /* Operator */
+code span.ot { color: #007020; } /* Other */
+code span.pp { color: #bc7a00; } /* Preprocessor */
+code span.sc { color: #4070a0; } /* SpecialChar */
+code span.ss { color: #bb6688; } /* SpecialString */
+code span.st { color: #4070a0; } /* String */
+code span.va { color: #19177c; } /* Variable */
+code span.vs { color: #4070a0; } /* VerbatimString */
+code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
 </style>
 
 <link rel="stylesheet" href="css/standard_html.css" type="text/css" />
@@ -244,7 +272,7 @@ code > span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Inf
       <div class="body-inner">
         <div class="book-header" role="navigation">
           <h1>
-            <i class="fa fa-circle-o-notch fa-spin"></i><a href="./"><span style="font-size:125%; font-family:Stalemate">In the beginning was the word ...</span></a>
+            <i class="fa fa-circle-o-notch fa-spin"></i><a href="./">An Introduction to Text Processing and Analysis with R</a>
           </h1>
         </div>
 
@@ -255,9 +283,10 @@ code > span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Inf
 <div id="word-embeddings" class="section level1">
 <h1>Word Embeddings</h1>
 <p>A key idea in the examination of text concerns representing words as numeric quantities. There are a number of ways to go about this, and we’ve actually already done so. In the sentiment analysis section words were given a sentiment score. In topic modeling, words were represented as frequencies across documents. Once we get to a numeric representation, we can then run statistical models.</p>
-<p>Consider topic modeling again. We take the document-term matrix, and reduce the dimensionality of it to just a few topics. Now consider a <span class="emph">co-occurrence matrix</span>, where if there are <span class="math inline">\(k\)</span> words, it is a <span class="math inline">\(k\)</span> x <span class="math inline">\(k\)</span> matrix, where the diagonal values tell us how frequently word<sub>i</sub> occurs with word<sub>j</sub>. Just like in topic modeling, we could now perform some matrix factorization technique to reduce the dimensionality of the matrix<a href="#fn10" class="footnoteRef" id="fnref10"><sup>10</sup></a>. Now for each word we have a vector of numeric values (across factors) to represent them. Indeed, this is how some earlier approaches were done, for example, using principal components analysis on the co-occurrence matrix.</p>
-<p>Newer techniques such as <span class="emph">word2vec</span> and <span class="emph">GloVe</span> use neural net approaches to construct word vectors. The details are not important for applied users to benefit from them. Furthermore, applications have been made to create sentence and other vector representations<a href="#fn11" class="footnoteRef" id="fnref11"><sup>11</sup></a>. In any case, with vector representations of words we can see how similar they are to each other, and perform other tasks based on that information.</p>
-<p>A tired example from the literature is as follows: <span class="math display">\[\mathrm{king - man + woman = queen}\]</span></p>
+<p>Consider topic modeling again. We take the document-term matrix, and reduce the dimensionality of it to just a few topics. Now consider a <span class="emph">co-occurrence matrix</span>, where if there are <span class="math inline">\(k\)</span> words, it is a <span class="math inline">\(k\)</span> x <span class="math inline">\(k\)</span> matrix, where the diagonal values tell us how frequently word<sub>i</sub> occurs with word<sub>j</sub>. Just like in topic modeling, we could now perform some matrix factorization technique to reduce the dimensionality of the matrix<a href="#fn10" class="footnote-ref" id="fnref10"><sup>10</sup></a>. Now for each word we have a vector of numeric values (across factors) to represent them. Indeed, this is how some earlier approaches were done, for example, using principal components analysis on the co-occurrence matrix.</p>
+<p>Newer techniques such as <span class="emph">word2vec</span> and <span class="emph">GloVe</span> use neural net approaches to construct word vectors. The details are not important for applied users to benefit from them. Furthermore, applications have been made to create sentence and other vector representations<a href="#fn11" class="footnote-ref" id="fnref11"><sup>11</sup></a>. In any case, with vector representations of words we can see how similar they are to each other, and perform other tasks based on that information.</p>
+<p>A tired example from the literature is as follows:
+<span class="math display">\[\mathrm{king - man + woman = queen}\]</span></p>
 <p>So a woman-king is a queen.</p>
 <p>Here is another example:</p>
 <p><span class="math display">\[\mathrm{Paris - France + Germany = Berlin}\]</span></p>
@@ -266,17 +295,17 @@ code > span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Inf
 <div id="shakespeare-example" class="section level2">
 <h2>Shakespeare example</h2>
 <p>We start with some already tokenized data from the works of Shakespeare. We’ll treat the words as if they just come from one big Shakespeare document, and only consider the words as tokens, as opposed to using n-grams. We create an iterator object for <span class="pack">text2vec</span> functions to use, and with that in hand, create the vocabulary, keeping only those that occur at least 5 times. This example generally follows that of the package <a href="http://text2vec.org/glove.html">vignette</a>, which you’ll definitely want to spend some time with.</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">load</span>(<span class="st">&#39;data/shakes_words_df_4text2vec.RData&#39;</span>)
-<span class="kw">library</span>(text2vec)
-## shakes_words</code></pre></div>
+<div class="sourceCode" id="cb105"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb105-1" data-line-number="1"><span class="kw">load</span>(<span class="st">&#39;data/shakes_words_df_4text2vec.RData&#39;</span>)</a>
+<a class="sourceLine" id="cb105-2" data-line-number="2"><span class="kw">library</span>(text2vec)</a>
+<a class="sourceLine" id="cb105-3" data-line-number="3">## shakes_words</a></code></pre></div>
 <p><div id="htmlwidget-d55442410f7905e68a5d" style="width:40%;height:auto;" class="datatables html-widget"></div>
 <script type="application/json" data-for="htmlwidget-d55442410f7905e68a5d">{"x":{"filter":"none","data":[["A_Lover_s_Complaint","A_Lover_s_Complaint","A_Lover_s_Complaint","A_Lover_s_Complaint","A_Lover_s_Complaint","A_Lover_s_Complaint","A_Lover_s_Complaint","A_Lover_s_Complaint","A_Lover_s_Complaint","A_Lover_s_Complaint","A_Lover_s_Complaint","A_Lover_s_Complaint","A_Lover_s_Complaint","A_Lover_s_Complaint","A_Lover_s_Complaint","A_Lover_s_Complaint","A_Lover_s_Complaint","A_Lover_s_Complaint","A_Lover_s_Complaint","A_Lover_s_Complaint","A_Lover_s_Complaint","A_Lover_s_Complaint","A_Lover_s_Complaint","A_Lover_s_Complaint","A_Lover_s_Complaint","A_Lover_s_Complaint","A_Lover_s_Complaint","A_Lover_s_Complaint","A_Lover_s_Complaint","A_Lover_s_Complaint","A_Lover_s_Complaint","A_Lover_s_Complaint","A_Lover_s_Complaint","A_Lover_s_Complaint","A_Lover_s_Complaint","A_Lover_s_Complaint","A_Lover_s_Complaint","A_Lover_s_Complaint","A_Lover_s_Complaint","A_Lover_s_Complaint","A_Lover_s_Complaint","A_Lover_s_Complaint","A_Lover_s_Complaint","A_Lover_s_Complaint","A_Lover_s_Complaint","A_Lover_s_Complaint","A_Lover_s_Complaint","A_Lover_s_Complaint","A_Lover_s_Complaint","A_Lover_s_Complaint","A_Lover_s_Complaint","A_Lover_s_Complaint","A_Lover_s_Complaint","A_Lover_s_Complaint","A_Lover_s_Complaint","A_Lover_s_Complaint","A_Lover_s_Complaint","A_Lover_s_Complaint","A_Lover_s_Complaint","A_Lover_s_Complaint","A_Lover_s_Complaint","A_Lover_s_Complaint","A_Lover_s_Complaint","A_Lover_s_Complaint","A_Lover_s_Complaint","A_Lover_s_Complaint","A_Lover_s_Complaint","A_Lover_s_Complaint","A_Lover_s_Complaint","A_Lover_s_Complaint","A_Lover_s_Complaint","A_Lover_s_Complaint","A_Lover_s_Complaint","A_Lover_s_Complaint","A_Lover_s_Complaint","A_Lover_s_Complaint","A_Lover_s_Complaint","A_Lover_s_Complaint","A_Lover_s_Complaint","A_Lover_s_Complaint","A_Lover_s_Complaint","A_Lover_s_Complaint","A_Lover_s_Complaint","A_Lover_s_Complaint","A_Lover_s_Complaint","A_Lover_s_Complaint","A_Lover_s_Complaint","A_Lover_s_Complaint","A_Lover_s_Complaint","A_Lover_s_Complaint","A_Lover_s_Complaint","A_Lover_s_Complaint","A_Lover_s_Complaint","A_Lover_s_Complaint","A_Lover_s_Complaint","A_Lover_s_Complaint","A_Lover_s_Complaint","A_Lover_s_Complaint","A_Lover_s_Complaint","A_Lover_s_Complaint"],["nor","gives","it","satisfaction","to","our","blood","that","we","must","curb","it","upon","others","proof","to","be","forbod","the","sweets","that","seem","so","good","for","fear","of","harms","that","preach","in","our","behoof","o","appetite","from","judgment","stand","aloof","the","one","a","palate","hath","that","needs","will","taste","though","reason","weep","and","cry","it","is","thy","last","for","further","i","could","say","this","man's","untrue","and","knew","the","patterns","of","his","foul","beguiling","heard","where","his","plants","in","others","orchards","grew","saw","how","deceits","were","gilded","in","his","smiling","knew","vows","were","ever","brokers","to","defiling","thought","characters","and","words"]],"container":"<table class=\"display\">\n  <thead>\n    <tr>\n      <th>id<\/th>\n      <th>word<\/th>\n    <\/tr>\n  <\/thead>\n<\/table>","options":{"dom":"t","scrollY":true,"order":[],"autoWidth":false,"orderClasses":false},"selection":{"mode":"multiple","selected":null,"target":"row"}},"evals":[],"jsHooks":[]}</script><br/></p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">shakes_words_ls =<span class="st"> </span><span class="kw">list</span>(shakes_words<span class="op">$</span>word)
-it =<span class="st"> </span><span class="kw">itoken</span>(shakes_words_ls, <span class="dt">progressbar =</span> <span class="ot">FALSE</span>)
-shakes_vocab =<span class="st"> </span><span class="kw">create_vocabulary</span>(it)
-shakes_vocab =<span class="st"> </span><span class="kw">prune_vocabulary</span>(shakes_vocab, <span class="dt">term_count_min =</span> <span class="dv">5</span>)</code></pre></div>
+<div class="sourceCode" id="cb106"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb106-1" data-line-number="1">shakes_words_ls =<span class="st"> </span><span class="kw">list</span>(shakes_words<span class="op">$</span>word)</a>
+<a class="sourceLine" id="cb106-2" data-line-number="2">it =<span class="st"> </span><span class="kw">itoken</span>(shakes_words_ls, <span class="dt">progressbar =</span> <span class="ot">FALSE</span>)</a>
+<a class="sourceLine" id="cb106-3" data-line-number="3">shakes_vocab =<span class="st"> </span><span class="kw">create_vocabulary</span>(it)</a>
+<a class="sourceLine" id="cb106-4" data-line-number="4">shakes_vocab =<span class="st"> </span><span class="kw">prune_vocabulary</span>(shakes_vocab, <span class="dt">term_count_min =</span> <span class="dv">5</span>)</a></code></pre></div>
 <p>Let’s take a look at what we have at this point. We’ve just created word counts, that’s all the vocabulary object is.</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">shakes_vocab</code></pre></div>
+<div class="sourceCode" id="cb107"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb107-1" data-line-number="1">shakes_vocab</a></code></pre></div>
 <pre><code>Number of docs: 1 
 0 stopwords:  ... 
 ngram_min = 1; ngram_max = 1 
@@ -294,32 +323,32 @@ Vocabulary:
 9093:        and      26032         1
 9094:        the      28831         1</code></pre>
 <p>The next step is to create the token co-occurrence matrix (TCM). The definition of whether two words occur together is arbitrary. Should we just look at previous and next word? Five behind and forward? This will definitely affect results so you will want to play around with it.</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># maps words to indices</span>
-vectorizer =<span class="st"> </span><span class="kw">vocab_vectorizer</span>(shakes_vocab)
-
-<span class="co"># use window of 10 for context words</span>
-shakes_tcm =<span class="st"> </span><span class="kw">create_tcm</span>(it, vectorizer, <span class="dt">skip_grams_window =</span> <span class="dv">10</span>)</code></pre></div>
+<div class="sourceCode" id="cb109"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb109-1" data-line-number="1"><span class="co"># maps words to indices</span></a>
+<a class="sourceLine" id="cb109-2" data-line-number="2">vectorizer =<span class="st"> </span><span class="kw">vocab_vectorizer</span>(shakes_vocab)</a>
+<a class="sourceLine" id="cb109-3" data-line-number="3"></a>
+<a class="sourceLine" id="cb109-4" data-line-number="4"><span class="co"># use window of 10 for context words</span></a>
+<a class="sourceLine" id="cb109-5" data-line-number="5">shakes_tcm =<span class="st"> </span><span class="kw">create_tcm</span>(it, vectorizer, <span class="dt">skip_grams_window =</span> <span class="dv">10</span>)</a></code></pre></div>
 <p>Note that such a matrix will be extremely sparse. Most words do not go with other words in the grand scheme of things. So when they do, it usually matters.</p>
 <p>Now we are ready to create the word vectors based on the GloVe model. Various options exist, so you’ll want to dive into the associated help files and perhaps <a href="http://nlp.stanford.edu/projects/glove/">the original articles</a> to see how you might play around with it. The following takes roughly a minute or two on my machine. I suggest you start with <code>n_iter = 10</code> and/or <code>convergence_tol = 0.001</code> to gauge how long you might have to wait.</p>
 <p>In this setting, we can think of our word of interest as the <span class="emph">target</span>, and any/all other words (within the window) as the <span class="emph">context</span>. Word vectors are learned for both.</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">glove =<span class="st"> </span>GlobalVectors<span class="op">$</span><span class="kw">new</span>(<span class="dt">word_vectors_size =</span> <span class="dv">50</span>, <span class="dt">vocabulary =</span> shakes_vocab, <span class="dt">x_max =</span> <span class="dv">10</span>)
-shakes_wv_main =<span class="st"> </span>glove<span class="op">$</span><span class="kw">fit_transform</span>(shakes_tcm, <span class="dt">n_iter =</span> <span class="dv">1000</span>, <span class="dt">convergence_tol =</span> <span class="fl">0.00001</span>)
-
-<span class="co"># dim(shakes_wv_main)</span>
-
-shakes_wv_context =<span class="st"> </span>glove<span class="op">$</span>components
-
-<span class="co"># dim(shakes_wv_context)</span>
-
-<span class="co"># Either word-vectors matrices could work, but the developers of the technique</span>
-<span class="co"># suggest the sum/mean may work better</span>
-shakes_word_vectors =<span class="st"> </span>shakes_wv_main <span class="op">+</span><span class="st"> </span><span class="kw">t</span>(shakes_wv_context)</code></pre></div>
-<p>Now we can start to play. The measure of interest in comparing two vectors will be <span class="emph">cosine similarity</span>, which, if you’re not familiar, you can think of it similarly to the standard correlation<a href="#fn12" class="footnoteRef" id="fnref12"><sup>12</sup></a>. Let’s see what is similar to Romeo.</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">rom =<span class="st"> </span>shakes_word_vectors[<span class="st">&quot;romeo&quot;</span>, , drop =<span class="st"> </span>F]
-<span class="co"># ham = shakes_word_vectors[&quot;hamlet&quot;, , drop = F]</span>
-
-cos_sim_rom =<span class="st"> </span><span class="kw">sim2</span>(<span class="dt">x =</span> shakes_word_vectors, <span class="dt">y =</span> rom, <span class="dt">method =</span> <span class="st">&quot;cosine&quot;</span>, <span class="dt">norm =</span> <span class="st">&quot;l2&quot;</span>)
-<span class="co"># head(sort(cos_sim_rom[,1], decreasing = T), 10)</span></code></pre></div>
+<div class="sourceCode" id="cb110"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb110-1" data-line-number="1">glove =<span class="st"> </span>GlobalVectors<span class="op">$</span><span class="kw">new</span>(<span class="dt">word_vectors_size =</span> <span class="dv">50</span>, <span class="dt">vocabulary =</span> shakes_vocab, <span class="dt">x_max =</span> <span class="dv">10</span>)</a>
+<a class="sourceLine" id="cb110-2" data-line-number="2">shakes_wv_main =<span class="st"> </span>glove<span class="op">$</span><span class="kw">fit_transform</span>(shakes_tcm, <span class="dt">n_iter =</span> <span class="dv">1000</span>, <span class="dt">convergence_tol =</span> <span class="fl">0.00001</span>)</a>
+<a class="sourceLine" id="cb110-3" data-line-number="3"></a>
+<a class="sourceLine" id="cb110-4" data-line-number="4"><span class="co"># dim(shakes_wv_main)</span></a>
+<a class="sourceLine" id="cb110-5" data-line-number="5"></a>
+<a class="sourceLine" id="cb110-6" data-line-number="6">shakes_wv_context =<span class="st"> </span>glove<span class="op">$</span>components</a>
+<a class="sourceLine" id="cb110-7" data-line-number="7"></a>
+<a class="sourceLine" id="cb110-8" data-line-number="8"><span class="co"># dim(shakes_wv_context)</span></a>
+<a class="sourceLine" id="cb110-9" data-line-number="9"></a>
+<a class="sourceLine" id="cb110-10" data-line-number="10"><span class="co"># Either word-vectors matrices could work, but the developers of the technique</span></a>
+<a class="sourceLine" id="cb110-11" data-line-number="11"><span class="co"># suggest the sum/mean may work better</span></a>
+<a class="sourceLine" id="cb110-12" data-line-number="12">shakes_word_vectors =<span class="st"> </span>shakes_wv_main <span class="op">+</span><span class="st"> </span><span class="kw">t</span>(shakes_wv_context)</a></code></pre></div>
+<p>Now we can start to play. The measure of interest in comparing two vectors will be <span class="emph">cosine similarity</span>, which, if you’re not familiar, you can think of it similarly to the standard correlation<a href="#fn12" class="footnote-ref" id="fnref12"><sup>12</sup></a>. Let’s see what is similar to Romeo.</p>
+<div class="sourceCode" id="cb111"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb111-1" data-line-number="1">rom =<span class="st"> </span>shakes_word_vectors[<span class="st">&quot;romeo&quot;</span>, , drop =<span class="st"> </span>F]</a>
+<a class="sourceLine" id="cb111-2" data-line-number="2"><span class="co"># ham = shakes_word_vectors[&quot;hamlet&quot;, , drop = F]</span></a>
+<a class="sourceLine" id="cb111-3" data-line-number="3"></a>
+<a class="sourceLine" id="cb111-4" data-line-number="4">cos_sim_rom =<span class="st"> </span><span class="kw">sim2</span>(<span class="dt">x =</span> shakes_word_vectors, <span class="dt">y =</span> rom, <span class="dt">method =</span> <span class="st">&quot;cosine&quot;</span>, <span class="dt">norm =</span> <span class="st">&quot;l2&quot;</span>)</a>
+<a class="sourceLine" id="cb111-5" data-line-number="5"><span class="co"># head(sort(cos_sim_rom[,1], decreasing = T), 10)</span></a></code></pre></div>
 <table>
 <colgroup>
 <col width="8%" />
@@ -331,7 +360,7 @@ cos_sim_rom =<span class="st"> </span><span class="kw">sim2</span>(<span class="
 <col width="8%" />
 <col width="12%" />
 <col width="8%" />
-<col width="11%" />
+<col width="12%" />
 </colgroup>
 <thead>
 <tr class="header">
@@ -362,11 +391,11 @@ cos_sim_rom =<span class="st"> </span><span class="kw">sim2</span>(<span class="
 </tr>
 </tbody>
 </table>
-<p>Obviously Romeo is most like Romeo, but after that comes the rest of the crew in the play. As this text is somewhat raw, it is likely due to names associated with lines in the play. As such, one may want to narrow the window<a href="#fn13" class="footnoteRef" id="fnref13"><sup>13</sup></a>. Let’s try <strong>love</strong>.</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">love =<span class="st"> </span>shakes_word_vectors[<span class="st">&quot;love&quot;</span>, , drop =<span class="st"> </span>F]
-
-cos_sim_rom =<span class="st"> </span><span class="kw">sim2</span>(<span class="dt">x =</span> shakes_word_vectors, <span class="dt">y =</span> love, <span class="dt">method =</span> <span class="st">&quot;cosine&quot;</span>, <span class="dt">norm =</span> <span class="st">&quot;l2&quot;</span>)
-<span class="co"># head(sort(cos_sim_rom[,1], decreasing = T), 10)</span></code></pre></div>
+<p>Obviously Romeo is most like Romeo, but after that comes the rest of the crew in the play. As this text is somewhat raw, it is likely due to names associated with lines in the play. As such, one may want to narrow the window<a href="#fn13" class="footnote-ref" id="fnref13"><sup>13</sup></a>. Let’s try <strong>love</strong>.</p>
+<div class="sourceCode" id="cb112"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb112-1" data-line-number="1">love =<span class="st"> </span>shakes_word_vectors[<span class="st">&quot;love&quot;</span>, , drop =<span class="st"> </span>F]</a>
+<a class="sourceLine" id="cb112-2" data-line-number="2"></a>
+<a class="sourceLine" id="cb112-3" data-line-number="3">cos_sim_rom =<span class="st"> </span><span class="kw">sim2</span>(<span class="dt">x =</span> shakes_word_vectors, <span class="dt">y =</span> love, <span class="dt">method =</span> <span class="st">&quot;cosine&quot;</span>, <span class="dt">norm =</span> <span class="st">&quot;l2&quot;</span>)</a>
+<a class="sourceLine" id="cb112-4" data-line-number="4"><span class="co"># head(sort(cos_sim_rom[,1], decreasing = T), 10)</span></a></code></pre></div>
 <table style="width:97%;">
 <colgroup>
 <col width="9%" />
@@ -410,12 +439,12 @@ cos_sim_rom =<span class="st"> </span><span class="kw">sim2</span>(<span class="
 </tbody>
 </table>
 <p>The issue here is that love is so commonly used in Shakespeare, it’s most like other very common words. What if we take Romeo, subtract his friend Mercutio, and add Nurse? This is similar to the analogy example we had at the start.</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">test =<span class="st"> </span>shakes_word_vectors[<span class="st">&quot;romeo&quot;</span>, , drop =<span class="st"> </span>F] <span class="op">-</span>
-<span class="st">  </span>shakes_word_vectors[<span class="st">&quot;mercutio&quot;</span>, , drop =<span class="st"> </span>F] <span class="op">+</span>
-<span class="st">  </span>shakes_word_vectors[<span class="st">&quot;nurse&quot;</span>, , drop =<span class="st"> </span>F]
-
-cos_sim_test =<span class="st"> </span><span class="kw">sim2</span>(<span class="dt">x =</span> shakes_word_vectors, <span class="dt">y =</span> test, <span class="dt">method =</span> <span class="st">&quot;cosine&quot;</span>, <span class="dt">norm =</span> <span class="st">&quot;l2&quot;</span>)
-<span class="co"># head(sort(cos_sim_rom[,1], decreasing = T), 10)</span></code></pre></div>
+<div class="sourceCode" id="cb113"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb113-1" data-line-number="1">test =<span class="st"> </span>shakes_word_vectors[<span class="st">&quot;romeo&quot;</span>, , drop =<span class="st"> </span>F] <span class="op">-</span></a>
+<a class="sourceLine" id="cb113-2" data-line-number="2"><span class="st">  </span>shakes_word_vectors[<span class="st">&quot;mercutio&quot;</span>, , drop =<span class="st"> </span>F] <span class="op">+</span></a>
+<a class="sourceLine" id="cb113-3" data-line-number="3"><span class="st">  </span>shakes_word_vectors[<span class="st">&quot;nurse&quot;</span>, , drop =<span class="st"> </span>F]</a>
+<a class="sourceLine" id="cb113-4" data-line-number="4"></a>
+<a class="sourceLine" id="cb113-5" data-line-number="5">cos_sim_test =<span class="st"> </span><span class="kw">sim2</span>(<span class="dt">x =</span> shakes_word_vectors, <span class="dt">y =</span> test, <span class="dt">method =</span> <span class="st">&quot;cosine&quot;</span>, <span class="dt">norm =</span> <span class="st">&quot;l2&quot;</span>)</a>
+<a class="sourceLine" id="cb113-6" data-line-number="6"><span class="co"># head(sort(cos_sim_test[,1], decreasing = T), 10)</span></a></code></pre></div>
 <table style="width:36%;">
 <colgroup>
 <col width="11%" />
@@ -438,17 +467,17 @@ cos_sim_test =<span class="st"> </span><span class="kw">sim2</span>(<span class=
 </tbody>
 </table>
 <p>It looks like we get Juliet as the most likely word (after the ones we actually used), just as we might have expected. Again, we can think of this as Romeo is to Mercutio as Juliet is to the Nurse. Let’s try another like that.</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">test =<span class="st"> </span>shakes_word_vectors[<span class="st">&quot;romeo&quot;</span>, , drop =<span class="st"> </span>F] <span class="op">-</span><span class="st"> </span>
-<span class="st">  </span>shakes_word_vectors[<span class="st">&quot;juliet&quot;</span>, , drop =<span class="st"> </span>F] <span class="op">+</span><span class="st"> </span>
-<span class="st">  </span>shakes_word_vectors[<span class="st">&quot;cleopatra&quot;</span>, , drop =<span class="st"> </span>F] 
-
-cos_sim_test =<span class="st"> </span><span class="kw">sim2</span>(<span class="dt">x =</span> shakes_word_vectors, <span class="dt">y =</span> test, <span class="dt">method =</span> <span class="st">&quot;cosine&quot;</span>, <span class="dt">norm =</span> <span class="st">&quot;l2&quot;</span>)
-<span class="co"># head(sort(cos_sim_test[,1], decreasing = T), 3)</span></code></pre></div>
-<table style="width:39%;">
+<div class="sourceCode" id="cb114"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb114-1" data-line-number="1">test =<span class="st"> </span>shakes_word_vectors[<span class="st">&quot;romeo&quot;</span>, , drop =<span class="st"> </span>F] <span class="op">-</span><span class="st"> </span></a>
+<a class="sourceLine" id="cb114-2" data-line-number="2"><span class="st">  </span>shakes_word_vectors[<span class="st">&quot;juliet&quot;</span>, , drop =<span class="st"> </span>F] <span class="op">+</span><span class="st"> </span></a>
+<a class="sourceLine" id="cb114-3" data-line-number="3"><span class="st">  </span>shakes_word_vectors[<span class="st">&quot;cleopatra&quot;</span>, , drop =<span class="st"> </span>F] </a>
+<a class="sourceLine" id="cb114-4" data-line-number="4"></a>
+<a class="sourceLine" id="cb114-5" data-line-number="5">cos_sim_test =<span class="st"> </span><span class="kw">sim2</span>(<span class="dt">x =</span> shakes_word_vectors, <span class="dt">y =</span> test, <span class="dt">method =</span> <span class="st">&quot;cosine&quot;</span>, <span class="dt">norm =</span> <span class="st">&quot;l2&quot;</span>)</a>
+<a class="sourceLine" id="cb114-6" data-line-number="6"><span class="co"># head(sort(cos_sim_test[,1], decreasing = T), 3)</span></a></code></pre></div>
+<table style="width:40%;">
 <colgroup>
 <col width="16%" />
 <col width="11%" />
-<col width="11%" />
+<col width="12%" />
 </colgroup>
 <thead>
 <tr class="header">
@@ -470,40 +499,40 @@ cos_sim_test =<span class="st"> </span><span class="kw">sim2</span>(<span class=
 <div id="wikipedia" class="section level2">
 <h2>Wikipedia</h2>
 <p>The following shows the code for analyzing text from Wikipedia, and comes directly from the <span class="pack">text2vec</span> vignette. Note that this is a relatively large amount of text (100MB), and so will take notably longer to process.</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">text8_file =<span class="st"> &quot;data/texts_raw/text8&quot;</span>
-<span class="cf">if</span> (<span class="op">!</span><span class="kw">file.exists</span>(text8_file)) {
-  <span class="kw">download.file</span>(<span class="st">&quot;http://mattmahoney.net/dc/text8.zip&quot;</span>, <span class="st">&quot;data/text8.zip&quot;</span>)
-  <span class="kw">unzip</span>(<span class="st">&quot;data/text8.zip&quot;</span>, <span class="dt">files =</span> <span class="st">&quot;text8&quot;</span>, <span class="dt">exdir =</span> <span class="st">&quot;data/texts_raw/&quot;</span>)
-}
-wiki =<span class="st"> </span><span class="kw">readLines</span>(text8_file, <span class="dt">n =</span> <span class="dv">1</span>, <span class="dt">warn =</span> <span class="ot">FALSE</span>)
-
-tokens =<span class="st"> </span><span class="kw">space_tokenizer</span>(wiki)
-it =<span class="st"> </span><span class="kw">itoken</span>(tokens, <span class="dt">progressbar =</span> <span class="ot">FALSE</span>)
-vocab =<span class="st"> </span><span class="kw">create_vocabulary</span>(it)
-vocab =<span class="st"> </span><span class="kw">prune_vocabulary</span>(vocab, <span class="dt">term_count_min =</span> 5L)
-vectorizer =<span class="st"> </span><span class="kw">vocab_vectorizer</span>(vocab)
-
-tcm =<span class="st"> </span><span class="kw">create_tcm</span>(it, vectorizer, <span class="dt">skip_grams_window =</span> 5L)
-
-glove =<span class="st"> </span>GlobalVectors<span class="op">$</span><span class="kw">new</span>(<span class="dt">word_vectors_size =</span> <span class="dv">50</span>, <span class="dt">vocabulary =</span> vocab, <span class="dt">x_max =</span> <span class="dv">10</span>)
-
-wv_main =<span class="st"> </span>glove<span class="op">$</span><span class="kw">fit_transform</span>(tcm, <span class="dt">n_iter =</span> <span class="dv">100</span>, <span class="dt">convergence_tol =</span> <span class="fl">0.001</span>)
-wv_context =<span class="st"> </span>glove<span class="op">$</span>components
-word_vectors =<span class="st"> </span>wv_main <span class="op">+</span><span class="st"> </span><span class="kw">t</span>(wv_context)</code></pre></div>
+<div class="sourceCode" id="cb115"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb115-1" data-line-number="1">text8_file =<span class="st"> &quot;data/texts_raw/text8&quot;</span></a>
+<a class="sourceLine" id="cb115-2" data-line-number="2"><span class="cf">if</span> (<span class="op">!</span><span class="kw">file.exists</span>(text8_file)) {</a>
+<a class="sourceLine" id="cb115-3" data-line-number="3">  <span class="kw">download.file</span>(<span class="st">&quot;http://mattmahoney.net/dc/text8.zip&quot;</span>, <span class="st">&quot;data/text8.zip&quot;</span>)</a>
+<a class="sourceLine" id="cb115-4" data-line-number="4">  <span class="kw">unzip</span>(<span class="st">&quot;data/text8.zip&quot;</span>, <span class="dt">files =</span> <span class="st">&quot;text8&quot;</span>, <span class="dt">exdir =</span> <span class="st">&quot;data/texts_raw/&quot;</span>)</a>
+<a class="sourceLine" id="cb115-5" data-line-number="5">}</a>
+<a class="sourceLine" id="cb115-6" data-line-number="6">wiki =<span class="st"> </span><span class="kw">readLines</span>(text8_file, <span class="dt">n =</span> <span class="dv">1</span>, <span class="dt">warn =</span> <span class="ot">FALSE</span>)</a>
+<a class="sourceLine" id="cb115-7" data-line-number="7"></a>
+<a class="sourceLine" id="cb115-8" data-line-number="8">tokens =<span class="st"> </span><span class="kw">space_tokenizer</span>(wiki)</a>
+<a class="sourceLine" id="cb115-9" data-line-number="9">it =<span class="st"> </span><span class="kw">itoken</span>(tokens, <span class="dt">progressbar =</span> <span class="ot">FALSE</span>)</a>
+<a class="sourceLine" id="cb115-10" data-line-number="10">vocab =<span class="st"> </span><span class="kw">create_vocabulary</span>(it)</a>
+<a class="sourceLine" id="cb115-11" data-line-number="11">vocab =<span class="st"> </span><span class="kw">prune_vocabulary</span>(vocab, <span class="dt">term_count_min =</span> 5L)</a>
+<a class="sourceLine" id="cb115-12" data-line-number="12">vectorizer =<span class="st"> </span><span class="kw">vocab_vectorizer</span>(vocab)</a>
+<a class="sourceLine" id="cb115-13" data-line-number="13"></a>
+<a class="sourceLine" id="cb115-14" data-line-number="14">tcm =<span class="st"> </span><span class="kw">create_tcm</span>(it, vectorizer, <span class="dt">skip_grams_window =</span> 5L)</a>
+<a class="sourceLine" id="cb115-15" data-line-number="15"></a>
+<a class="sourceLine" id="cb115-16" data-line-number="16">glove =<span class="st"> </span>GlobalVectors<span class="op">$</span><span class="kw">new</span>(<span class="dt">word_vectors_size =</span> <span class="dv">50</span>, <span class="dt">vocabulary =</span> vocab, <span class="dt">x_max =</span> <span class="dv">10</span>)</a>
+<a class="sourceLine" id="cb115-17" data-line-number="17"></a>
+<a class="sourceLine" id="cb115-18" data-line-number="18">wv_main =<span class="st"> </span>glove<span class="op">$</span><span class="kw">fit_transform</span>(tcm, <span class="dt">n_iter =</span> <span class="dv">100</span>, <span class="dt">convergence_tol =</span> <span class="fl">0.001</span>)</a>
+<a class="sourceLine" id="cb115-19" data-line-number="19">wv_context =<span class="st"> </span>glove<span class="op">$</span>components</a>
+<a class="sourceLine" id="cb115-20" data-line-number="20">word_vectors =<span class="st"> </span>wv_main <span class="op">+</span><span class="st"> </span><span class="kw">t</span>(wv_context)</a></code></pre></div>
 <p>Let’s try our Berlin example.</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">berlin =<span class="st"> </span>word_vectors[<span class="st">&quot;paris&quot;</span>, , drop =<span class="st"> </span><span class="ot">FALSE</span>] <span class="op">-</span>
-<span class="st">  </span>word_vectors[<span class="st">&quot;france&quot;</span>, , drop =<span class="st"> </span><span class="ot">FALSE</span>] <span class="op">+</span>
-<span class="st">  </span>word_vectors[<span class="st">&quot;germany&quot;</span>, , drop =<span class="st"> </span><span class="ot">FALSE</span>]
-berlin_cos_sim =<span class="st"> </span><span class="kw">sim2</span>(<span class="dt">x =</span> word_vectors, <span class="dt">y =</span> berlin, <span class="dt">method =</span> <span class="st">&quot;cosine&quot;</span>, <span class="dt">norm =</span> <span class="st">&quot;l2&quot;</span>)
-<span class="kw">head</span>(<span class="kw">sort</span>(berlin_cos_sim[,<span class="dv">1</span>], <span class="dt">decreasing =</span> <span class="ot">TRUE</span>), <span class="dv">5</span>)</code></pre></div>
+<div class="sourceCode" id="cb116"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb116-1" data-line-number="1">berlin =<span class="st"> </span>word_vectors[<span class="st">&quot;paris&quot;</span>, , drop =<span class="st"> </span><span class="ot">FALSE</span>] <span class="op">-</span></a>
+<a class="sourceLine" id="cb116-2" data-line-number="2"><span class="st">  </span>word_vectors[<span class="st">&quot;france&quot;</span>, , drop =<span class="st"> </span><span class="ot">FALSE</span>] <span class="op">+</span></a>
+<a class="sourceLine" id="cb116-3" data-line-number="3"><span class="st">  </span>word_vectors[<span class="st">&quot;germany&quot;</span>, , drop =<span class="st"> </span><span class="ot">FALSE</span>]</a>
+<a class="sourceLine" id="cb116-4" data-line-number="4">berlin_cos_sim =<span class="st"> </span><span class="kw">sim2</span>(<span class="dt">x =</span> word_vectors, <span class="dt">y =</span> berlin, <span class="dt">method =</span> <span class="st">&quot;cosine&quot;</span>, <span class="dt">norm =</span> <span class="st">&quot;l2&quot;</span>)</a>
+<a class="sourceLine" id="cb116-5" data-line-number="5"><span class="kw">head</span>(<span class="kw">sort</span>(berlin_cos_sim[,<span class="dv">1</span>], <span class="dt">decreasing =</span> <span class="ot">TRUE</span>), <span class="dv">5</span>)</a></code></pre></div>
 <pre><code>    paris    berlin    munich   germany        at 
 0.7575511 0.7560328 0.6721202 0.6559778 0.6519383 </code></pre>
 <p>Success! Now let’s try the queen example.</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">queen =<span class="st"> </span>word_vectors[<span class="st">&quot;king&quot;</span>, , drop =<span class="st"> </span><span class="ot">FALSE</span>] <span class="op">-</span>
-<span class="st">  </span>word_vectors[<span class="st">&quot;man&quot;</span>, , drop =<span class="st"> </span><span class="ot">FALSE</span>] <span class="op">+</span>
-<span class="st">  </span>word_vectors[<span class="st">&quot;woman&quot;</span>, , drop =<span class="st"> </span><span class="ot">FALSE</span>]
-queen_cos_sim =<span class="st"> </span><span class="kw">sim2</span>(<span class="dt">x =</span> word_vectors, <span class="dt">y =</span> queen, <span class="dt">method =</span> <span class="st">&quot;cosine&quot;</span>, <span class="dt">norm =</span> <span class="st">&quot;l2&quot;</span>)
-<span class="kw">head</span>(<span class="kw">sort</span>(queen_cos_sim[,<span class="dv">1</span>], <span class="dt">decreasing =</span> <span class="ot">TRUE</span>), <span class="dv">5</span>)</code></pre></div>
+<div class="sourceCode" id="cb118"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb118-1" data-line-number="1">queen =<span class="st"> </span>word_vectors[<span class="st">&quot;king&quot;</span>, , drop =<span class="st"> </span><span class="ot">FALSE</span>] <span class="op">-</span></a>
+<a class="sourceLine" id="cb118-2" data-line-number="2"><span class="st">  </span>word_vectors[<span class="st">&quot;man&quot;</span>, , drop =<span class="st"> </span><span class="ot">FALSE</span>] <span class="op">+</span></a>
+<a class="sourceLine" id="cb118-3" data-line-number="3"><span class="st">  </span>word_vectors[<span class="st">&quot;woman&quot;</span>, , drop =<span class="st"> </span><span class="ot">FALSE</span>]</a>
+<a class="sourceLine" id="cb118-4" data-line-number="4">queen_cos_sim =<span class="st"> </span><span class="kw">sim2</span>(<span class="dt">x =</span> word_vectors, <span class="dt">y =</span> queen, <span class="dt">method =</span> <span class="st">&quot;cosine&quot;</span>, <span class="dt">norm =</span> <span class="st">&quot;l2&quot;</span>)</a>
+<a class="sourceLine" id="cb118-5" data-line-number="5"><span class="kw">head</span>(<span class="kw">sort</span>(queen_cos_sim[,<span class="dv">1</span>], <span class="dt">decreasing =</span> <span class="ot">TRUE</span>), <span class="dv">5</span>)</a></code></pre></div>
 <pre><code>     king       son alexander     henry     queen 
 0.8831932 0.7575572 0.7042561 0.6769456 0.6755054 </code></pre>
 <p>Not so much, though it is still a top result. Results are of course highly dependent upon the data and settings you choose, so keep the context in mind when trying this out.</p>
@@ -514,10 +543,10 @@ queen_cos_sim =<span class="st"> </span><span class="kw">sim2</span>(<span class
 <div class="footnotes">
 <hr />
 <ol start="10">
-<li id="fn10"><p>You can imagine how it might be difficult to deal with the English language, which might be something on the order of 1 million words.<a href="word-embeddings.html#fnref10">↩</a></p></li>
-<li id="fn11"><p>Simply taking the average of the word vector representations within a sentence to represent the sentence as a vector is surprisingly performant.<a href="word-embeddings.html#fnref11">↩</a></p></li>
-<li id="fn12"><p>It’s also used in the <a href="shakespeare-start-to-finish.html#similarity">Shakespeare Start to Finish</a> section.<a href="word-embeddings.html#fnref12">↩</a></p></li>
-<li id="fn13"><p>With a window of 5, Romeo’s top 10 includes others like Troilus and Cressida.<a href="word-embeddings.html#fnref13">↩</a></p></li>
+<li id="fn10"><p>You can imagine how it might be difficult to deal with the English language, which might be something on the order of 1 million words.<a href="word-embeddings.html#fnref10" class="footnote-back">↩</a></p></li>
+<li id="fn11"><p>Simply taking the average of the word vector representations within a sentence to represent the sentence as a vector is surprisingly performant.<a href="word-embeddings.html#fnref11" class="footnote-back">↩</a></p></li>
+<li id="fn12"><p>It’s also used in the <a href="shakespeare-start-to-finish.html#similarity">Shakespeare Start to Finish</a> section.<a href="word-embeddings.html#fnref12" class="footnote-back">↩</a></p></li>
+<li id="fn13"><p>With a window of 5, Romeo’s top 10 includes others like Troilus and Cressida.<a href="word-embeddings.html#fnref13" class="footnote-back">↩</a></p></li>
 </ol>
 </div>
             </section>
@@ -572,7 +601,7 @@ gitbook.start({
   (function () {
     var script = document.createElement("script");
     script.type = "text/javascript";
-    var src = "";
+    var src = "true";
     if (src === "" || src === "true") src = "https://cdn.bootcss.com/mathjax/2.7.1/MathJax.js?config=TeX-MML-AM_CHTML";
     if (location.protocol !== "file:" && /^https?:/.test(src))
       src = src.replace(/^https?:/, '');

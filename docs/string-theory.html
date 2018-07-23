@@ -5,26 +5,26 @@
 
   <meta charset="UTF-8">
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
-  <title>In the beginning was the word ...</title>
-  <meta name="description" content="This document covers a wide range of topics, including how to process text generally, and demonstrations of sentiment analysis, parts-of-speech tagging, topic modeling, and word embedding. Exercises are provided for most subjects.">
+  <title>An Introduction to Text Processing and Analysis with R</title>
+  <meta name="description" content="This document covers a wide range of topics, including how to process text generally, and demonstrations of sentiment analysis, parts-of-speech tagging, word embeddings, and topic modeling. Exercises are provided for some topics.">
   <meta name="generator" content="bookdown 0.7 and GitBook 2.6.7">
 
-  <meta property="og:title" content="In the beginning was the word ..." />
+  <meta property="og:title" content="An Introduction to Text Processing and Analysis with R" />
   <meta property="og:type" content="book" />
   <meta property="og:url" content="https://m-clark.github.io/text-analysis-with-R/" />
   <meta property="og:image" content="https://m-clark.github.io/text-analysis-with-R/img/nineteeneightyR.png" />
-  <meta property="og:description" content="This document covers a wide range of topics, including how to process text generally, and demonstrations of sentiment analysis, parts-of-speech tagging, topic modeling, and word embedding. Exercises are provided for most subjects." />
+  <meta property="og:description" content="This document covers a wide range of topics, including how to process text generally, and demonstrations of sentiment analysis, parts-of-speech tagging, word embeddings, and topic modeling. Exercises are provided for some topics." />
   <meta name="github-repo" content="m-clark/text-analysis-with-R/" />
 
   <meta name="twitter:card" content="summary" />
-  <meta name="twitter:title" content="In the beginning was the word ..." />
+  <meta name="twitter:title" content="An Introduction to Text Processing and Analysis with R" />
   
-  <meta name="twitter:description" content="This document covers a wide range of topics, including how to process text generally, and demonstrations of sentiment analysis, parts-of-speech tagging, topic modeling, and word embedding. Exercises are provided for most subjects." />
+  <meta name="twitter:description" content="This document covers a wide range of topics, including how to process text generally, and demonstrations of sentiment analysis, parts-of-speech tagging, word embeddings, and topic modeling. Exercises are provided for some topics." />
   <meta name="twitter:image" content="https://m-clark.github.io/text-analysis-with-R/img/nineteeneightyR.png" />
 
 
 
-<meta name="date" content="2018-03-13">
+<meta name="date" content="2018-07-22">
 
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta name="apple-mobile-web-app-capable" content="yes">
@@ -65,41 +65,69 @@
 
 
 <style type="text/css">
-div.sourceCode { overflow-x: auto; }
-table.sourceCode, tr.sourceCode, td.lineNumbers, td.sourceCode {
-  margin: 0; padding: 0; vertical-align: baseline; border: none; }
-table.sourceCode { width: 100%; line-height: 100%; }
-td.lineNumbers { text-align: right; padding-right: 4px; padding-left: 4px; color: #aaaaaa; border-right: 1px solid #aaaaaa; }
-td.sourceCode { padding-left: 5px; }
-code > span.kw { color: #007020; font-weight: bold; } /* Keyword */
-code > span.dt { color: #902000; } /* DataType */
-code > span.dv { color: #40a070; } /* DecVal */
-code > span.bn { color: #40a070; } /* BaseN */
-code > span.fl { color: #40a070; } /* Float */
-code > span.ch { color: #4070a0; } /* Char */
-code > span.st { color: #4070a0; } /* String */
-code > span.co { color: #60a0b0; font-style: italic; } /* Comment */
-code > span.ot { color: #007020; } /* Other */
-code > span.al { color: #ff0000; font-weight: bold; } /* Alert */
-code > span.fu { color: #06287e; } /* Function */
-code > span.er { color: #ff0000; font-weight: bold; } /* Error */
-code > span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
-code > span.cn { color: #880000; } /* Constant */
-code > span.sc { color: #4070a0; } /* SpecialChar */
-code > span.vs { color: #4070a0; } /* VerbatimString */
-code > span.ss { color: #bb6688; } /* SpecialString */
-code > span.im { } /* Import */
-code > span.va { color: #19177c; } /* Variable */
-code > span.cf { color: #007020; font-weight: bold; } /* ControlFlow */
-code > span.op { color: #666666; } /* Operator */
-code > span.bu { } /* BuiltIn */
-code > span.ex { } /* Extension */
-code > span.pp { color: #bc7a00; } /* Preprocessor */
-code > span.at { color: #7d9029; } /* Attribute */
-code > span.do { color: #ba2121; font-style: italic; } /* Documentation */
-code > span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
-code > span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } /* CommentVar */
-code > span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
+a.sourceLine { display: inline-block; line-height: 1.25; }
+a.sourceLine { pointer-events: none; color: inherit; text-decoration: inherit; }
+a.sourceLine:empty { height: 1.2em; position: absolute; }
+.sourceCode { overflow: visible; }
+code.sourceCode { white-space: pre; position: relative; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+code.sourceCode { white-space: pre-wrap; }
+a.sourceLine { text-indent: -1em; padding-left: 1em; }
+}
+pre.numberSource a.sourceLine
+  { position: relative; }
+pre.numberSource a.sourceLine:empty
+  { position: absolute; }
+pre.numberSource a.sourceLine::before
+  { content: attr(data-line-number);
+    position: absolute; left: -5em; text-align: right; vertical-align: baseline;
+    border: none; pointer-events: all;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+    color: #aaaaaa;
+  }
+pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa;  padding-left: 4px; }
+div.sourceCode
+  {  }
+@media screen {
+a.sourceLine::before { text-decoration: underline; }
+}
+code span.al { color: #ff0000; font-weight: bold; } /* Alert */
+code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
+code span.at { color: #7d9029; } /* Attribute */
+code span.bn { color: #40a070; } /* BaseN */
+code span.bu { } /* BuiltIn */
+code span.cf { color: #007020; font-weight: bold; } /* ControlFlow */
+code span.ch { color: #4070a0; } /* Char */
+code span.cn { color: #880000; } /* Constant */
+code span.co { color: #60a0b0; font-style: italic; } /* Comment */
+code span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } /* CommentVar */
+code span.do { color: #ba2121; font-style: italic; } /* Documentation */
+code span.dt { color: #902000; } /* DataType */
+code span.dv { color: #40a070; } /* DecVal */
+code span.er { color: #ff0000; font-weight: bold; } /* Error */
+code span.ex { } /* Extension */
+code span.fl { color: #40a070; } /* Float */
+code span.fu { color: #06287e; } /* Function */
+code span.im { } /* Import */
+code span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
+code span.kw { color: #007020; font-weight: bold; } /* Keyword */
+code span.op { color: #666666; } /* Operator */
+code span.ot { color: #007020; } /* Other */
+code span.pp { color: #bc7a00; } /* Preprocessor */
+code span.sc { color: #4070a0; } /* SpecialChar */
+code span.ss { color: #bb6688; } /* SpecialString */
+code span.st { color: #4070a0; } /* String */
+code span.va { color: #19177c; } /* Variable */
+code span.vs { color: #4070a0; } /* VerbatimString */
+code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
 </style>
 
 <link rel="stylesheet" href="css/standard_html.css" type="text/css" />
@@ -244,7 +272,7 @@ code > span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Inf
       <div class="body-inner">
         <div class="book-header" role="navigation">
           <h1>
-            <i class="fa fa-circle-o-notch fa-spin"></i><a href="./"><span style="font-size:125%; font-family:Stalemate">In the beginning was the word ...</span></a>
+            <i class="fa fa-circle-o-notch fa-spin"></i><a href="./">An Introduction to Text Processing and Analysis with R</a>
           </h1>
         </div>
 
@@ -275,48 +303,48 @@ code > span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Inf
 <div id="character-strings" class="section level3">
 <h3>Character strings</h3>
 <p>When dealing with text, objects of class character are what you’d typically be dealing with.</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">x =<span class="st"> </span><span class="kw">c</span>(<span class="st">&#39;... Of Your Fake Dimension&#39;</span>, <span class="st">&#39;Ephemeron&#39;</span>, <span class="st">&#39;Dryswch&#39;</span>, <span class="st">&#39;Isotasy&#39;</span>, <span class="st">&#39;Memory&#39;</span>)
-x</code></pre></div>
+<div class="sourceCode" id="cb1"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb1-1" data-line-number="1">x =<span class="st"> </span><span class="kw">c</span>(<span class="st">&#39;... Of Your Fake Dimension&#39;</span>, <span class="st">&#39;Ephemeron&#39;</span>, <span class="st">&#39;Dryswch&#39;</span>, <span class="st">&#39;Isotasy&#39;</span>, <span class="st">&#39;Memory&#39;</span>)</a>
+<a class="sourceLine" id="cb1-2" data-line-number="2">x</a></code></pre></div>
 <p>Not much to it, but be aware there is no real limit to what is represented as a character vector. For example, in a data frame, you could have a column where each entry is one of the works of Shakespeare.</p>
 </div>
 <div id="factors" class="section level3">
 <h3>Factors</h3>
 <p>Although not exactly precise, one can think of factors as integers with labels. So, the underlying representation of a variable for <span class="objclass">sex</span> is 1:2 with labels ‘Male’ and ‘Female’. They are a special class with attributes, or metadata, that contains the information about the <span class="objclass">levels</span>.</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">x =<span class="st"> </span><span class="kw">factor</span>(<span class="kw">rep</span>(letters[<span class="dv">1</span><span class="op">:</span><span class="dv">3</span>], <span class="dt">e=</span><span class="dv">10</span>))
-<span class="kw">attributes</span>(x)</code></pre></div>
+<div class="sourceCode" id="cb2"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb2-1" data-line-number="1">x =<span class="st"> </span><span class="kw">factor</span>(<span class="kw">rep</span>(letters[<span class="dv">1</span><span class="op">:</span><span class="dv">3</span>], <span class="dt">e=</span><span class="dv">10</span>))</a>
+<a class="sourceLine" id="cb2-2" data-line-number="2"><span class="kw">attributes</span>(x)</a></code></pre></div>
 <pre><code>$levels
 [1] &quot;a&quot; &quot;b&quot; &quot;c&quot;
 
 $class
 [1] &quot;factor&quot;</code></pre>
 <p>While the underlying representation is numeric, it is important to remember that factors are <em>categorical</em>. They can’t be used as numbers would be, as the following demonstrates.</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">as.numeric</span>(x)</code></pre></div>
+<div class="sourceCode" id="cb4"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb4-1" data-line-number="1"><span class="kw">as.numeric</span>(x)</a></code></pre></div>
 <pre><code> [1] 1 1 1 1 1 1 1 1 1 1 2 2 2 2 2 2 2 2 2 2 3 3 3 3 3 3 3 3 3 3</code></pre>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">sum</span>(x)</code></pre></div>
+<div class="sourceCode" id="cb6"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb6-1" data-line-number="1"><span class="kw">sum</span>(x)</a></code></pre></div>
 <pre><code>Error in Summary.factor(structure(c(1L, 1L, 1L, 1L, 1L, 1L, 1L, 1L, 1L, : &#39;sum&#39; not meaningful for factors</code></pre>
 <p>Any numbers could be used, what we’re interested in are the labels, so a ‘sum’ doesn’t make any sense. All of the following would produce the same factor.</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">factor</span>(<span class="kw">c</span>(<span class="dv">1</span>, <span class="dv">2</span>, <span class="dv">3</span>), <span class="dt">labels=</span><span class="kw">c</span>(<span class="st">&#39;a&#39;</span>, <span class="st">&#39;b&#39;</span>, <span class="st">&#39;c&#39;</span>))
-<span class="kw">factor</span>(<span class="kw">c</span>(<span class="fl">3.2</span>, <span class="dv">10</span>, <span class="dv">500000</span>), <span class="dt">labels=</span><span class="kw">c</span>(<span class="st">&#39;a&#39;</span>, <span class="st">&#39;b&#39;</span>, <span class="st">&#39;c&#39;</span>))
-<span class="kw">factor</span>(<span class="kw">c</span>(.<span class="dv">49</span>, <span class="dv">1</span>, <span class="dv">5</span>), <span class="dt">labels=</span><span class="kw">c</span>(<span class="st">&#39;a&#39;</span>, <span class="st">&#39;b&#39;</span>, <span class="st">&#39;c&#39;</span>))</code></pre></div>
+<div class="sourceCode" id="cb8"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb8-1" data-line-number="1"><span class="kw">factor</span>(<span class="kw">c</span>(<span class="dv">1</span>, <span class="dv">2</span>, <span class="dv">3</span>), <span class="dt">labels=</span><span class="kw">c</span>(<span class="st">&#39;a&#39;</span>, <span class="st">&#39;b&#39;</span>, <span class="st">&#39;c&#39;</span>))</a>
+<a class="sourceLine" id="cb8-2" data-line-number="2"><span class="kw">factor</span>(<span class="kw">c</span>(<span class="fl">3.2</span>, <span class="dv">10</span>, <span class="dv">500000</span>), <span class="dt">labels=</span><span class="kw">c</span>(<span class="st">&#39;a&#39;</span>, <span class="st">&#39;b&#39;</span>, <span class="st">&#39;c&#39;</span>))</a>
+<a class="sourceLine" id="cb8-3" data-line-number="3"><span class="kw">factor</span>(<span class="kw">c</span>(.<span class="dv">49</span>, <span class="dv">1</span>, <span class="dv">5</span>), <span class="dt">labels=</span><span class="kw">c</span>(<span class="st">&#39;a&#39;</span>, <span class="st">&#39;b&#39;</span>, <span class="st">&#39;c&#39;</span>))</a></code></pre></div>
 <p>Because of the integer+metadata representation, factors are actually smaller than character strings, often notably so.</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">x =<span class="st"> </span><span class="kw">sample</span>(state.name, <span class="dv">10000</span>, <span class="dt">replace=</span>T)
-<span class="kw">format</span>(<span class="kw">object.size</span>(x), <span class="dt">units=</span><span class="st">&#39;Kb&#39;</span>)</code></pre></div>
+<div class="sourceCode" id="cb9"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb9-1" data-line-number="1">x =<span class="st"> </span><span class="kw">sample</span>(state.name, <span class="dv">10000</span>, <span class="dt">replace=</span>T)</a>
+<a class="sourceLine" id="cb9-2" data-line-number="2"><span class="kw">format</span>(<span class="kw">object.size</span>(x), <span class="dt">units=</span><span class="st">&#39;Kb&#39;</span>)</a></code></pre></div>
 <pre><code>[1] &quot;80.8 Kb&quot;</code></pre>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">format</span>(<span class="kw">object.size</span>(<span class="kw">factor</span>(x)), <span class="dt">units=</span><span class="st">&#39;Kb&#39;</span>)</code></pre></div>
+<div class="sourceCode" id="cb11"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb11-1" data-line-number="1"><span class="kw">format</span>(<span class="kw">object.size</span>(<span class="kw">factor</span>(x)), <span class="dt">units=</span><span class="st">&#39;Kb&#39;</span>)</a></code></pre></div>
 <pre><code>[1] &quot;42.4 Kb&quot;</code></pre>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">format</span>(<span class="kw">object.size</span>(<span class="kw">as.integer</span>(<span class="kw">factor</span>(x))), <span class="dt">units=</span><span class="st">&#39;Kb&#39;</span>)</code></pre></div>
+<div class="sourceCode" id="cb13"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb13-1" data-line-number="1"><span class="kw">format</span>(<span class="kw">object.size</span>(<span class="kw">as.integer</span>(<span class="kw">factor</span>(x))), <span class="dt">units=</span><span class="st">&#39;Kb&#39;</span>)</a></code></pre></div>
 <pre><code>[1] &quot;39.1 Kb&quot;</code></pre>
 <p>However, if memory is really a concern, it’s probably not that using factors will help, but rather better hardware.</p>
 </div>
 <div id="analysis" class="section level3">
 <h3>Analysis</h3>
 <p>It is important to know that raw text cannot be analyzed quantitatively. There is no magic that takes a categorical variable with text labels and estimates correlations among words and other words or numeric data. <em>Everything</em> that can be analyzed must have some numeric representation first, and this is where factors come in. For example, here is a data frame with two categorical predictors (<code>factor*</code>), a numeric predictor (<code>x</code>), and a numeric target (<code>y</code>). What follows is what it looks like if you wanted to run a regression model in that setting.</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">df =<span class="st"> </span>
-<span class="st">  </span><span class="kw">crossing</span>(<span class="dt">factor_1 =</span> <span class="kw">c</span>(<span class="st">&#39;A&#39;</span>, <span class="st">&#39;B&#39;</span>),
-           <span class="dt">factor_2 =</span> <span class="kw">c</span>(<span class="st">&#39;Q&#39;</span>, <span class="st">&#39;X&#39;</span>, <span class="st">&#39;J&#39;</span>)) <span class="op">%&gt;%</span><span class="st"> </span>
-<span class="st">  </span><span class="kw">mutate</span>(<span class="dt">x=</span><span class="kw">rnorm</span>(<span class="dv">6</span>),
-         <span class="dt">y=</span><span class="kw">rnorm</span>(<span class="dv">6</span>))
-df</code></pre></div>
+<div class="sourceCode" id="cb15"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb15-1" data-line-number="1">df =<span class="st"> </span></a>
+<a class="sourceLine" id="cb15-2" data-line-number="2"><span class="st">  </span><span class="kw">crossing</span>(<span class="dt">factor_1 =</span> <span class="kw">c</span>(<span class="st">&#39;A&#39;</span>, <span class="st">&#39;B&#39;</span>),</a>
+<a class="sourceLine" id="cb15-3" data-line-number="3">           <span class="dt">factor_2 =</span> <span class="kw">c</span>(<span class="st">&#39;Q&#39;</span>, <span class="st">&#39;X&#39;</span>, <span class="st">&#39;J&#39;</span>)) <span class="op">%&gt;%</span><span class="st"> </span></a>
+<a class="sourceLine" id="cb15-4" data-line-number="4"><span class="st">  </span><span class="kw">mutate</span>(<span class="dt">x=</span><span class="kw">rnorm</span>(<span class="dv">6</span>),</a>
+<a class="sourceLine" id="cb15-5" data-line-number="5">         <span class="dt">y=</span><span class="kw">rnorm</span>(<span class="dv">6</span>))</a>
+<a class="sourceLine" id="cb15-6" data-line-number="6">df</a></code></pre></div>
 <pre><code># A tibble: 6 x 4
   factor_1 factor_2      x      y
   &lt;chr&gt;    &lt;chr&gt;     &lt;dbl&gt;  &lt;dbl&gt;
@@ -326,7 +354,7 @@ df</code></pre></div>
 4 B        J        -0.329 -0.101
 5 B        Q         0.905 -0.809
 6 B        X         1.18  -1.92 </code></pre>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">## model.matrix(lm(y ~ x + factor_1 + factor_2, data=df))</code></pre></div>
+<div class="sourceCode" id="cb17"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb17-1" data-line-number="1">## model.matrix(lm(y ~ x + factor_1 + factor_2, data=df))</a></code></pre></div>
 <table style="width:83%;">
 <colgroup>
 <col width="19%" />
@@ -422,13 +450,13 @@ df</code></pre></div>
 <li><span class="func">adist</span>: string distances</li>
 </ul>
 <p>I probably use <span class="func">paste</span>/<span class="func">paste0</span> more than most things when dealing with text, as string concatenation comes up so often. The following provides some demonstration.</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">paste</span>(<span class="kw">c</span>(<span class="st">&#39;a&#39;</span>, <span class="st">&#39;b&#39;</span>, <span class="st">&#39;cd&#39;</span>), <span class="dt">collapse=</span><span class="st">&#39;|&#39;</span>)</code></pre></div>
+<div class="sourceCode" id="cb18"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb18-1" data-line-number="1"><span class="kw">paste</span>(<span class="kw">c</span>(<span class="st">&#39;a&#39;</span>, <span class="st">&#39;b&#39;</span>, <span class="st">&#39;cd&#39;</span>), <span class="dt">collapse=</span><span class="st">&#39;|&#39;</span>)</a></code></pre></div>
 <pre><code>[1] &quot;a|b|cd&quot;</code></pre>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">paste</span>(<span class="kw">c</span>(<span class="st">&#39;a&#39;</span>, <span class="st">&#39;b&#39;</span>, <span class="st">&#39;cd&#39;</span>), <span class="dt">collapse=</span><span class="st">&#39;&#39;</span>)</code></pre></div>
+<div class="sourceCode" id="cb20"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb20-1" data-line-number="1"><span class="kw">paste</span>(<span class="kw">c</span>(<span class="st">&#39;a&#39;</span>, <span class="st">&#39;b&#39;</span>, <span class="st">&#39;cd&#39;</span>), <span class="dt">collapse=</span><span class="st">&#39;&#39;</span>)</a></code></pre></div>
 <pre><code>[1] &quot;abcd&quot;</code></pre>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">paste0</span>(<span class="st">&#39;a&#39;</span>, <span class="st">&#39;b&#39;</span>, <span class="st">&#39;cd&#39;</span>)  <span class="co"># shortcut to collapse=&#39;&#39;</span></code></pre></div>
+<div class="sourceCode" id="cb22"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb22-1" data-line-number="1"><span class="kw">paste0</span>(<span class="st">&#39;a&#39;</span>, <span class="st">&#39;b&#39;</span>, <span class="st">&#39;cd&#39;</span>)  <span class="co"># shortcut to collapse=&#39;&#39;</span></a></code></pre></div>
 <pre><code>[1] &quot;abcd&quot;</code></pre>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">paste0</span>(<span class="st">&#39;x&#39;</span>, <span class="dv">1</span><span class="op">:</span><span class="dv">3</span>)</code></pre></div>
+<div class="sourceCode" id="cb24"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb24-1" data-line-number="1"><span class="kw">paste0</span>(<span class="st">&#39;x&#39;</span>, <span class="dv">1</span><span class="op">:</span><span class="dv">3</span>)</a></code></pre></div>
 <pre><code>[1] &quot;x1&quot; &quot;x2&quot; &quot;x3&quot;</code></pre>
 <p>Beyond that, use of regular expression and functionality included in the <span class="func">grep</span> family is a major way to save a lot of time during data processing. I leave that to its own section later.</p>
 </div>
@@ -440,7 +468,7 @@ df</code></pre></div>
 <li><span class="pack">tidyr</span>: has functions such as <span class="func">unite</span>, <span class="func">separate</span>, <span class="func">replace_na</span> that can often come in handy when working with data frames.</li>
 <li><span class="pack">glue</span>: a newer package that can be seen as a fancier <span class="func">paste</span>. Most likely it will be useful when creating functions or shiny apps in which variable text output is desired.</li>
 </ul>
-<p>One issue I have with both packages and base R is that often they return a list object, when it should be simplifying to the vector format it was initially fed. This sometimes requires an additional step or two of further processing that shouldn’t be necessary, so be prepared for it<a href="#fn1" class="footnoteRef" id="fnref1"><sup>1</sup></a>.</p>
+<p>One issue I have with both packages and base R is that often they return a list object, when it should be simplifying to the vector format it was initially fed. This sometimes requires an additional step or two of further processing that shouldn’t be necessary, so be prepared for it<a href="#fn1" class="footnote-ref" id="fnref1"><sup>1</sup></a>.</p>
 </div>
 <div id="other" class="section level3">
 <h3>Other</h3>
@@ -448,21 +476,21 @@ df</code></pre></div>
 <div id="dates" class="section level4">
 <h4>Dates</h4>
 <p>Dates are not character strings. Though they may start that way, if you actually want to treat them as dates you’ll need to convert the string to the appropriate date class. The <span class="pack">lubridate</span> package makes dealing with dates much easier. It comes with conversion, extraction and other functionality that will be sure to save you some time.</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">library</span>(lubridate)
-<span class="kw">today</span>()</code></pre></div>
+<div class="sourceCode" id="cb26"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb26-1" data-line-number="1"><span class="kw">library</span>(lubridate)</a>
+<a class="sourceLine" id="cb26-2" data-line-number="2"><span class="kw">today</span>()</a></code></pre></div>
 <pre><code>[1] &quot;2018-03-06&quot;</code></pre>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">today</span>() <span class="op">+</span><span class="st"> </span><span class="dv">1</span></code></pre></div>
+<div class="sourceCode" id="cb28"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb28-1" data-line-number="1"><span class="kw">today</span>() <span class="op">+</span><span class="st"> </span><span class="dv">1</span></a></code></pre></div>
 <pre><code>[1] &quot;2018-03-07&quot;</code></pre>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">today</span>() <span class="op">+</span><span class="st"> </span><span class="kw">dyears</span>(<span class="dv">1</span>)</code></pre></div>
+<div class="sourceCode" id="cb30"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb30-1" data-line-number="1"><span class="kw">today</span>() <span class="op">+</span><span class="st"> </span><span class="kw">dyears</span>(<span class="dv">1</span>)</a></code></pre></div>
 <pre><code>[1] &quot;2019-03-06&quot;</code></pre>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">leap_year</span>(<span class="dv">2016</span>)</code></pre></div>
+<div class="sourceCode" id="cb32"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb32-1" data-line-number="1"><span class="kw">leap_year</span>(<span class="dv">2016</span>)</a></code></pre></div>
 <pre><code>[1] TRUE</code></pre>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">span =<span class="st"> </span><span class="kw">interval</span>(<span class="kw">ymd</span>(<span class="st">&quot;2017-07-01&quot;</span>), <span class="kw">ymd</span>(<span class="st">&quot;2017-07-04&quot;</span>))
-span</code></pre></div>
+<div class="sourceCode" id="cb34"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb34-1" data-line-number="1">span =<span class="st"> </span><span class="kw">interval</span>(<span class="kw">ymd</span>(<span class="st">&quot;2017-07-01&quot;</span>), <span class="kw">ymd</span>(<span class="st">&quot;2017-07-04&quot;</span>))</a>
+<a class="sourceLine" id="cb34-2" data-line-number="2">span</a></code></pre></div>
 <pre><code>[1] 2017-07-01 UTC--2017-07-04 UTC</code></pre>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">as.duration</span>(span)</code></pre></div>
+<div class="sourceCode" id="cb36"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb36-1" data-line-number="1"><span class="kw">as.duration</span>(span)</a></code></pre></div>
 <pre><code>[1] &quot;259200s (~3 days)&quot;</code></pre>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">span <span class="op">%/%</span><span class="st"> </span><span class="kw">minutes</span>(<span class="dv">1</span>)</code></pre></div>
+<div class="sourceCode" id="cb38"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb38-1" data-line-number="1">span <span class="op">%/%</span><span class="st"> </span><span class="kw">minutes</span>(<span class="dv">1</span>)</a></code></pre></div>
 <pre><code>[1] 4320</code></pre>
 <p>This package makes dates so much easier, you should always use it when dealing with them.</p>
 </div>
@@ -491,8 +519,8 @@ span</code></pre></div>
 <p>Here is an example:</p>
 <p><code>^r.*shiny[0-9]$</code></p>
 <p>What is <em>that</em> you may ask? Well here is an example of strings it would and wouldn’t match.</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">string =<span class="st"> </span><span class="kw">c</span>(<span class="st">&#39;r is the shiny&#39;</span>, <span class="st">&#39;r is the shiny1&#39;</span>, <span class="st">&#39;r shines brightly&#39;</span>)
-<span class="kw">grepl</span>(string, <span class="dt">pattern=</span><span class="st">&#39;^r.*shiny[0-9]$&#39;</span>)</code></pre></div>
+<div class="sourceCode" id="cb40"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb40-1" data-line-number="1">string =<span class="st"> </span><span class="kw">c</span>(<span class="st">&#39;r is the shiny&#39;</span>, <span class="st">&#39;r is the shiny1&#39;</span>, <span class="st">&#39;r shines brightly&#39;</span>)</a>
+<a class="sourceLine" id="cb40-2" data-line-number="2"><span class="kw">grepl</span>(string, <span class="dt">pattern=</span><span class="st">&#39;^r.*shiny[0-9]$&#39;</span>)</a></code></pre></div>
 <pre><code>[1] FALSE  TRUE FALSE</code></pre>
 <p>What the regex is esoterically attempting to match is any string that starts with ‘r’ and ends with ‘shiny_’ where _ is some single digit. Specifically, it breaks down as follows:</p>
 <ul>
@@ -524,14 +552,14 @@ span</code></pre></div>
 </ul>
 <p>Those are just a few. The key functions can be found by looking at the help file for the <span class="func">grep</span> function (<code>?grep</code>). However, the <span class="pack">stringr</span> package has the same functionality with perhaps a slightly faster processing (though that’s due to the underlying <span class="pack">stringi</span> package).</p>
 <p>See if you can guess which of the following will turn up <code>TRUE</code>.</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">grepl</span>(<span class="kw">c</span>(<span class="st">&#39;apple&#39;</span>, <span class="st">&#39;pear&#39;</span>, <span class="st">&#39;banana&#39;</span>), <span class="dt">pattern=</span><span class="st">&#39;a&#39;</span>)
-<span class="kw">grepl</span>(<span class="kw">c</span>(<span class="st">&#39;apple&#39;</span>, <span class="st">&#39;pear&#39;</span>, <span class="st">&#39;banana&#39;</span>), <span class="dt">pattern=</span><span class="st">&#39;^a&#39;</span>)
-<span class="kw">grepl</span>(<span class="kw">c</span>(<span class="st">&#39;apple&#39;</span>, <span class="st">&#39;pear&#39;</span>, <span class="st">&#39;banana&#39;</span>), <span class="dt">pattern=</span><span class="st">&#39;^a|a$&#39;</span>)</code></pre></div>
+<div class="sourceCode" id="cb42"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb42-1" data-line-number="1"><span class="kw">grepl</span>(<span class="kw">c</span>(<span class="st">&#39;apple&#39;</span>, <span class="st">&#39;pear&#39;</span>, <span class="st">&#39;banana&#39;</span>), <span class="dt">pattern=</span><span class="st">&#39;a&#39;</span>)</a>
+<a class="sourceLine" id="cb42-2" data-line-number="2"><span class="kw">grepl</span>(<span class="kw">c</span>(<span class="st">&#39;apple&#39;</span>, <span class="st">&#39;pear&#39;</span>, <span class="st">&#39;banana&#39;</span>), <span class="dt">pattern=</span><span class="st">&#39;^a&#39;</span>)</a>
+<a class="sourceLine" id="cb42-3" data-line-number="3"><span class="kw">grepl</span>(<span class="kw">c</span>(<span class="st">&#39;apple&#39;</span>, <span class="st">&#39;pear&#39;</span>, <span class="st">&#39;banana&#39;</span>), <span class="dt">pattern=</span><span class="st">&#39;^a|a$&#39;</span>)</a></code></pre></div>
 <p>Scraping the web, munging data, just finding things in your scripts … you can potentially use this all the time, and not only with text analysis, as we’ll now see.</p>
 </div>
 <div id="dplyr-helper-functions" class="section level3">
 <h3>dplyr helper functions</h3>
-<p>The <span class="pack">dplyr</span> package comes with some poorly documented<a href="#fn2" class="footnoteRef" id="fnref2"><sup>2</sup></a> but quite useful helper functions that essentially serve as human-readable regex, which is a very good thing. These functions allow you to select variables<a href="#fn3" class="footnoteRef" id="fnref3"><sup>3</sup></a> based on their names. They are usually just calling base R functions in the end.</p>
+<p>The <span class="pack">dplyr</span> package comes with some poorly documented<a href="#fn2" class="footnote-ref" id="fnref2"><sup>2</sup></a> but quite useful helper functions that essentially serve as human-readable regex, which is a very good thing. These functions allow you to select variables<a href="#fn3" class="footnote-ref" id="fnref3"><sup>3</sup></a> based on their names. They are usually just calling base R functions in the end.</p>
 <ul>
 <li><span class="func">starts_with</span>: starts with a prefix (same as regex ‘^blah’)</li>
 <li><span class="func">ends_with</span>: ends with a prefix (same as regex ‘blah$’)</li>
@@ -556,7 +584,7 @@ span</code></pre></div>
 <script type="application/json" data-for="htmlwidget-e1c0a124605e485abc28">{"x":{"filter":"none","data":[[1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31,32,33,34,35,36,37,38,39,40,41,42,43,44,45,46,47,48,49,50,51,52,53,54,55,56,57,58,59,60,61,62,63,64,65,66,67,68,69,70,71,72,73,74,75,76,77,78,79,80,81,82,83,84,85,86,87,88,89,90,91,92,93,94,95,96,97,98,99,100,101,102,103,104,105,106,107,108,109,110,111,112,113,114,115,116,117,118,119,120,121,122,123,124,125,126,127,128,129,130,131,132,133,134,135,136,137,138,139,140,141,142,143,144,145,146,147,148,149,150,151,152,153,154,155,156,157,158,159,160,161,162,163,164,165,166,167,168,169,170,171,172,173,174,175,176,177,178,179,180,181,182,183,184,185,186,187,188,189,190,191,192,193,194,195,196,197,198,199,200,201,202,203,204,205,206,207,208,209,210,211,212,213,214,215,216,217,218,219,220,221,222,223,224,225,226,227,228,229,230,231,232,233,234,235,236,237,238,239,240,241,242,243,244,245,246,247,248,249,250,251,252,253,254,255,256,257,258,259,260,261,262,263,264,265,266,267,268,269,270,271,272,273,274,275,276,277,278,279,280,281,282,283,284,285,286,287,288,289,290,291,292,293,294,295,296,297,298,299,300,301,302,303,304,305,306,307,308,309,310,311,312,313,314,315,316,317,318,319,320,321,322,323,324,325,326,327,328,329,330,331,332,333,334,335,336,337,338,339,340,341,342,343,344,345,346,347,348,349,350,351,352,353,354,355,356,357,358,359,360,361,362,363,364,365,366,367,368,369,370,371,372,373,374,375,376,377,378,379,380,381,382,383,384,385,386,387,388,389,390,391,392,393,394,395,396,397,398,399,400,401,402,403,404,405,406,407,408,409,410,411,412,413,414,415,416,417,418,419,420,421,422,423,424,425,426,427,428,429,430,431,432,433,434,435,436,437,438,439,440,441,442,443,444,445,446,447,448,449,450,451,452,453,454,455,456,457,458,459,460,461,462,463,464,465,466,467,468,469,470,471,472,473,474,475,476,477,478,479,480,481,482,483,484,485,486,487,488,489,490,491,492,493,494,495,496,497,498,499,500],[-0.39,0.46,-0.81,0.99,1.79,1,-0.83,0.54,0.19,0.45,0.31,0.4,-0.53,-2.03,-1.07,0.2,0.58,0.54,-0.46,-0.73,0.59,-1.4,-0.24,-1.65,-1.12,0.96,-0.33,-0.41,0.16,-0.12,1.38,0.78,0.49,-2.09,0.15,-0.44,0.06,0.72,0.07,-0.14,1.4,0.33,1.78,0.68,1.4,-1.77,0.2,0.48,0.83,-1.52,-0.58,0.57,-1.38,0.75,0.26,-1.4,1.44,-1.37,-0.04,-0.57,-1.12,-1.11,0.51,-0.83,-0.61,1.69,-0.4,-0.93,1.14,2.1,0.46,-0.6,0.01,2.86,1.79,1.81,0.96,-2.18,-0.35,1.62,-0.29,0.41,-0.77,1.24,0.51,-0.19,0.16,0.35,-0.24,-0.13,0.85,-0.06,0.11,0.4,-1.56,0.64,-1.62,-0.05,-1.23,0.34,0.01,-1.23,-0.12,-1.56,-0.75,-0.72,-0.22,0.9,0.75,-0.14,-0.85,-0.46,-1.23,-0.12,0.01,-0.45,-1.2,0.22,-0.94,-0.17,0.76,-0.64,-0.33,-0.77,0.35,1.03,1.11,0.92,-0.8,1.61,0.07,1.06,0.3,-0.57,0.25,-0.27,-0.19,0.49,-0.8,1.13,1.16,-0.06,-0.56,0.67,-1.91,-0.67,-1.29,-2.72,-1.31,0.54,-0.08,-0.63,0.19,0.77,0.97,-0.33,1.14,0.13,-0.92,0.89,-1.21,-0.6,-0.15,0.48,-0.53,-0.57,1.6,-0.19,0.57,-0.28,0.79,-0.41,0.78,-0.14,-1.11,-0.41,1.01,0.58,-0.07,-0.58,0.35,1.52,-0.41,0.26,1.36,-3.23,-0.53,-1.23,1.57,-0.3,-1.22,-1.2,-2.7,-1.59,1,-0.29,2.13,0.69,1.13,0.21,-1.61,0.94,0.56,-1.56,-0.15,-0.34,-1.4,0.05,-0.44,-1.02,0.12,-1.37,-0.43,-0.16,0.16,0.76,-1.58,0.01,1.14,-0.55,0.11,-0.01,0.31,-0.4,1.58,-0.02,0.52,-0.38,-0.04,-0.66,-0.03,-0.41,0.57,0.89,-0.8,-0.12,-0.44,-0.56,1.41,0.88,0.06,0.46,0.21,-0.19,-0.63,1.68,0.12,0.19,0.04,-0.21,-0.17,-1.37,0.36,-0.3,-0.03,-0.6,1.45,0.06,-3.04,-0.14,-0.52,1.9,-1.48,-1.47,-2.16,0.15,1.51,-0.59,0.71,0.81,-0.5,0.97,0.38,-0.12,-0.17,0.56,0.91,0.57,0.38,0.86,-1.52,-1.26,0.99,-1.33,-0.6,0.38,-0.92,0.9,1.8,0.71,-0.11,0.02,0.63,0.44,-0.05,-0.3,-1.26,-0.4,-0.75,-0.7,-1.49,-1.14,-0.11,-1.74,0.67,0.66,-1.03,0.83,-0.53,-0.3,-0.12,-0.4,0.34,1.42,-1.56,1.56,1.24,-0.87,0.59,-0.64,0.37,1.26,-0.44,-0.59,0.76,1.01,-0.03,0.65,-0.46,-0.53,0.03,-0.31,-0.93,-1.02,-0.08,-0.96,-0.48,0.06,2.83,1.61,-0.26,-0.67,0.51,0.4,0.66,-0.29,-1.04,-2.01,0.69,-1.4,1.19,-0.46,1.57,1.06,-0.03,2.01,-0.34,0.37,-1.74,0.25,-2.64,1.75,0.4,-0.46,0.62,1.12,-0.25,0.26,-0.85,0.39,1.1,-0.73,0.68,0.4,-1.37,0.32,1.12,-0.37,0.83,0.91,-1.21,-1.86,-0.47,-0.29,-0.19,-1.11,-1.11,-0.66,0.95,0.21,-1.05,-1.84,0.39,0.7,-0.01,0.91,0.98,-1.61,-0.54,-0.64,-0.87,0.69,0.17,0.58,-1.6,-1.17,-0.09,-1.06,0.56,0.31,0.48,0.71,-0.29,-0.88,1.53,0.28,1.31,0.53,-0.49,-0.56,0.37,-2.07,0.41,0.65,1.09,1.03,0.04,-0.94,0.47,0.92,0.77,-1.01,1,0.01,-0.45,1.27,-0.14,-1.9,2.82,0.41,1.54,1.56,-2.25,-0.34,-1.77,-1.19,1.32,-0.87,-0.92,1.18,1.2,-0.74,-0.19,-0.41,-0.8,1,-0.82,0.15,-0.37,-0.71,1.04,-0.5,1.16,-0.64,0.04,-0.81,1.31,0.39,-0.37,-0.64,0.08,0.45,1.35,-1.49,-1.4,-0.04,0.56,-0.64,-0.39,1.05,0.67,0.34,-0.76,0.46,-0.29,1.14,-0.79,-1.82,0.89,0.65,0.62,0.22,1.05,-1.23,-0.31,1.11,2.05,0.43,1.63,-0.38],["south","South"," South","north","south","North ","North ","north","South","North ","north","north ","South"," South","South","South","north ","south","North ","North ","north ","North"," South","North ","north ","North "," South","North","north"," South","north ","North ","North ","South","North","North ","south","south"," South","north","north","North"," South","North","north","North ","south"," South","north","North","north","north","North","north","North","North "," South"," South","north","South","north"," South","North ","north","south","north ","North ","South"," South","North ","south","north ","North","north ","South","north ","north ","North "," South"," South","south","north ","south","South","south","south","north ","north ","north "," South","South","north","North ","north ","North"," South","south"," South","North ","North","north ","north "," South","North ","north","South"," South","North ","north","North ","south","North"," South","South","South"," South","North ","north","North ","North ","south","North ","south","North ","south","South","North","North ","South","south","North ","North"," South","South","North","South","North ","south"," South"," South"," South"," South"," South","North","South"," South"," South","North ","south","North"," South","North"," South","North","South","north ","north","south","South","North","North","South","South","North ","north","North ","North ","North ","north ","south"," South","North"," South","South","north","north ","North "," South","North","North","North","North ","South","South","North","South","north","North","South","North"," South","north ","north ","south"," South","north","south","north ","north","north","South","North","south","North","North "," South","South","North","North ","North ","north","North ","North ","north ","north","north ","north","North","north "," South"," South","north ","north","South","south","South","North ","North "," South","North ","north ","north","north","North","North","north ","north","south","North","North","South"," South","North","North ","North"," South","north","north "," South","South"," South","north"," South","North","South","north ","north"," South"," South","North ","north ","South"," South","north","north ","South"," South","north","North","north "," South","south","South","South","South","North","North ","South","south","north "," South","north ","South","north ","North "," South","south","north ","north","south","north","South"," South","South","South","North ","South","North","South"," South","North ","north","north ","north","South","North ","north "," South","North","South","North ","North","North ","North","south","north ","north","North","south","north ","south","South"," South","South","South","North","north ","north ","South","North","north","north ","North","South","north ","North","south","North "," South","north","North","north","north","North"," South","North","north","North","North "," South","North","North","south","North ","South","south","north ","north","North","North "," South","north ","North ","south","South","North "," South","North","north","south","South","North ","North","north ","south","north ","north","south","South","north ","North ","South","north","South"," South","north","north","north","north ","south"," South","south","north","North "," South","north","South","North ","north ","south","North ","South","south","North","North","south","South","North","North ","North"," South","South","South","north ","North","south","south"," South","North","North","south","South"," South","north ","north"," South"," South","South","North","north ","South","north","north","south","south","north","north "," South","south","north ","North ","south","north","South","south","south","South","south","south","south","north","north ","South"," South","North","North","north ","south","North ","north","South","south","north "," South","south","South","south","North","North","South","north ","north","north ","South","north","north","north ","north"," South","North "," South","north","north ","South","north "," South","north ","North","North","south"," South","south","North","south","North ","North","north ","north ","North ","north "]],"container":"<table class=\"display\">\n  <thead>\n    <tr>\n      <th>id<\/th>\n      <th>x<\/th>\n      <th>region<\/th>\n    <\/tr>\n  <\/thead>\n<\/table>","options":{"dom":"t","autoWidth":true,"columnDefs":[{"width":"50px","targets":0},{"className":"dt-center","targets":[0,1]},{"className":"dt-right","targets":2},{"className":"dt-right","targets":[0,1]}],"order":[],"orderClasses":false}},"evals":[],"jsHooks":[]}</script>
 <p><br></p>
 <p>It might seem okay until…</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">## table(df$region)</code></pre></div>
+<div class="sourceCode" id="cb43"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb43-1" data-line-number="1">## table(df$region)</a></code></pre></div>
 <table style="width:78%;">
 <colgroup>
 <col width="11%" />
@@ -590,13 +618,13 @@ span</code></pre></div>
 </tr>
 </tbody>
 </table>
-<p>Even if you spotted the casing issue, there is still a white space problem<a href="#fn4" class="footnoteRef" id="fnref4"><sup>4</sup></a>. Let’s say you want this to be capitalized ‘North’ and ‘South’. How might you do it? It’s actually quite easy with the <span class="pack">stringr</span> tools.</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">library</span>(stringr)
-df <span class="op">%&gt;%</span><span class="st"> </span>
-<span class="st">  </span><span class="kw">mutate</span>(<span class="dt">region =</span> <span class="kw">str_trim</span>(region),
-         <span class="dt">region =</span> <span class="kw">str_to_title</span>(region))</code></pre></div>
+<p>Even if you spotted the casing issue, there is still a white space problem<a href="#fn4" class="footnote-ref" id="fnref4"><sup>4</sup></a>. Let’s say you want this to be capitalized ‘North’ and ‘South’. How might you do it? It’s actually quite easy with the <span class="pack">stringr</span> tools.</p>
+<div class="sourceCode" id="cb44"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb44-1" data-line-number="1"><span class="kw">library</span>(stringr)</a>
+<a class="sourceLine" id="cb44-2" data-line-number="2">df <span class="op">%&gt;%</span><span class="st"> </span></a>
+<a class="sourceLine" id="cb44-3" data-line-number="3"><span class="st">  </span><span class="kw">mutate</span>(<span class="dt">region =</span> <span class="kw">str_trim</span>(region),</a>
+<a class="sourceLine" id="cb44-4" data-line-number="4">         <span class="dt">region =</span> <span class="kw">str_to_title</span>(region))</a></code></pre></div>
 <p>The <span class="func">str_trim</span> function trims white space from either side (or both), while <span class="func">str_to_title</span> converts everything to first letter capitalized.</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">table</span>(df_corrected<span class="op">$</span>region)</code></pre></div>
+<div class="sourceCode" id="cb45"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb45-1" data-line-number="1"><span class="kw">table</span>(df_corrected<span class="op">$</span>region)</a></code></pre></div>
 <pre><code>
 North South 
   283   217 </code></pre>
@@ -609,15 +637,15 @@ North South
 <script type="application/json" data-for="htmlwidget-473eba0a55a88ffed860">{"x":{"filter":"none","data":[[1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20],[1.18,0.34,-0.32,-0.57,0.64,-0.59,0.61,-0.42,0.15,1.03,-0.22,2.01,1.38,-1.72,0.56,0.19,0.55,0.65,-0.71,1.01],[-2.04,-1.34,-0.97,1.36,0.73,0.16,1.21,-0.73,0.84,-0.17,0.98,-0.64,-1.55,-2.02,0.1,1.33,-1.2,-0.77,0.25,0.02],[-0.03,-0.3,1.03,1.29,-0.16,-1.28,-0.43,-1.78,0.13,-0.93,-0.18,0.71,0.51,-0.24,-0.33,-1.62,-0.22,0.89,0.86,0.21],[-0.36,-0.15,0.2,-0,-1.29,0.55,-0.14,1.63,1.02,-1.71,0.16,-1.62,0.55,0.39,-1.44,0.97,0.67,-0.34,-0.6,-1.79],[0.43,0.47,0.97,0.32,-0.79,0.75,-0.54,1.64,-0.18,-1.4,1.07,1.14,0.69,-1.14,0.95,0.21,-0.42,0.08,-1.11,0.18]],"container":"<table class=\"display\">\n  <thead>\n    <tr>\n      <th>id<\/th>\n      <th>X1<\/th>\n      <th>X2<\/th>\n      <th>X3<\/th>\n      <th>X4<\/th>\n      <th>X5<\/th>\n    <\/tr>\n  <\/thead>\n<\/table>","options":{"dom":"tp","autoWidth":true,"columnDefs":[{"width":"50px","targets":0},{"className":"dt-center","targets":1},{"className":"dt-right","targets":[0,1,2,3,4,5]}],"order":[],"orderClasses":false}},"evals":[],"jsHooks":[]}</script>
 <p><br></p>
 <p>So, the problem now is to change the names to be Year_1, Year_2, etc. You might think you might have to use <span class="func">colnames</span> and manually create a string of names to replace the current ones.</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">colnames</span>(df)[<span class="op">-</span><span class="dv">1</span>] =<span class="st"> </span><span class="kw">c</span>(<span class="st">&#39;Year_1&#39;</span>, <span class="st">&#39;Year_2&#39;</span>, <span class="st">&#39;Year_3&#39;</span>, <span class="st">&#39;Year_4&#39;</span>, <span class="st">&#39;Year_5&#39;</span>)</code></pre></div>
+<div class="sourceCode" id="cb47"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb47-1" data-line-number="1"><span class="kw">colnames</span>(df)[<span class="op">-</span><span class="dv">1</span>] =<span class="st"> </span><span class="kw">c</span>(<span class="st">&#39;Year_1&#39;</span>, <span class="st">&#39;Year_2&#39;</span>, <span class="st">&#39;Year_3&#39;</span>, <span class="st">&#39;Year_4&#39;</span>, <span class="st">&#39;Year_5&#39;</span>)</a></code></pre></div>
 <p>Or perhaps you’re thinking of the paste0 function, which works fine and saves some typing.</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">colnames</span>(df)[<span class="op">-</span><span class="dv">1</span>] =<span class="st"> </span><span class="kw">paste0</span>(<span class="st">&#39;Year_&#39;</span>, <span class="dv">1</span><span class="op">:</span><span class="dv">5</span>)</code></pre></div>
+<div class="sourceCode" id="cb48"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb48-1" data-line-number="1"><span class="kw">colnames</span>(df)[<span class="op">-</span><span class="dv">1</span>] =<span class="st"> </span><span class="kw">paste0</span>(<span class="st">&#39;Year_&#39;</span>, <span class="dv">1</span><span class="op">:</span><span class="dv">5</span>)</a></code></pre></div>
 <p>However, data sets may be hundreds of columns, and the columns of data may have the same pattern but not be next to one another. For example, the first few dozen columns are all data that belongs to the first wave, etc. It is tedious to figure out which columns you don’t want, but even then you’re resulting to using magic numbers with the above approach, and one column change to data will mean that redoing the name change will fail.</p>
 <p>However, the following accomplishes what we want, and is reproducible regardless of where the columns are in the data set.</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">df <span class="op">%&gt;%</span><span class="st"> </span>
-<span class="st">  </span><span class="kw">rename_at</span>(<span class="kw">vars</span>(<span class="kw">num_range</span>(<span class="st">&#39;X&#39;</span>, <span class="dv">1</span><span class="op">:</span><span class="dv">5</span>)), 
-            str_replace, <span class="dt">pattern=</span><span class="st">&#39;X&#39;</span>, <span class="dt">replacement=</span><span class="st">&#39;Year_&#39;</span>) <span class="op">%&gt;%</span><span class="st"> </span>
-<span class="st">  </span>head</code></pre></div>
+<div class="sourceCode" id="cb49"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb49-1" data-line-number="1">df <span class="op">%&gt;%</span><span class="st"> </span></a>
+<a class="sourceLine" id="cb49-2" data-line-number="2"><span class="st">  </span><span class="kw">rename_at</span>(<span class="kw">vars</span>(<span class="kw">num_range</span>(<span class="st">&#39;X&#39;</span>, <span class="dv">1</span><span class="op">:</span><span class="dv">5</span>)), </a>
+<a class="sourceLine" id="cb49-3" data-line-number="3">            str_replace, <span class="dt">pattern=</span><span class="st">&#39;X&#39;</span>, <span class="dt">replacement=</span><span class="st">&#39;Year_&#39;</span>) <span class="op">%&gt;%</span><span class="st"> </span></a>
+<a class="sourceLine" id="cb49-4" data-line-number="4"><span class="st">  </span>head</a></code></pre></div>
 <pre><code>  id Year_1 Year_2 Year_3 Year_4 Year_5
 1  1   1.18  -2.04  -0.03  -0.36   0.43
 2  2   0.34  -1.34  -0.30  -0.15   0.47
@@ -639,36 +667,39 @@ North South
 <div id="exercises" class="section level2">
 <h2>Exercises</h2>
 <ol style="list-style-type: decimal">
-<li><p>In your own words, state the difference between a character string and a factor variable. <br></p></li>
+<li><p>In your own words, state the difference between a character string and a factor variable.
+<br></p></li>
 <li><p>Consider the following character vector.</p></li>
 </ol>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">x =<span class="st"> </span><span class="kw">c</span>(<span class="st">&#39;A&#39;</span>, <span class="st">&#39;1&#39;</span>, <span class="st">&#39;Q&#39;</span>)</code></pre></div>
+<div class="sourceCode" id="cb51"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb51-1" data-line-number="1">x =<span class="st"> </span><span class="kw">c</span>(<span class="st">&#39;A&#39;</span>, <span class="st">&#39;1&#39;</span>, <span class="st">&#39;Q&#39;</span>)</a></code></pre></div>
 <p>How might you paste the elements together so that there is an underscore <code>_</code> between characters and no space (“A_1_Q”)? If you highlight the next line you’ll see the hint.</p>
 <p><span style="color:#fffff8">Revisit how we used the collapse argument within paste. <code>paste(..., collapse=?)</code></span></p>
 <p>Paste Part 2: The following application of paste produces this result.</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">paste</span>(<span class="kw">c</span>(<span class="st">&#39;A&#39;</span>, <span class="st">&#39;1&#39;</span>, <span class="st">&#39;Q&#39;</span>), <span class="kw">c</span>(<span class="st">&#39;B&#39;</span>, <span class="st">&#39;2&#39;</span>, <span class="st">&#39;z&#39;</span>))</code></pre></div>
+<div class="sourceCode" id="cb52"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb52-1" data-line-number="1"><span class="kw">paste</span>(<span class="kw">c</span>(<span class="st">&#39;A&#39;</span>, <span class="st">&#39;1&#39;</span>, <span class="st">&#39;Q&#39;</span>), <span class="kw">c</span>(<span class="st">&#39;B&#39;</span>, <span class="st">&#39;2&#39;</span>, <span class="st">&#39;z&#39;</span>))</a></code></pre></div>
 <pre><code>[1] &quot;A B&quot; &quot;1 2&quot; &quot;Q z&quot;</code></pre>
-<p>Now try to produce <code>&quot;A - B&quot; &quot;1 - 2&quot; &quot;Q - z&quot;</code>. To do this, note that one can paste any number of things together (i.e. more than two). So try adding ‘-’ to it. <br></p>
+<p>Now try to produce <code>&quot;A - B&quot; &quot;1 - 2&quot; &quot;Q - z&quot;</code>. To do this, note that one can paste any number of things together (i.e. more than two). So try adding ’ - ’ to it.
+<br></p>
 <ol start="3" style="list-style-type: decimal">
 <li>Use regex to grab the Star Wars names that have a number. Use both <span class="func">grep</span> and <span class="func">grepl</span> and compare the results</li>
 </ol>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">grep</span>(starwars<span class="op">$</span>name, <span class="dt">pattern =</span> ?)</code></pre></div>
-<p>Now use your hacking skills to determine which one is the tallest. <br></p>
+<div class="sourceCode" id="cb54"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb54-1" data-line-number="1"><span class="kw">grep</span>(starwars<span class="op">$</span>name, <span class="dt">pattern =</span> ?)</a></code></pre></div>
+<p>Now use your hacking skills to determine which one is the tallest.
+<br></p>
 <ol start="4" style="list-style-type: decimal">
 <li>Load the <span class="pack">dplyr</span> package, and use the its <a href="string-theory.html#dplyr-helper-functions">helper functions</a> to grab all the columns in the <span class="objclass">starwars</span> data set (comes with the package) with <code>color</code> in the name but without referring to them directly. The following shows a generic example. There are several ways to do this. Try two if you can.</li>
 </ol>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">starwars <span class="op">%&gt;%</span><span class="st"> </span>
-<span class="st">  </span><span class="kw">select</span>(<span class="kw">helper_function</span>(<span class="st">&#39;pattern&#39;</span>))</code></pre></div>
+<div class="sourceCode" id="cb55"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb55-1" data-line-number="1">starwars <span class="op">%&gt;%</span><span class="st"> </span></a>
+<a class="sourceLine" id="cb55-2" data-line-number="2"><span class="st">  </span><span class="kw">select</span>(<span class="kw">helper_function</span>(<span class="st">&#39;pattern&#39;</span>))</a></code></pre></div>
 
 </div>
 </div>
 <div class="footnotes">
 <hr />
 <ol start="1">
-<li id="fn1"><p>I also don’t think it necessary to have separate functions for str_* functions in <span class="pack">stringr</span> depending on whether, e.g. I want ‘all’ matches (practically every situation) or just the first (very rarely). It could have just been an additional argument with default <code>all=TRUE</code>.<a href="string-theory.html#fnref1">↩</a></p></li>
-<li id="fn2"><p>At least they’re exposed now.<a href="string-theory.html#fnref2">↩</a></p></li>
-<li id="fn3"><p>For rows, you’ll have to use a <span class="func">grepl</span>/<span class="func">str_detect</span> approach. For example, <code>filter(grepl(col1, pattern='^X'))</code> would subset to only rows where col1 starts with X.<a href="string-theory.html#fnref3">↩</a></p></li>
-<li id="fn4"><p>This is a very common issue among Excel users, and just one of the many reasons not to use it.<a href="string-theory.html#fnref4">↩</a></p></li>
+<li id="fn1"><p>I also don’t think it necessary to have separate functions for str_* functions in <span class="pack">stringr</span> depending on whether, e.g. I want ‘all’ matches (practically every situation) or just the first (very rarely). It could have just been an additional argument with default <code>all=TRUE</code>.<a href="string-theory.html#fnref1" class="footnote-back">↩</a></p></li>
+<li id="fn2"><p>At least they’re exposed now.<a href="string-theory.html#fnref2" class="footnote-back">↩</a></p></li>
+<li id="fn3"><p>For rows, you’ll have to use a <span class="func">grepl</span>/<span class="func">str_detect</span> approach. For example, <code>filter(grepl(col1, pattern='^X'))</code> would subset to only rows where col1 starts with X.<a href="string-theory.html#fnref3" class="footnote-back">↩</a></p></li>
+<li id="fn4"><p>This is a very common issue among Excel users, and just one of the many reasons not to use it.<a href="string-theory.html#fnref4" class="footnote-back">↩</a></p></li>
 </ol>
 </div>
             </section>
@@ -723,7 +754,7 @@ gitbook.start({
   (function () {
     var script = document.createElement("script");
     script.type = "text/javascript";
-    var src = "";
+    var src = "true";
     if (src === "" || src === "true") src = "https://cdn.bootcss.com/mathjax/2.7.1/MathJax.js?config=TeX-MML-AM_CHTML";
     if (location.protocol !== "file:" && /^https?:/.test(src))
       src = src.replace(/^https?:/, '');

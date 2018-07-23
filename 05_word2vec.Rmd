@@ -120,7 +120,7 @@ test = shakes_word_vectors["romeo", , drop = F] -
   shakes_word_vectors["nurse", , drop = F]
 
 cos_sim_test = sim2(x = shakes_word_vectors, y = test, method = "cosine", norm = "l2")
-# head(sort(cos_sim_rom[,1], decreasing = T), 10)
+# head(sort(cos_sim_test[,1], decreasing = T), 10)
 head(sort(cos_sim_test[,1], decreasing = T), 3) %>% round(2) %>% pander(split.tables=Inf, split.cells=Inf)
 ```
 
