@@ -24,7 +24,7 @@
 
 
 
-<meta name="date" content="2018-07-22">
+<meta name="date" content="2018-09-07">
 
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta name="apple-mobile-web-app-capable" content="yes">
@@ -32,7 +32,7 @@
   
   <link rel="shortcut icon" href="img/R.ico" type="image/x-icon">
 <link rel="prev" href="word-embeddings.html">
-<link rel="next" href="shakespeare-start-to-finish.html">
+<link rel="next" href="shakespeare.html">
 <script src="libs/jquery-2.2.3/jquery.min.js"></script>
 <link href="libs/gitbook-2.6.7/css/style.css" rel="stylesheet" />
 <link href="libs/gitbook-2.6.7/css/plugin-bookdown.css" rel="stylesheet" />
@@ -130,8 +130,8 @@ code span.vs { color: #4070a0; } /* VerbatimString */
 code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
 </style>
 
-<link rel="stylesheet" href="css/standard_html.css" type="text/css" />
 <link rel="stylesheet" href="css/book.css" type="text/css" />
+<link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.0.13/css/all.css" type="text/css" />
 </head>
 
 <body>
@@ -144,16 +144,16 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
       <nav role="navigation">
 
 <ul class="summary">
-<li class='before'><a href="https://m-clark.github.io/text-analysis-with-R/">Text Analysis in R</span></a></li>
+<li class='before'><a href="./">Text Analysis in R</a></li>
 
 <li class="divider"></li>
 <li><a href="index.html#section"></a></li>
-<li class="chapter" data-level="" data-path="introduction.html"><a href="introduction.html"><i class="fa fa-check"></i>Introduction</a><ul>
-<li class="chapter" data-level="" data-path="introduction.html"><a href="introduction.html#overview"><i class="fa fa-check"></i>Overview</a><ul>
-<li class="chapter" data-level="" data-path="introduction.html"><a href="introduction.html#goals"><i class="fa fa-check"></i>Goals</a></li>
-<li class="chapter" data-level="" data-path="introduction.html"><a href="introduction.html#prerequisites"><i class="fa fa-check"></i>Prerequisites</a></li>
+<li class="chapter" data-level="" data-path="intro.html"><a href="intro.html"><i class="fa fa-check"></i>Introduction</a><ul>
+<li class="chapter" data-level="" data-path="intro.html"><a href="intro.html#overview"><i class="fa fa-check"></i>Overview</a><ul>
+<li class="chapter" data-level="" data-path="intro.html"><a href="intro.html#goals"><i class="fa fa-check"></i>Goals</a></li>
+<li class="chapter" data-level="" data-path="intro.html"><a href="intro.html#prerequisites"><i class="fa fa-check"></i>Prerequisites</a></li>
 </ul></li>
-<li class="chapter" data-level="" data-path="introduction.html"><a href="introduction.html#initial-steps"><i class="fa fa-check"></i>Initial Steps</a></li>
+<li class="chapter" data-level="" data-path="intro.html"><a href="intro.html#initial-steps"><i class="fa fa-check"></i>Initial Steps</a></li>
 </ul></li>
 <li class="chapter" data-level="" data-path="string-theory.html"><a href="string-theory.html"><i class="fa fa-check"></i>String Theory</a><ul>
 <li class="chapter" data-level="" data-path="string-theory.html"><a href="string-theory.html#basic-data-types"><i class="fa fa-check"></i>Basic data types</a><ul>
@@ -178,27 +178,8 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 </ul></li>
 <li class="chapter" data-level="" data-path="string-theory.html"><a href="string-theory.html#exercises"><i class="fa fa-check"></i>Exercises</a></li>
 </ul></li>
-<li class="chapter" data-level="" data-path="sentiment-analysis.html"><a href="sentiment-analysis.html"><i class="fa fa-check"></i>Sentiment Analysis</a><ul>
-<li class="chapter" data-level="" data-path="sentiment-analysis.html"><a href="sentiment-analysis.html#basic-idea"><i class="fa fa-check"></i>Basic idea</a></li>
-<li class="chapter" data-level="" data-path="sentiment-analysis.html"><a href="sentiment-analysis.html#issues"><i class="fa fa-check"></i>Issues</a><ul>
-<li class="chapter" data-level="" data-path="sentiment-analysis.html"><a href="sentiment-analysis.html#context-sarcasm-etc."><i class="fa fa-check"></i>Context, sarcasm, etc.</a></li>
-<li class="chapter" data-level="" data-path="sentiment-analysis.html"><a href="sentiment-analysis.html#lexicons"><i class="fa fa-check"></i>Lexicons</a></li>
-</ul></li>
-<li class="chapter" data-level="" data-path="sentiment-analysis.html"><a href="sentiment-analysis.html#sentiment-analysis-examples"><i class="fa fa-check"></i>Sentiment Analysis Examples</a><ul>
-<li class="chapter" data-level="" data-path="sentiment-analysis.html"><a href="sentiment-analysis.html#the-first-thing-the-baby-did-wrong"><i class="fa fa-check"></i>The first thing the baby did wrong</a></li>
-<li class="chapter" data-level="" data-path="sentiment-analysis.html"><a href="sentiment-analysis.html#romeo-juliet"><i class="fa fa-check"></i>Romeo &amp; Juliet</a></li>
-</ul></li>
-<li class="chapter" data-level="" data-path="sentiment-analysis.html"><a href="sentiment-analysis.html#sentiment-analysis-summary"><i class="fa fa-check"></i>Sentiment Analysis Summary</a></li>
-<li class="chapter" data-level="" data-path="sentiment-analysis.html"><a href="sentiment-analysis.html#exercise"><i class="fa fa-check"></i>Exercise</a><ul>
-<li class="chapter" data-level="" data-path="sentiment-analysis.html"><a href="sentiment-analysis.html#step-0-install-the-packages"><i class="fa fa-check"></i>Step 0: Install the packages</a></li>
-<li class="chapter" data-level="" data-path="sentiment-analysis.html"><a href="sentiment-analysis.html#step-1-initial-inspection"><i class="fa fa-check"></i>Step 1: Initial inspection</a></li>
-<li class="chapter" data-level="" data-path="sentiment-analysis.html"><a href="sentiment-analysis.html#step-2-data-prep"><i class="fa fa-check"></i>Step 2: Data prep</a></li>
-<li class="chapter" data-level="" data-path="sentiment-analysis.html"><a href="sentiment-analysis.html#step-3-get-sentiment"><i class="fa fa-check"></i>Step 3: Get sentiment</a></li>
-<li class="chapter" data-level="" data-path="sentiment-analysis.html"><a href="sentiment-analysis.html#step-4-visualize"><i class="fa fa-check"></i>Step 4: Visualize</a></li>
-</ul></li>
-</ul></li>
 <li class="chapter" data-level="" data-path="part-of-speech-tagging.html"><a href="part-of-speech-tagging.html"><i class="fa fa-check"></i>Part of Speech Tagging</a><ul>
-<li class="chapter" data-level="" data-path="part-of-speech-tagging.html"><a href="part-of-speech-tagging.html#basic-idea-1"><i class="fa fa-check"></i>Basic idea</a></li>
+<li class="chapter" data-level="" data-path="part-of-speech-tagging.html"><a href="part-of-speech-tagging.html#basic-idea"><i class="fa fa-check"></i>Basic idea</a></li>
 <li class="chapter" data-level="" data-path="part-of-speech-tagging.html"><a href="part-of-speech-tagging.html#pos-examples"><i class="fa fa-check"></i>POS Examples</a><ul>
 <li class="chapter" data-level="" data-path="part-of-speech-tagging.html"><a href="part-of-speech-tagging.html#barthelme-carver"><i class="fa fa-check"></i>Barthelme &amp; Carver</a></li>
 <li class="chapter" data-level="" data-path="part-of-speech-tagging.html"><a href="part-of-speech-tagging.html#more-taggin"><i class="fa fa-check"></i>More taggin’</a></li>
@@ -207,7 +188,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <li class="chapter" data-level="" data-path="part-of-speech-tagging.html"><a href="part-of-speech-tagging.html#pos-exercise"><i class="fa fa-check"></i>POS Exercise</a></li>
 </ul></li>
 <li class="chapter" data-level="" data-path="topic-modeling.html"><a href="topic-modeling.html"><i class="fa fa-check"></i>Topic modeling</a><ul>
-<li class="chapter" data-level="" data-path="topic-modeling.html"><a href="topic-modeling.html#basic-idea-2"><i class="fa fa-check"></i>Basic idea</a></li>
+<li class="chapter" data-level="" data-path="topic-modeling.html"><a href="topic-modeling.html#basic-idea-1"><i class="fa fa-check"></i>Basic idea</a></li>
 <li class="chapter" data-level="" data-path="topic-modeling.html"><a href="topic-modeling.html#steps"><i class="fa fa-check"></i>Steps</a></li>
 <li class="chapter" data-level="" data-path="topic-modeling.html"><a href="topic-modeling.html#topic-model-example"><i class="fa fa-check"></i>Topic Model Example</a><ul>
 <li class="chapter" data-level="" data-path="topic-modeling.html"><a href="topic-modeling.html#shakespeare"><i class="fa fa-check"></i>Shakespeare</a></li>
@@ -223,30 +204,30 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <li class="chapter" data-level="" data-path="word-embeddings.html"><a href="word-embeddings.html#wikipedia"><i class="fa fa-check"></i>Wikipedia</a></li>
 </ul></li>
 <li class="chapter" data-level="" data-path="summary.html"><a href="summary.html"><i class="fa fa-check"></i>Summary</a></li>
-<li class="chapter" data-level="" data-path="shakespeare-start-to-finish.html"><a href="shakespeare-start-to-finish.html"><i class="fa fa-check"></i>Shakespeare Start to Finish</a><ul>
-<li class="chapter" data-level="" data-path="shakespeare-start-to-finish.html"><a href="shakespeare-start-to-finish.html#act-i.-scrape-mit-and-gutenberg-shakespeare"><i class="fa fa-check"></i>ACT I. Scrape MIT and Gutenberg Shakespeare</a><ul>
-<li class="chapter" data-level="" data-path="shakespeare-start-to-finish.html"><a href="shakespeare-start-to-finish.html#scene-i.-scrape-main-works"><i class="fa fa-check"></i>Scene I. Scrape main works</a></li>
-<li class="chapter" data-level="" data-path="shakespeare-start-to-finish.html"><a href="shakespeare-start-to-finish.html#scene-ii.-sonnets"><i class="fa fa-check"></i>Scene II. Sonnets</a></li>
-<li class="chapter" data-level="" data-path="shakespeare-start-to-finish.html"><a href="shakespeare-start-to-finish.html#scene-iii.-save-and-write-out"><i class="fa fa-check"></i>Scene III. Save and write out</a></li>
-<li class="chapter" data-level="" data-path="shakespeare-start-to-finish.html"><a href="shakespeare-start-to-finish.html#scene-iv.-read-text-from-files"><i class="fa fa-check"></i>Scene IV. Read text from files</a></li>
-<li class="chapter" data-level="" data-path="shakespeare-start-to-finish.html"><a href="shakespeare-start-to-finish.html#scene-v.-add-additional-works"><i class="fa fa-check"></i>Scene V. Add additional works</a></li>
+<li class="chapter" data-level="" data-path="shakespeare.html"><a href="shakespeare.html"><i class="fa fa-check"></i>Shakespeare Start to Finish</a><ul>
+<li class="chapter" data-level="" data-path="shakespeare.html"><a href="shakespeare.html#act-i.-scrape-mit-and-gutenberg-shakespeare"><i class="fa fa-check"></i>ACT I. Scrape MIT and Gutenberg Shakespeare</a><ul>
+<li class="chapter" data-level="" data-path="shakespeare.html"><a href="shakespeare.html#scene-i.-scrape-main-works"><i class="fa fa-check"></i>Scene I. Scrape main works</a></li>
+<li class="chapter" data-level="" data-path="shakespeare.html"><a href="shakespeare.html#scene-ii.-sonnets"><i class="fa fa-check"></i>Scene II. Sonnets</a></li>
+<li class="chapter" data-level="" data-path="shakespeare.html"><a href="shakespeare.html#scene-iii.-save-and-write-out"><i class="fa fa-check"></i>Scene III. Save and write out</a></li>
+<li class="chapter" data-level="" data-path="shakespeare.html"><a href="shakespeare.html#scene-iv.-read-text-from-files"><i class="fa fa-check"></i>Scene IV. Read text from files</a></li>
+<li class="chapter" data-level="" data-path="shakespeare.html"><a href="shakespeare.html#scene-v.-add-additional-works"><i class="fa fa-check"></i>Scene V. Add additional works</a></li>
 </ul></li>
-<li class="chapter" data-level="" data-path="shakespeare-start-to-finish.html"><a href="shakespeare-start-to-finish.html#act-ii.-preliminary-cleaning"><i class="fa fa-check"></i>ACT II. Preliminary Cleaning</a><ul>
-<li class="chapter" data-level="" data-path="shakespeare-start-to-finish.html"><a href="shakespeare-start-to-finish.html#scene-i.-remove-initial-textmetadata"><i class="fa fa-check"></i>Scene I. Remove initial text/metadata</a></li>
-<li class="chapter" data-level="" data-path="shakespeare-start-to-finish.html"><a href="shakespeare-start-to-finish.html#scene-ii.-miscellaneous-removal"><i class="fa fa-check"></i>Scene II. Miscellaneous removal</a></li>
-<li class="chapter" data-level="" data-path="shakespeare-start-to-finish.html"><a href="shakespeare-start-to-finish.html#scene-iii.-classification-of-works"><i class="fa fa-check"></i>Scene III. Classification of works</a></li>
+<li class="chapter" data-level="" data-path="shakespeare.html"><a href="shakespeare.html#act-ii.-preliminary-cleaning"><i class="fa fa-check"></i>ACT II. Preliminary Cleaning</a><ul>
+<li class="chapter" data-level="" data-path="shakespeare.html"><a href="shakespeare.html#scene-i.-remove-initial-textmetadata"><i class="fa fa-check"></i>Scene I. Remove initial text/metadata</a></li>
+<li class="chapter" data-level="" data-path="shakespeare.html"><a href="shakespeare.html#scene-ii.-miscellaneous-removal"><i class="fa fa-check"></i>Scene II. Miscellaneous removal</a></li>
+<li class="chapter" data-level="" data-path="shakespeare.html"><a href="shakespeare.html#scene-iii.-classification-of-works"><i class="fa fa-check"></i>Scene III. Classification of works</a></li>
 </ul></li>
-<li class="chapter" data-level="" data-path="shakespeare-start-to-finish.html"><a href="shakespeare-start-to-finish.html#act-iii.-stop-words"><i class="fa fa-check"></i>ACT III. Stop words</a><ul>
-<li class="chapter" data-level="" data-path="shakespeare-start-to-finish.html"><a href="shakespeare-start-to-finish.html#scene-i.-character-names"><i class="fa fa-check"></i>Scene I. Character names</a></li>
-<li class="chapter" data-level="" data-path="shakespeare-start-to-finish.html"><a href="shakespeare-start-to-finish.html#scene-ii.-old-middle-modern-english"><i class="fa fa-check"></i>Scene II. Old, Middle, &amp; Modern English</a></li>
-<li class="chapter" data-level="" data-path="shakespeare-start-to-finish.html"><a href="shakespeare-start-to-finish.html#scene-iii.-remove-stopwords"><i class="fa fa-check"></i>Scene III. Remove stopwords</a></li>
+<li class="chapter" data-level="" data-path="shakespeare.html"><a href="shakespeare.html#act-iii.-stop-words"><i class="fa fa-check"></i>ACT III. Stop words</a><ul>
+<li class="chapter" data-level="" data-path="shakespeare.html"><a href="shakespeare.html#scene-i.-character-names"><i class="fa fa-check"></i>Scene I. Character names</a></li>
+<li class="chapter" data-level="" data-path="shakespeare.html"><a href="shakespeare.html#scene-ii.-old-middle-modern-english"><i class="fa fa-check"></i>Scene II. Old, Middle, &amp; Modern English</a></li>
+<li class="chapter" data-level="" data-path="shakespeare.html"><a href="shakespeare.html#scene-iii.-remove-stopwords"><i class="fa fa-check"></i>Scene III. Remove stopwords</a></li>
 </ul></li>
-<li class="chapter" data-level="" data-path="shakespeare-start-to-finish.html"><a href="shakespeare-start-to-finish.html#act-iv.-other-fixes"><i class="fa fa-check"></i>ACT IV. Other fixes</a></li>
-<li class="chapter" data-level="" data-path="shakespeare-start-to-finish.html"><a href="shakespeare-start-to-finish.html#act-v.-fun-stuff"><i class="fa fa-check"></i>ACT V. Fun stuff</a><ul>
-<li class="chapter" data-level="" data-path="shakespeare-start-to-finish.html"><a href="shakespeare-start-to-finish.html#scene-i.-count-the-terms"><i class="fa fa-check"></i>Scene I. Count the terms</a></li>
-<li class="chapter" data-level="" data-path="shakespeare-start-to-finish.html"><a href="shakespeare-start-to-finish.html#scene-ii.-stemming"><i class="fa fa-check"></i>Scene II. Stemming</a></li>
-<li class="chapter" data-level="" data-path="shakespeare-start-to-finish.html"><a href="shakespeare-start-to-finish.html#scene-iii.-exploration"><i class="fa fa-check"></i>Scene III. Exploration</a></li>
-<li class="chapter" data-level="" data-path="shakespeare-start-to-finish.html"><a href="shakespeare-start-to-finish.html#scene-iv.-topic-model"><i class="fa fa-check"></i>Scene IV. Topic model</a></li>
+<li class="chapter" data-level="" data-path="shakespeare.html"><a href="shakespeare.html#act-iv.-other-fixes"><i class="fa fa-check"></i>ACT IV. Other fixes</a></li>
+<li class="chapter" data-level="" data-path="shakespeare.html"><a href="shakespeare.html#act-v.-fun-stuff"><i class="fa fa-check"></i>ACT V. Fun stuff</a><ul>
+<li class="chapter" data-level="" data-path="shakespeare.html"><a href="shakespeare.html#scene-i.-count-the-terms"><i class="fa fa-check"></i>Scene I. Count the terms</a></li>
+<li class="chapter" data-level="" data-path="shakespeare.html"><a href="shakespeare.html#scene-ii.-stemming"><i class="fa fa-check"></i>Scene II. Stemming</a></li>
+<li class="chapter" data-level="" data-path="shakespeare.html"><a href="shakespeare.html#scene-iii.-exploration"><i class="fa fa-check"></i>Scene III. Exploration</a></li>
+<li class="chapter" data-level="" data-path="shakespeare.html"><a href="shakespeare.html#scene-iv.-topic-model"><i class="fa fa-check"></i>Scene IV. Topic model</a></li>
 </ul></li>
 </ul></li>
 <li class="chapter" data-level="" data-path="appendix.html"><a href="appendix.html"><i class="fa fa-check"></i>Appendix</a><ul>
@@ -260,8 +241,27 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <li class="chapter" data-level="" data-path="appendix.html"><a href="appendix.html#a-faster-lda"><i class="fa fa-check"></i>A Faster LDA</a></li>
 </ul></li>
 <li class="divider"></li>
-<li class='after'><a href="https://m-clark.github.io/"><img src="img/mc.png" style="width:50%; padding:0px 0; display:block; margin: 0 auto;" alt="MC logo"></a></li>
-<li class='after'><a rel="license" href="http://creativecommons.org/licenses/by-sa/4.0/"><img alt="Creative Commons License" style="width:50%; border-width:0; display:block; margin: 0 auto;" src="img/ccbysa_test.png" /></a></li>
+<li class='after'">
+   <a href="https://m-clark.github.io/">
+      <img src="img/mc_logo.png" style="width:25%; padding:0px 0; display:block; margin: 0 auto;" alt="MC logo">
+   </a>
+</li>
+<li class='after'">
+   <div style='text-align:center'>
+      <a href="https://github.com/m-clark/">
+         <i class="fab fa-github fa-2x" aria-hidden="true"></i>
+      </a>
+   </div>
+</li>
+<li class='after'">
+   <div style='text-align:center'>
+      <a rel="license" href="http://creativecommons.org/licenses/by-sa/4.0/">
+         <i class="fab fa-creative-commons fa-lg"></i>
+         <i class="fab fa-creative-commons-by fa-lg"></i>
+         <i class="fab fa-creative-commons-sa fa-lg"></i>
+      </a>
+   </div>
+</li>
 
 </ul>
 
@@ -298,7 +298,7 @@ Best of luck with your data! <span class="math inline">\(\qquad\sim\mathbb{M}\)<
         </div>
       </div>
 <a href="word-embeddings.html" class="navigation navigation-prev " aria-label="Previous page"><i class="fa fa-angle-left"></i></a>
-<a href="shakespeare-start-to-finish.html" class="navigation navigation-next " aria-label="Next page"><i class="fa fa-angle-right"></i></a>
+<a href="shakespeare.html" class="navigation navigation-next " aria-label="Next page"><i class="fa fa-angle-right"></i></a>
     </div>
   </div>
 <script src="libs/gitbook-2.6.7/js/app.min.js"></script>
@@ -313,14 +313,14 @@ gitbook.require(["gitbook"], function(gitbook) {
 gitbook.start({
 "sharing": {
 "github": false,
-"facebook": true,
-"twitter": true,
+"facebook": false,
+"twitter": false,
 "google": false,
 "linkedin": false,
 "weibo": false,
 "instapper": false,
 "vk": false,
-"all": ["facebook", "google", "twitter", "weibo", "instapaper"]
+"all": ["twitter", "facebook", "google", "weibo", "instapaper"]
 },
 "fontsettings": {
 "theme": "white",
@@ -334,6 +334,8 @@ gitbook.start({
 "depth": 2,
 "scroll_highlight": true
 },
+"df_print": "kable",
+"highlight": "pygments",
 "search": true
 });
 });

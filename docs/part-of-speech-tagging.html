@@ -24,14 +24,14 @@
 
 
 
-<meta name="date" content="2018-07-22">
+<meta name="date" content="2018-09-07">
 
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="black">
   
   <link rel="shortcut icon" href="img/R.ico" type="image/x-icon">
-<link rel="prev" href="sentiment-analysis.html">
+<link rel="prev" href="string-theory.html">
 <link rel="next" href="topic-modeling.html">
 <script src="libs/jquery-2.2.3/jquery.min.js"></script>
 <link href="libs/gitbook-2.6.7/css/style.css" rel="stylesheet" />
@@ -130,8 +130,8 @@ code span.vs { color: #4070a0; } /* VerbatimString */
 code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
 </style>
 
-<link rel="stylesheet" href="css/standard_html.css" type="text/css" />
 <link rel="stylesheet" href="css/book.css" type="text/css" />
+<link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.0.13/css/all.css" type="text/css" />
 </head>
 
 <body>
@@ -144,16 +144,16 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
       <nav role="navigation">
 
 <ul class="summary">
-<li class='before'><a href="https://m-clark.github.io/text-analysis-with-R/">Text Analysis in R</span></a></li>
+<li class='before'><a href="./">Text Analysis in R</a></li>
 
 <li class="divider"></li>
 <li><a href="index.html#section"></a></li>
-<li class="chapter" data-level="" data-path="introduction.html"><a href="introduction.html"><i class="fa fa-check"></i>Introduction</a><ul>
-<li class="chapter" data-level="" data-path="introduction.html"><a href="introduction.html#overview"><i class="fa fa-check"></i>Overview</a><ul>
-<li class="chapter" data-level="" data-path="introduction.html"><a href="introduction.html#goals"><i class="fa fa-check"></i>Goals</a></li>
-<li class="chapter" data-level="" data-path="introduction.html"><a href="introduction.html#prerequisites"><i class="fa fa-check"></i>Prerequisites</a></li>
+<li class="chapter" data-level="" data-path="intro.html"><a href="intro.html"><i class="fa fa-check"></i>Introduction</a><ul>
+<li class="chapter" data-level="" data-path="intro.html"><a href="intro.html#overview"><i class="fa fa-check"></i>Overview</a><ul>
+<li class="chapter" data-level="" data-path="intro.html"><a href="intro.html#goals"><i class="fa fa-check"></i>Goals</a></li>
+<li class="chapter" data-level="" data-path="intro.html"><a href="intro.html#prerequisites"><i class="fa fa-check"></i>Prerequisites</a></li>
 </ul></li>
-<li class="chapter" data-level="" data-path="introduction.html"><a href="introduction.html#initial-steps"><i class="fa fa-check"></i>Initial Steps</a></li>
+<li class="chapter" data-level="" data-path="intro.html"><a href="intro.html#initial-steps"><i class="fa fa-check"></i>Initial Steps</a></li>
 </ul></li>
 <li class="chapter" data-level="" data-path="string-theory.html"><a href="string-theory.html"><i class="fa fa-check"></i>String Theory</a><ul>
 <li class="chapter" data-level="" data-path="string-theory.html"><a href="string-theory.html#basic-data-types"><i class="fa fa-check"></i>Basic data types</a><ul>
@@ -178,27 +178,8 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 </ul></li>
 <li class="chapter" data-level="" data-path="string-theory.html"><a href="string-theory.html#exercises"><i class="fa fa-check"></i>Exercises</a></li>
 </ul></li>
-<li class="chapter" data-level="" data-path="sentiment-analysis.html"><a href="sentiment-analysis.html"><i class="fa fa-check"></i>Sentiment Analysis</a><ul>
-<li class="chapter" data-level="" data-path="sentiment-analysis.html"><a href="sentiment-analysis.html#basic-idea"><i class="fa fa-check"></i>Basic idea</a></li>
-<li class="chapter" data-level="" data-path="sentiment-analysis.html"><a href="sentiment-analysis.html#issues"><i class="fa fa-check"></i>Issues</a><ul>
-<li class="chapter" data-level="" data-path="sentiment-analysis.html"><a href="sentiment-analysis.html#context-sarcasm-etc."><i class="fa fa-check"></i>Context, sarcasm, etc.</a></li>
-<li class="chapter" data-level="" data-path="sentiment-analysis.html"><a href="sentiment-analysis.html#lexicons"><i class="fa fa-check"></i>Lexicons</a></li>
-</ul></li>
-<li class="chapter" data-level="" data-path="sentiment-analysis.html"><a href="sentiment-analysis.html#sentiment-analysis-examples"><i class="fa fa-check"></i>Sentiment Analysis Examples</a><ul>
-<li class="chapter" data-level="" data-path="sentiment-analysis.html"><a href="sentiment-analysis.html#the-first-thing-the-baby-did-wrong"><i class="fa fa-check"></i>The first thing the baby did wrong</a></li>
-<li class="chapter" data-level="" data-path="sentiment-analysis.html"><a href="sentiment-analysis.html#romeo-juliet"><i class="fa fa-check"></i>Romeo &amp; Juliet</a></li>
-</ul></li>
-<li class="chapter" data-level="" data-path="sentiment-analysis.html"><a href="sentiment-analysis.html#sentiment-analysis-summary"><i class="fa fa-check"></i>Sentiment Analysis Summary</a></li>
-<li class="chapter" data-level="" data-path="sentiment-analysis.html"><a href="sentiment-analysis.html#exercise"><i class="fa fa-check"></i>Exercise</a><ul>
-<li class="chapter" data-level="" data-path="sentiment-analysis.html"><a href="sentiment-analysis.html#step-0-install-the-packages"><i class="fa fa-check"></i>Step 0: Install the packages</a></li>
-<li class="chapter" data-level="" data-path="sentiment-analysis.html"><a href="sentiment-analysis.html#step-1-initial-inspection"><i class="fa fa-check"></i>Step 1: Initial inspection</a></li>
-<li class="chapter" data-level="" data-path="sentiment-analysis.html"><a href="sentiment-analysis.html#step-2-data-prep"><i class="fa fa-check"></i>Step 2: Data prep</a></li>
-<li class="chapter" data-level="" data-path="sentiment-analysis.html"><a href="sentiment-analysis.html#step-3-get-sentiment"><i class="fa fa-check"></i>Step 3: Get sentiment</a></li>
-<li class="chapter" data-level="" data-path="sentiment-analysis.html"><a href="sentiment-analysis.html#step-4-visualize"><i class="fa fa-check"></i>Step 4: Visualize</a></li>
-</ul></li>
-</ul></li>
 <li class="chapter" data-level="" data-path="part-of-speech-tagging.html"><a href="part-of-speech-tagging.html"><i class="fa fa-check"></i>Part of Speech Tagging</a><ul>
-<li class="chapter" data-level="" data-path="part-of-speech-tagging.html"><a href="part-of-speech-tagging.html#basic-idea-1"><i class="fa fa-check"></i>Basic idea</a></li>
+<li class="chapter" data-level="" data-path="part-of-speech-tagging.html"><a href="part-of-speech-tagging.html#basic-idea"><i class="fa fa-check"></i>Basic idea</a></li>
 <li class="chapter" data-level="" data-path="part-of-speech-tagging.html"><a href="part-of-speech-tagging.html#pos-examples"><i class="fa fa-check"></i>POS Examples</a><ul>
 <li class="chapter" data-level="" data-path="part-of-speech-tagging.html"><a href="part-of-speech-tagging.html#barthelme-carver"><i class="fa fa-check"></i>Barthelme &amp; Carver</a></li>
 <li class="chapter" data-level="" data-path="part-of-speech-tagging.html"><a href="part-of-speech-tagging.html#more-taggin"><i class="fa fa-check"></i>More taggin’</a></li>
@@ -207,7 +188,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <li class="chapter" data-level="" data-path="part-of-speech-tagging.html"><a href="part-of-speech-tagging.html#pos-exercise"><i class="fa fa-check"></i>POS Exercise</a></li>
 </ul></li>
 <li class="chapter" data-level="" data-path="topic-modeling.html"><a href="topic-modeling.html"><i class="fa fa-check"></i>Topic modeling</a><ul>
-<li class="chapter" data-level="" data-path="topic-modeling.html"><a href="topic-modeling.html#basic-idea-2"><i class="fa fa-check"></i>Basic idea</a></li>
+<li class="chapter" data-level="" data-path="topic-modeling.html"><a href="topic-modeling.html#basic-idea-1"><i class="fa fa-check"></i>Basic idea</a></li>
 <li class="chapter" data-level="" data-path="topic-modeling.html"><a href="topic-modeling.html#steps"><i class="fa fa-check"></i>Steps</a></li>
 <li class="chapter" data-level="" data-path="topic-modeling.html"><a href="topic-modeling.html#topic-model-example"><i class="fa fa-check"></i>Topic Model Example</a><ul>
 <li class="chapter" data-level="" data-path="topic-modeling.html"><a href="topic-modeling.html#shakespeare"><i class="fa fa-check"></i>Shakespeare</a></li>
@@ -223,30 +204,30 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <li class="chapter" data-level="" data-path="word-embeddings.html"><a href="word-embeddings.html#wikipedia"><i class="fa fa-check"></i>Wikipedia</a></li>
 </ul></li>
 <li class="chapter" data-level="" data-path="summary.html"><a href="summary.html"><i class="fa fa-check"></i>Summary</a></li>
-<li class="chapter" data-level="" data-path="shakespeare-start-to-finish.html"><a href="shakespeare-start-to-finish.html"><i class="fa fa-check"></i>Shakespeare Start to Finish</a><ul>
-<li class="chapter" data-level="" data-path="shakespeare-start-to-finish.html"><a href="shakespeare-start-to-finish.html#act-i.-scrape-mit-and-gutenberg-shakespeare"><i class="fa fa-check"></i>ACT I. Scrape MIT and Gutenberg Shakespeare</a><ul>
-<li class="chapter" data-level="" data-path="shakespeare-start-to-finish.html"><a href="shakespeare-start-to-finish.html#scene-i.-scrape-main-works"><i class="fa fa-check"></i>Scene I. Scrape main works</a></li>
-<li class="chapter" data-level="" data-path="shakespeare-start-to-finish.html"><a href="shakespeare-start-to-finish.html#scene-ii.-sonnets"><i class="fa fa-check"></i>Scene II. Sonnets</a></li>
-<li class="chapter" data-level="" data-path="shakespeare-start-to-finish.html"><a href="shakespeare-start-to-finish.html#scene-iii.-save-and-write-out"><i class="fa fa-check"></i>Scene III. Save and write out</a></li>
-<li class="chapter" data-level="" data-path="shakespeare-start-to-finish.html"><a href="shakespeare-start-to-finish.html#scene-iv.-read-text-from-files"><i class="fa fa-check"></i>Scene IV. Read text from files</a></li>
-<li class="chapter" data-level="" data-path="shakespeare-start-to-finish.html"><a href="shakespeare-start-to-finish.html#scene-v.-add-additional-works"><i class="fa fa-check"></i>Scene V. Add additional works</a></li>
+<li class="chapter" data-level="" data-path="shakespeare.html"><a href="shakespeare.html"><i class="fa fa-check"></i>Shakespeare Start to Finish</a><ul>
+<li class="chapter" data-level="" data-path="shakespeare.html"><a href="shakespeare.html#act-i.-scrape-mit-and-gutenberg-shakespeare"><i class="fa fa-check"></i>ACT I. Scrape MIT and Gutenberg Shakespeare</a><ul>
+<li class="chapter" data-level="" data-path="shakespeare.html"><a href="shakespeare.html#scene-i.-scrape-main-works"><i class="fa fa-check"></i>Scene I. Scrape main works</a></li>
+<li class="chapter" data-level="" data-path="shakespeare.html"><a href="shakespeare.html#scene-ii.-sonnets"><i class="fa fa-check"></i>Scene II. Sonnets</a></li>
+<li class="chapter" data-level="" data-path="shakespeare.html"><a href="shakespeare.html#scene-iii.-save-and-write-out"><i class="fa fa-check"></i>Scene III. Save and write out</a></li>
+<li class="chapter" data-level="" data-path="shakespeare.html"><a href="shakespeare.html#scene-iv.-read-text-from-files"><i class="fa fa-check"></i>Scene IV. Read text from files</a></li>
+<li class="chapter" data-level="" data-path="shakespeare.html"><a href="shakespeare.html#scene-v.-add-additional-works"><i class="fa fa-check"></i>Scene V. Add additional works</a></li>
 </ul></li>
-<li class="chapter" data-level="" data-path="shakespeare-start-to-finish.html"><a href="shakespeare-start-to-finish.html#act-ii.-preliminary-cleaning"><i class="fa fa-check"></i>ACT II. Preliminary Cleaning</a><ul>
-<li class="chapter" data-level="" data-path="shakespeare-start-to-finish.html"><a href="shakespeare-start-to-finish.html#scene-i.-remove-initial-textmetadata"><i class="fa fa-check"></i>Scene I. Remove initial text/metadata</a></li>
-<li class="chapter" data-level="" data-path="shakespeare-start-to-finish.html"><a href="shakespeare-start-to-finish.html#scene-ii.-miscellaneous-removal"><i class="fa fa-check"></i>Scene II. Miscellaneous removal</a></li>
-<li class="chapter" data-level="" data-path="shakespeare-start-to-finish.html"><a href="shakespeare-start-to-finish.html#scene-iii.-classification-of-works"><i class="fa fa-check"></i>Scene III. Classification of works</a></li>
+<li class="chapter" data-level="" data-path="shakespeare.html"><a href="shakespeare.html#act-ii.-preliminary-cleaning"><i class="fa fa-check"></i>ACT II. Preliminary Cleaning</a><ul>
+<li class="chapter" data-level="" data-path="shakespeare.html"><a href="shakespeare.html#scene-i.-remove-initial-textmetadata"><i class="fa fa-check"></i>Scene I. Remove initial text/metadata</a></li>
+<li class="chapter" data-level="" data-path="shakespeare.html"><a href="shakespeare.html#scene-ii.-miscellaneous-removal"><i class="fa fa-check"></i>Scene II. Miscellaneous removal</a></li>
+<li class="chapter" data-level="" data-path="shakespeare.html"><a href="shakespeare.html#scene-iii.-classification-of-works"><i class="fa fa-check"></i>Scene III. Classification of works</a></li>
 </ul></li>
-<li class="chapter" data-level="" data-path="shakespeare-start-to-finish.html"><a href="shakespeare-start-to-finish.html#act-iii.-stop-words"><i class="fa fa-check"></i>ACT III. Stop words</a><ul>
-<li class="chapter" data-level="" data-path="shakespeare-start-to-finish.html"><a href="shakespeare-start-to-finish.html#scene-i.-character-names"><i class="fa fa-check"></i>Scene I. Character names</a></li>
-<li class="chapter" data-level="" data-path="shakespeare-start-to-finish.html"><a href="shakespeare-start-to-finish.html#scene-ii.-old-middle-modern-english"><i class="fa fa-check"></i>Scene II. Old, Middle, &amp; Modern English</a></li>
-<li class="chapter" data-level="" data-path="shakespeare-start-to-finish.html"><a href="shakespeare-start-to-finish.html#scene-iii.-remove-stopwords"><i class="fa fa-check"></i>Scene III. Remove stopwords</a></li>
+<li class="chapter" data-level="" data-path="shakespeare.html"><a href="shakespeare.html#act-iii.-stop-words"><i class="fa fa-check"></i>ACT III. Stop words</a><ul>
+<li class="chapter" data-level="" data-path="shakespeare.html"><a href="shakespeare.html#scene-i.-character-names"><i class="fa fa-check"></i>Scene I. Character names</a></li>
+<li class="chapter" data-level="" data-path="shakespeare.html"><a href="shakespeare.html#scene-ii.-old-middle-modern-english"><i class="fa fa-check"></i>Scene II. Old, Middle, &amp; Modern English</a></li>
+<li class="chapter" data-level="" data-path="shakespeare.html"><a href="shakespeare.html#scene-iii.-remove-stopwords"><i class="fa fa-check"></i>Scene III. Remove stopwords</a></li>
 </ul></li>
-<li class="chapter" data-level="" data-path="shakespeare-start-to-finish.html"><a href="shakespeare-start-to-finish.html#act-iv.-other-fixes"><i class="fa fa-check"></i>ACT IV. Other fixes</a></li>
-<li class="chapter" data-level="" data-path="shakespeare-start-to-finish.html"><a href="shakespeare-start-to-finish.html#act-v.-fun-stuff"><i class="fa fa-check"></i>ACT V. Fun stuff</a><ul>
-<li class="chapter" data-level="" data-path="shakespeare-start-to-finish.html"><a href="shakespeare-start-to-finish.html#scene-i.-count-the-terms"><i class="fa fa-check"></i>Scene I. Count the terms</a></li>
-<li class="chapter" data-level="" data-path="shakespeare-start-to-finish.html"><a href="shakespeare-start-to-finish.html#scene-ii.-stemming"><i class="fa fa-check"></i>Scene II. Stemming</a></li>
-<li class="chapter" data-level="" data-path="shakespeare-start-to-finish.html"><a href="shakespeare-start-to-finish.html#scene-iii.-exploration"><i class="fa fa-check"></i>Scene III. Exploration</a></li>
-<li class="chapter" data-level="" data-path="shakespeare-start-to-finish.html"><a href="shakespeare-start-to-finish.html#scene-iv.-topic-model"><i class="fa fa-check"></i>Scene IV. Topic model</a></li>
+<li class="chapter" data-level="" data-path="shakespeare.html"><a href="shakespeare.html#act-iv.-other-fixes"><i class="fa fa-check"></i>ACT IV. Other fixes</a></li>
+<li class="chapter" data-level="" data-path="shakespeare.html"><a href="shakespeare.html#act-v.-fun-stuff"><i class="fa fa-check"></i>ACT V. Fun stuff</a><ul>
+<li class="chapter" data-level="" data-path="shakespeare.html"><a href="shakespeare.html#scene-i.-count-the-terms"><i class="fa fa-check"></i>Scene I. Count the terms</a></li>
+<li class="chapter" data-level="" data-path="shakespeare.html"><a href="shakespeare.html#scene-ii.-stemming"><i class="fa fa-check"></i>Scene II. Stemming</a></li>
+<li class="chapter" data-level="" data-path="shakespeare.html"><a href="shakespeare.html#scene-iii.-exploration"><i class="fa fa-check"></i>Scene III. Exploration</a></li>
+<li class="chapter" data-level="" data-path="shakespeare.html"><a href="shakespeare.html#scene-iv.-topic-model"><i class="fa fa-check"></i>Scene IV. Topic model</a></li>
 </ul></li>
 </ul></li>
 <li class="chapter" data-level="" data-path="appendix.html"><a href="appendix.html"><i class="fa fa-check"></i>Appendix</a><ul>
@@ -260,8 +241,27 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <li class="chapter" data-level="" data-path="appendix.html"><a href="appendix.html#a-faster-lda"><i class="fa fa-check"></i>A Faster LDA</a></li>
 </ul></li>
 <li class="divider"></li>
-<li class='after'><a href="https://m-clark.github.io/"><img src="img/mc.png" style="width:50%; padding:0px 0; display:block; margin: 0 auto;" alt="MC logo"></a></li>
-<li class='after'><a rel="license" href="http://creativecommons.org/licenses/by-sa/4.0/"><img alt="Creative Commons License" style="width:50%; border-width:0; display:block; margin: 0 auto;" src="img/ccbysa_test.png" /></a></li>
+<li class='after'">
+   <a href="https://m-clark.github.io/">
+      <img src="img/mc_logo.png" style="width:25%; padding:0px 0; display:block; margin: 0 auto;" alt="MC logo">
+   </a>
+</li>
+<li class='after'">
+   <div style='text-align:center'>
+      <a href="https://github.com/m-clark/">
+         <i class="fab fa-github fa-2x" aria-hidden="true"></i>
+      </a>
+   </div>
+</li>
+<li class='after'">
+   <div style='text-align:center'>
+      <a rel="license" href="http://creativecommons.org/licenses/by-sa/4.0/">
+         <i class="fab fa-creative-commons fa-lg"></i>
+         <i class="fab fa-creative-commons-by fa-lg"></i>
+         <i class="fab fa-creative-commons-sa fa-lg"></i>
+      </a>
+   </div>
+</li>
 
 </ul>
 
@@ -293,7 +293,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <li><a href="https://youtu.be/RPoBE-E8VOc">Conjunction Junction</a> (personal fave)</li>
 </ul>
 <p>Aside from those, you can also learn how bills get passed, about being a victim of gravity, a comparison of the decimal to other numeric systems used by alien species (I recommend the Chavez remix), and a host of other useful things.</p>
-<div id="basic-idea-1" class="section level2">
+<div id="basic-idea" class="section level2">
 <h2>Basic idea</h2>
 <p>With <span class="emph">part-of-speech</span> tagging, we classify a word with its corresponding part of speech. The following provides an example.</p>
 <table style="width:68%;">
@@ -336,26 +336,26 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <li><em>Some Of Us Had Been Threatening Our Friend Colby</em></li>
 </ul>
 <p>As another comparison, I’ve included Raymond Carver’s <em>What we talk about when we talk about love</em>, the unedited version. First we’ll load an unnested object from the sentiment analysis, the <span class="objclass">barth</span> object. Then for each work we create a sentence id, unnest the data to words, join the POS data, then create counts/proportions for each POS.</p>
-<div class="sourceCode" id="cb95"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb95-1" data-line-number="1"><span class="kw">load</span>(<span class="st">&#39;data/barth_sentences.RData&#39;</span>)</a>
-<a class="sourceLine" id="cb95-2" data-line-number="2">barthelme_pos =<span class="st"> </span>barth <span class="op">%&gt;%</span><span class="st"> </span></a>
-<a class="sourceLine" id="cb95-3" data-line-number="3"><span class="st">  </span><span class="kw">mutate</span>(<span class="dt">work =</span> <span class="kw">str_replace</span>(work, <span class="st">&#39;.txt&#39;</span>, <span class="st">&#39;&#39;</span>)) <span class="op">%&gt;%</span><span class="st">  </span><span class="co"># remove file extension</span></a>
-<a class="sourceLine" id="cb95-4" data-line-number="4"><span class="st">  </span><span class="kw">group_by</span>(work) <span class="op">%&gt;%</span><span class="st">                              </span></a>
-<a class="sourceLine" id="cb95-5" data-line-number="5"><span class="st">  </span><span class="kw">mutate</span>(<span class="dt">sentence_id =</span> <span class="dv">1</span><span class="op">:</span><span class="kw">n</span>()) <span class="op">%&gt;%</span><span class="st">                   </span><span class="co"># create a sentence id</span></a>
-<a class="sourceLine" id="cb95-6" data-line-number="6"><span class="st">  </span><span class="kw">unnest_tokens</span>(word, sentence, <span class="dt">drop=</span>F) <span class="op">%&gt;%</span><span class="st">         </span><span class="co"># get words</span></a>
-<a class="sourceLine" id="cb95-7" data-line-number="7"><span class="st">  </span><span class="kw">inner_join</span>(parts_of_speech) <span class="op">%&gt;%</span><span class="st">                   </span><span class="co"># join POS</span></a>
-<a class="sourceLine" id="cb95-8" data-line-number="8"><span class="st">  </span><span class="kw">count</span>(pos) <span class="op">%&gt;%</span><span class="st">                                    </span><span class="co"># count</span></a>
-<a class="sourceLine" id="cb95-9" data-line-number="9"><span class="st">  </span><span class="kw">mutate</span>(<span class="dt">prop=</span>n<span class="op">/</span><span class="kw">sum</span>(n))</a></code></pre></div>
+<div class="sourceCode" id="cb56"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb56-1" data-line-number="1"><span class="kw">load</span>(<span class="st">&#39;data/barth_sentences.RData&#39;</span>)</a>
+<a class="sourceLine" id="cb56-2" data-line-number="2">barthelme_pos =<span class="st"> </span>barth <span class="op">%&gt;%</span><span class="st"> </span></a>
+<a class="sourceLine" id="cb56-3" data-line-number="3"><span class="st">  </span><span class="kw">mutate</span>(<span class="dt">work =</span> <span class="kw">str_replace</span>(work, <span class="st">&#39;.txt&#39;</span>, <span class="st">&#39;&#39;</span>)) <span class="op">%&gt;%</span><span class="st">  </span><span class="co"># remove file extension</span></a>
+<a class="sourceLine" id="cb56-4" data-line-number="4"><span class="st">  </span><span class="kw">group_by</span>(work) <span class="op">%&gt;%</span><span class="st">                              </span></a>
+<a class="sourceLine" id="cb56-5" data-line-number="5"><span class="st">  </span><span class="kw">mutate</span>(<span class="dt">sentence_id =</span> <span class="dv">1</span><span class="op">:</span><span class="kw">n</span>()) <span class="op">%&gt;%</span><span class="st">                   </span><span class="co"># create a sentence id</span></a>
+<a class="sourceLine" id="cb56-6" data-line-number="6"><span class="st">  </span><span class="kw">unnest_tokens</span>(word, sentence, <span class="dt">drop=</span>F) <span class="op">%&gt;%</span><span class="st">         </span><span class="co"># get words</span></a>
+<a class="sourceLine" id="cb56-7" data-line-number="7"><span class="st">  </span><span class="kw">inner_join</span>(parts_of_speech) <span class="op">%&gt;%</span><span class="st">                   </span><span class="co"># join POS</span></a>
+<a class="sourceLine" id="cb56-8" data-line-number="8"><span class="st">  </span><span class="kw">count</span>(pos) <span class="op">%&gt;%</span><span class="st">                                    </span><span class="co"># count</span></a>
+<a class="sourceLine" id="cb56-9" data-line-number="9"><span class="st">  </span><span class="kw">mutate</span>(<span class="dt">prop=</span>n<span class="op">/</span><span class="kw">sum</span>(n))</a></code></pre></div>
 <p>Next we read in and process the Carver text in the same manner.</p>
-<div class="sourceCode" id="cb96"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb96-1" data-line-number="1">carver_pos =<span class="st"> </span></a>
-<a class="sourceLine" id="cb96-2" data-line-number="2"><span class="st">  </span><span class="kw">data_frame</span>(<span class="dt">file =</span> <span class="kw">dir</span>(<span class="st">&#39;data/texts_raw/carver/&#39;</span>, <span class="dt">full.names =</span> <span class="ot">TRUE</span>)) <span class="op">%&gt;%</span></a>
-<a class="sourceLine" id="cb96-3" data-line-number="3"><span class="st">  </span><span class="kw">mutate</span>(<span class="dt">text =</span> <span class="kw">map</span>(file, read_lines)) <span class="op">%&gt;%</span></a>
-<a class="sourceLine" id="cb96-4" data-line-number="4"><span class="st">  </span><span class="kw">transmute</span>(<span class="dt">work =</span> <span class="kw">basename</span>(file), text) <span class="op">%&gt;%</span></a>
-<a class="sourceLine" id="cb96-5" data-line-number="5"><span class="st">  </span><span class="kw">unnest</span>(text) <span class="op">%&gt;%</span><span class="st"> </span></a>
-<a class="sourceLine" id="cb96-6" data-line-number="6"><span class="st">  </span><span class="kw">unnest_tokens</span>(word, text, <span class="dt">token=</span><span class="st">&#39;words&#39;</span>) <span class="op">%&gt;%</span><span class="st"> </span></a>
-<a class="sourceLine" id="cb96-7" data-line-number="7"><span class="st">  </span><span class="kw">inner_join</span>(parts_of_speech) <span class="op">%&gt;%</span><span class="st"> </span></a>
-<a class="sourceLine" id="cb96-8" data-line-number="8"><span class="st">  </span><span class="kw">count</span>(pos) <span class="op">%&gt;%</span></a>
-<a class="sourceLine" id="cb96-9" data-line-number="9"><span class="st">  </span><span class="kw">mutate</span>(<span class="dt">work=</span><span class="st">&#39;love&#39;</span>,</a>
-<a class="sourceLine" id="cb96-10" data-line-number="10">         <span class="dt">prop=</span>n<span class="op">/</span><span class="kw">sum</span>(n))</a></code></pre></div>
+<div class="sourceCode" id="cb57"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb57-1" data-line-number="1">carver_pos =<span class="st"> </span></a>
+<a class="sourceLine" id="cb57-2" data-line-number="2"><span class="st">  </span><span class="kw">data_frame</span>(<span class="dt">file =</span> <span class="kw">dir</span>(<span class="st">&#39;data/texts_raw/carver/&#39;</span>, <span class="dt">full.names =</span> <span class="ot">TRUE</span>)) <span class="op">%&gt;%</span></a>
+<a class="sourceLine" id="cb57-3" data-line-number="3"><span class="st">  </span><span class="kw">mutate</span>(<span class="dt">text =</span> <span class="kw">map</span>(file, read_lines)) <span class="op">%&gt;%</span></a>
+<a class="sourceLine" id="cb57-4" data-line-number="4"><span class="st">  </span><span class="kw">transmute</span>(<span class="dt">work =</span> <span class="kw">basename</span>(file), text) <span class="op">%&gt;%</span></a>
+<a class="sourceLine" id="cb57-5" data-line-number="5"><span class="st">  </span><span class="kw">unnest</span>(text) <span class="op">%&gt;%</span><span class="st"> </span></a>
+<a class="sourceLine" id="cb57-6" data-line-number="6"><span class="st">  </span><span class="kw">unnest_tokens</span>(word, text, <span class="dt">token=</span><span class="st">&#39;words&#39;</span>) <span class="op">%&gt;%</span><span class="st"> </span></a>
+<a class="sourceLine" id="cb57-7" data-line-number="7"><span class="st">  </span><span class="kw">inner_join</span>(parts_of_speech) <span class="op">%&gt;%</span><span class="st"> </span></a>
+<a class="sourceLine" id="cb57-8" data-line-number="8"><span class="st">  </span><span class="kw">count</span>(pos) <span class="op">%&gt;%</span></a>
+<a class="sourceLine" id="cb57-9" data-line-number="9"><span class="st">  </span><span class="kw">mutate</span>(<span class="dt">work=</span><span class="st">&#39;love&#39;</span>,</a>
+<a class="sourceLine" id="cb57-10" data-line-number="10">         <span class="dt">prop=</span>n<span class="op">/</span><span class="kw">sum</span>(n))</a></code></pre></div>
 <p>This visualization depicts the proportion of occurrence for each part of speech across the works. It would appear Barthelme is fairly consistent, and also that relative to the Barthelme texts, Carver preferred nouns and pronouns.</p>
 <div id="54522e65dbd8" style="width:672px;height:600px;" class="plotly html-widget"></div>
 <script type="application/json" data-for="54522e65dbd8">{"x":{"visdat":{"54526eddf68d":["function () ","plotlyVisDat"],"5452214459b4":["function () ","data"]},"cur_data":"5452214459b4","attrs":{"54526eddf68d":{"alpha":1,"sizes":[10,100],"x":{},"y":{},"type":"scatter","mode":"markers","color":["gray50"],"opacity":0.5,"size":[20],"name":"love"},"5452214459b4":{"alpha":1,"sizes":[10,100],"x":{},"y":{},"type":"scatter","mode":"markers","color":{},"size":[10]}},"layout":{"margin":{"b":40,"l":60,"t":25,"r":10},"xaxis":{"domain":[0,1],"zeroline":false,"showgrid":false,"title":false,"type":"category","categoryorder":"array","categoryarray":["Adjective","Adverb","Conjunction","Definite Article","Interjection","Noun","Plural","Preposition","Pronoun","Verb (intransitive)","Verb (transitive)","Verb (usu participle)"]},"yaxis":{"domain":[0,1],"zeroline":false,"showgrid":false,"title":"prop"},"plot_bgcolor":"transparent","paper_bgcolor":"transparent","hovermode":"closest","showlegend":true},"source":"A","config":{"modeBarButtonsToAdd":[{"name":"Collaborate","icon":{"width":1000,"ascent":500,"descent":-50,"path":"M487 375c7-10 9-23 5-36l-79-259c-3-12-11-23-22-31-11-8-22-12-35-12l-263 0c-15 0-29 5-43 15-13 10-23 23-28 37-5 13-5 25-1 37 0 0 0 3 1 7 1 5 1 8 1 11 0 2 0 4-1 6 0 3-1 5-1 6 1 2 2 4 3 6 1 2 2 4 4 6 2 3 4 5 5 7 5 7 9 16 13 26 4 10 7 19 9 26 0 2 0 5 0 9-1 4-1 6 0 8 0 2 2 5 4 8 3 3 5 5 5 7 4 6 8 15 12 26 4 11 7 19 7 26 1 1 0 4 0 9-1 4-1 7 0 8 1 2 3 5 6 8 4 4 6 6 6 7 4 5 8 13 13 24 4 11 7 20 7 28 1 1 0 4 0 7-1 3-1 6-1 7 0 2 1 4 3 6 1 1 3 4 5 6 2 3 3 5 5 6 1 2 3 5 4 9 2 3 3 7 5 10 1 3 2 6 4 10 2 4 4 7 6 9 2 3 4 5 7 7 3 2 7 3 11 3 3 0 8 0 13-1l0-1c7 2 12 2 14 2l218 0c14 0 25-5 32-16 8-10 10-23 6-37l-79-259c-7-22-13-37-20-43-7-7-19-10-37-10l-248 0c-5 0-9-2-11-5-2-3-2-7 0-12 4-13 18-20 41-20l264 0c5 0 10 2 16 5 5 3 8 6 10 11l85 282c2 5 2 10 2 17 7-3 13-7 17-13z m-304 0c-1-3-1-5 0-7 1-1 3-2 6-2l174 0c2 0 4 1 7 2 2 2 4 4 5 7l6 18c0 3 0 5-1 7-1 1-3 2-6 2l-173 0c-3 0-5-1-8-2-2-2-4-4-4-7z m-24-73c-1-3-1-5 0-7 2-2 3-2 6-2l174 0c2 0 5 0 7 2 3 2 4 4 5 7l6 18c1 2 0 5-1 6-1 2-3 3-5 3l-174 0c-3 0-5-1-7-3-3-1-4-4-5-6z"},"click":"function(gd) { \n        // is this being viewed in RStudio?\n        if (location.search == '?viewer_pane=1') {\n          alert('To learn about plotly for collaboration, visit:\\n https://cpsievert.github.io/plotly_book/plot-ly-for-collaboration.html');\n        } else {\n          window.open('https://cpsievert.github.io/plotly_book/plot-ly-for-collaboration.html', '_blank');\n        }\n      }"}],"cloud":false,"displayModeBar":false},"data":[{"x":["Adjective","Adverb","Conjunction","Definite Article","Interjection","Noun","Plural","Preposition","Pronoun","Verb (intransitive)","Verb (transitive)","Verb (usu participle)"],"y":[0.0725248859902908,0.130289805325357,0.0437404991908988,0.0703672828911882,0.0269210023047124,0.294463786593439,0.00264796743980778,0.0739469425783357,0.08674545187074,0.0354533418329819,0.0523218751532389,0.107193644878144],"type":"scatter","mode":"markers","opacity":0.5,"name":"love","marker":{"size":20,"sizemode":"area","fillcolor":"rgba(127,127,127,1)","color":"rgba(127,127,127,1)","line":{"color":"transparent"}},"xaxis":"x","yaxis":"y","frame":null},{"x":["Adjective","Adverb","Conjunction","Definite Article","Interjection","Noun","Plural","Preposition","Pronoun","Verb (intransitive)","Verb (transitive)","Verb (usu participle)"],"y":[0.0735129068462402,0.131313131313131,0.0521885521885522,0.0864197530864197,0.021324354657688,0.270482603815937,0.00505050505050505,0.0937149270482604,0.0673400673400673,0.0387205387205387,0.0510662177328844,0.102693602693603],"type":"scatter","mode":"markers","name":"baby","marker":{"size":10,"sizemode":"area","fillcolor":"rgba(102,194,165,0.5)","color":"rgba(102,194,165,1)","line":{"color":"transparent"}},"xaxis":"x","yaxis":"y","frame":null},{"x":["Adjective","Adverb","Conjunction","Definite Article","Interjection","Noun","Plural","Preposition","Pronoun","Verb (intransitive)","Verb (transitive)","Verb (usu participle)"],"y":[0.0806406293902782,0.147794324248384,0.047766226468109,0.0932846305141894,0.0160157347569542,0.25962348974431,0.00337173363304299,0.0944085417252037,0.0449564484405732,0.03765102556898,0.0547906715369486,0.106771565046361],"type":"scatter","mode":"markers","name":"balloon","marker":{"size":10,"sizemode":"area","fillcolor":"rgba(252,141,98,0.5)","color":"rgba(252,141,98,1)","line":{"color":"transparent"}},"xaxis":"x","yaxis":"y","frame":null},{"x":["Adjective","Adverb","Conjunction","Definite Article","Interjection","Noun","Plural","Preposition","Pronoun","Verb (intransitive)","Verb (transitive)","Verb (usu participle)"],"y":[0.0802325581395349,0.142732558139535,0.0511627906976744,0.0776162790697674,0.0299418604651163,0.271511627906977,0.00174418604651163,0.0761627906976744,0.0686046511627907,0.0296511627906977,0.0476744186046512,0.113953488372093],"type":"scatter","mode":"markers","name":"colby","marker":{"size":10,"sizemode":"area","fillcolor":"rgba(141,160,203,0.5)","color":"rgba(141,160,203,1)","line":{"color":"transparent"}},"xaxis":"x","yaxis":"y","frame":null}],"highlight":{"on":"plotly_click","persistent":false,"dynamic":false,"selectize":false,"opacityDim":0.2,"selected":{"opacity":1}},"base_url":"https://plot.ly"},"evals":["config.modeBarButtonsToAdd.0.click"],"jsHooks":{"render":[{"code":"function(el, x) { var ctConfig = crosstalk.var('plotlyCrosstalkOpts').set({\"on\":\"plotly_click\",\"persistent\":false,\"dynamic\":false,\"selectize\":false,\"opacityDim\":0.2,\"selected\":{\"opacity\":1}}); }","data":null}]}}</script>
@@ -365,30 +365,30 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <h3>More taggin’</h3>
 <p>More sophisticated POS tagging would require the context of the sentence structure. Luckily there are tools to help with that here, in particular via the <span class="pack">openNLP</span> package. In addition, it will require a certain language model to be installed (English is only one of many available). I don’t recommend doing so unless you are really interested in this (the <span class="pack">openNLPmodels.en</span> package is fairly large).</p>
 <p>We’ll reexamine the Barthelme texts above with this more involved approach. Initially we’ll need to get the English-based tagger we need and load the libraries.</p>
-<div class="sourceCode" id="cb97"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb97-1" data-line-number="1"><span class="co"># install.packages(&quot;openNLPmodels.en&quot;, repos = &quot;http://datacube.wu.ac.at/&quot;, type = &quot;source&quot;)</span></a>
-<a class="sourceLine" id="cb97-2" data-line-number="2"></a>
-<a class="sourceLine" id="cb97-3" data-line-number="3"><span class="kw">library</span>(NLP)</a>
-<a class="sourceLine" id="cb97-4" data-line-number="4"><span class="kw">library</span>(tm)  <span class="co"># make sure to load this prior to openNLP</span></a>
-<a class="sourceLine" id="cb97-5" data-line-number="5"><span class="kw">library</span>(openNLP)</a>
-<a class="sourceLine" id="cb97-6" data-line-number="6"><span class="kw">library</span>(openNLPmodels.en)</a></code></pre></div>
+<div class="sourceCode" id="cb58"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb58-1" data-line-number="1"><span class="co"># install.packages(&quot;openNLPmodels.en&quot;, repos = &quot;http://datacube.wu.ac.at/&quot;, type = &quot;source&quot;)</span></a>
+<a class="sourceLine" id="cb58-2" data-line-number="2"></a>
+<a class="sourceLine" id="cb58-3" data-line-number="3"><span class="kw">library</span>(NLP)</a>
+<a class="sourceLine" id="cb58-4" data-line-number="4"><span class="kw">library</span>(tm)  <span class="co"># make sure to load this prior to openNLP</span></a>
+<a class="sourceLine" id="cb58-5" data-line-number="5"><span class="kw">library</span>(openNLP)</a>
+<a class="sourceLine" id="cb58-6" data-line-number="6"><span class="kw">library</span>(openNLPmodels.en)</a></code></pre></div>
 <p>Next comes the processing. This more or less follows the help file example for <code>?Maxent_POS_Tag_Annotator</code>. Given the several steps involved I show only the processing for one text for clarity. Ideally you’d write a function, and use a <span class="func">group_by</span> approach, to process each of the texts of interest.</p>
-<div class="sourceCode" id="cb98"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb98-1" data-line-number="1"><span class="kw">load</span>(<span class="st">&#39;data/barthelme_start.RData&#39;</span>)</a>
-<a class="sourceLine" id="cb98-2" data-line-number="2"></a>
-<a class="sourceLine" id="cb98-3" data-line-number="3">baby_string0 =<span class="st"> </span>barth0 <span class="op">%&gt;%</span><span class="st"> </span></a>
-<a class="sourceLine" id="cb98-4" data-line-number="4"><span class="st">  </span><span class="kw">filter</span>(id<span class="op">==</span><span class="st">&#39;baby.txt&#39;</span>)</a>
-<a class="sourceLine" id="cb98-5" data-line-number="5"></a>
-<a class="sourceLine" id="cb98-6" data-line-number="6">baby_string =<span class="st"> </span><span class="kw">unlist</span>(baby_string0<span class="op">$</span>text) <span class="op">%&gt;%</span><span class="st"> </span></a>
-<a class="sourceLine" id="cb98-7" data-line-number="7"><span class="st">  </span><span class="kw">paste</span>(<span class="dt">collapse=</span><span class="st">&#39; &#39;</span>) <span class="op">%&gt;%</span><span class="st"> </span></a>
-<a class="sourceLine" id="cb98-8" data-line-number="8"><span class="st">  </span>as.String</a>
-<a class="sourceLine" id="cb98-9" data-line-number="9"></a>
-<a class="sourceLine" id="cb98-10" data-line-number="10">init_s_w =<span class="st"> </span><span class="kw">annotate</span>(baby_string, <span class="kw">list</span>(<span class="kw">Maxent_Sent_Token_Annotator</span>(),</a>
-<a class="sourceLine" id="cb98-11" data-line-number="11">                                      <span class="kw">Maxent_Word_Token_Annotator</span>()))</a>
-<a class="sourceLine" id="cb98-12" data-line-number="12">pos_res =<span class="st"> </span><span class="kw">annotate</span>(baby_string, <span class="kw">Maxent_POS_Tag_Annotator</span>(), init_s_w)</a>
-<a class="sourceLine" id="cb98-13" data-line-number="13">word_subset =<span class="st"> </span><span class="kw">subset</span>(pos_res, type<span class="op">==</span><span class="st">&#39;word&#39;</span>)</a>
-<a class="sourceLine" id="cb98-14" data-line-number="14">tags =<span class="st"> </span><span class="kw">sapply</span>(word_subset<span class="op">$</span>features , <span class="st">&#39;[[&#39;</span>, <span class="st">&quot;POS&quot;</span>)</a>
-<a class="sourceLine" id="cb98-15" data-line-number="15"></a>
-<a class="sourceLine" id="cb98-16" data-line-number="16">baby_pos =<span class="st"> </span><span class="kw">data_frame</span>(<span class="dt">word=</span>baby_string[word_subset], <span class="dt">pos=</span>tags) <span class="op">%&gt;%</span><span class="st"> </span></a>
-<a class="sourceLine" id="cb98-17" data-line-number="17"><span class="st">  </span><span class="kw">filter</span>(<span class="op">!</span><span class="kw">str_detect</span>(pos, <span class="dt">pattern=</span><span class="st">&#39;[[:punct:]]&#39;</span>))</a></code></pre></div>
+<div class="sourceCode" id="cb59"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb59-1" data-line-number="1"><span class="kw">load</span>(<span class="st">&#39;data/barthelme_start.RData&#39;</span>)</a>
+<a class="sourceLine" id="cb59-2" data-line-number="2"></a>
+<a class="sourceLine" id="cb59-3" data-line-number="3">baby_string0 =<span class="st"> </span>barth0 <span class="op">%&gt;%</span><span class="st"> </span></a>
+<a class="sourceLine" id="cb59-4" data-line-number="4"><span class="st">  </span><span class="kw">filter</span>(id<span class="op">==</span><span class="st">&#39;baby.txt&#39;</span>)</a>
+<a class="sourceLine" id="cb59-5" data-line-number="5"></a>
+<a class="sourceLine" id="cb59-6" data-line-number="6">baby_string =<span class="st"> </span><span class="kw">unlist</span>(baby_string0<span class="op">$</span>text) <span class="op">%&gt;%</span><span class="st"> </span></a>
+<a class="sourceLine" id="cb59-7" data-line-number="7"><span class="st">  </span><span class="kw">paste</span>(<span class="dt">collapse=</span><span class="st">&#39; &#39;</span>) <span class="op">%&gt;%</span><span class="st"> </span></a>
+<a class="sourceLine" id="cb59-8" data-line-number="8"><span class="st">  </span>as.String</a>
+<a class="sourceLine" id="cb59-9" data-line-number="9"></a>
+<a class="sourceLine" id="cb59-10" data-line-number="10">init_s_w =<span class="st"> </span><span class="kw">annotate</span>(baby_string, <span class="kw">list</span>(<span class="kw">Maxent_Sent_Token_Annotator</span>(),</a>
+<a class="sourceLine" id="cb59-11" data-line-number="11">                                      <span class="kw">Maxent_Word_Token_Annotator</span>()))</a>
+<a class="sourceLine" id="cb59-12" data-line-number="12">pos_res =<span class="st"> </span><span class="kw">annotate</span>(baby_string, <span class="kw">Maxent_POS_Tag_Annotator</span>(), init_s_w)</a>
+<a class="sourceLine" id="cb59-13" data-line-number="13">word_subset =<span class="st"> </span><span class="kw">subset</span>(pos_res, type<span class="op">==</span><span class="st">&#39;word&#39;</span>)</a>
+<a class="sourceLine" id="cb59-14" data-line-number="14">tags =<span class="st"> </span><span class="kw">sapply</span>(word_subset<span class="op">$</span>features , <span class="st">&#39;[[&#39;</span>, <span class="st">&quot;POS&quot;</span>)</a>
+<a class="sourceLine" id="cb59-15" data-line-number="15"></a>
+<a class="sourceLine" id="cb59-16" data-line-number="16">baby_pos =<span class="st"> </span><span class="kw">data_frame</span>(<span class="dt">word=</span>baby_string[word_subset], <span class="dt">pos=</span>tags) <span class="op">%&gt;%</span><span class="st"> </span></a>
+<a class="sourceLine" id="cb59-17" data-line-number="17"><span class="st">  </span><span class="kw">filter</span>(<span class="op">!</span><span class="kw">str_detect</span>(pos, <span class="dt">pattern=</span><span class="st">&#39;[[:punct:]]&#39;</span>))</a></code></pre></div>
 <p>Let’s take a look. I’ve also done the other Barthelme texts as well for comparison.</p>
 <table style="width:31%;">
 <colgroup>
@@ -501,15 +501,15 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <div id="pos-exercise" class="section level2">
 <h2>POS Exercise</h2>
 <p>As this is a more involved sort of analysis, if nothing else in terms of the tools required, as an exercise I would suggest starting with a cleaned text, and seeing if the above code in the last example can get you to the result of having parsed text. Otherwise, assuming you’ve downloaded the appropriate packages, feel free to play around with some strings of your choosing as follows.</p>
-<div class="sourceCode" id="cb99"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb99-1" data-line-number="1">string =<span class="st"> &#39;Colorless green ideas sleep furiously&#39;</span> </a>
-<a class="sourceLine" id="cb99-2" data-line-number="2"></a>
-<a class="sourceLine" id="cb99-3" data-line-number="3">initial_result =<span class="st"> </span>string <span class="op">%&gt;%</span><span class="st"> </span></a>
-<a class="sourceLine" id="cb99-4" data-line-number="4"><span class="st">  </span><span class="kw">annotate</span>(<span class="kw">list</span>(<span class="kw">Maxent_Sent_Token_Annotator</span>(),</a>
-<a class="sourceLine" id="cb99-5" data-line-number="5">                <span class="kw">Maxent_Word_Token_Annotator</span>())) <span class="op">%&gt;%</span><span class="st"> </span></a>
-<a class="sourceLine" id="cb99-6" data-line-number="6"><span class="st">  </span><span class="kw">annotate</span>(string, <span class="kw">Maxent_POS_Tag_Annotator</span>(), .) <span class="op">%&gt;%</span><span class="st"> </span></a>
-<a class="sourceLine" id="cb99-7" data-line-number="7"><span class="st">  </span><span class="kw">subset</span>(type<span class="op">==</span><span class="st">&#39;word&#39;</span>) </a>
-<a class="sourceLine" id="cb99-8" data-line-number="8"></a>
-<a class="sourceLine" id="cb99-9" data-line-number="9"><span class="kw">sapply</span>(initial_result<span class="op">$</span>features , <span class="st">&#39;[[&#39;</span>, <span class="st">&quot;POS&quot;</span>) <span class="op">%&gt;%</span><span class="st"> </span>table</a></code></pre></div>
+<div class="sourceCode" id="cb60"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb60-1" data-line-number="1">string =<span class="st"> &#39;Colorless green ideas sleep furiously&#39;</span> </a>
+<a class="sourceLine" id="cb60-2" data-line-number="2"></a>
+<a class="sourceLine" id="cb60-3" data-line-number="3">initial_result =<span class="st"> </span>string <span class="op">%&gt;%</span><span class="st"> </span></a>
+<a class="sourceLine" id="cb60-4" data-line-number="4"><span class="st">  </span><span class="kw">annotate</span>(<span class="kw">list</span>(<span class="kw">Maxent_Sent_Token_Annotator</span>(),</a>
+<a class="sourceLine" id="cb60-5" data-line-number="5">                <span class="kw">Maxent_Word_Token_Annotator</span>())) <span class="op">%&gt;%</span><span class="st"> </span></a>
+<a class="sourceLine" id="cb60-6" data-line-number="6"><span class="st">  </span><span class="kw">annotate</span>(string, <span class="kw">Maxent_POS_Tag_Annotator</span>(), .) <span class="op">%&gt;%</span><span class="st"> </span></a>
+<a class="sourceLine" id="cb60-7" data-line-number="7"><span class="st">  </span><span class="kw">subset</span>(type<span class="op">==</span><span class="st">&#39;word&#39;</span>) </a>
+<a class="sourceLine" id="cb60-8" data-line-number="8"></a>
+<a class="sourceLine" id="cb60-9" data-line-number="9"><span class="kw">sapply</span>(initial_result<span class="op">$</span>features , <span class="st">&#39;[[&#39;</span>, <span class="st">&quot;POS&quot;</span>) <span class="op">%&gt;%</span><span class="st"> </span>table</a></code></pre></div>
 
 </div>
 </div>
@@ -518,7 +518,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
           </div>
         </div>
       </div>
-<a href="sentiment-analysis.html" class="navigation navigation-prev " aria-label="Previous page"><i class="fa fa-angle-left"></i></a>
+<a href="string-theory.html" class="navigation navigation-prev " aria-label="Previous page"><i class="fa fa-angle-left"></i></a>
 <a href="topic-modeling.html" class="navigation navigation-next " aria-label="Next page"><i class="fa fa-angle-right"></i></a>
     </div>
   </div>
@@ -534,14 +534,14 @@ gitbook.require(["gitbook"], function(gitbook) {
 gitbook.start({
 "sharing": {
 "github": false,
-"facebook": true,
-"twitter": true,
+"facebook": false,
+"twitter": false,
 "google": false,
 "linkedin": false,
 "weibo": false,
 "instapper": false,
 "vk": false,
-"all": ["facebook", "google", "twitter", "weibo", "instapaper"]
+"all": ["twitter", "facebook", "google", "weibo", "instapaper"]
 },
 "fontsettings": {
 "theme": "white",
@@ -555,6 +555,8 @@ gitbook.start({
 "depth": 2,
 "scroll_highlight": true
 },
+"df_print": "kable",
+"highlight": "pygments",
 "search": true
 });
 });

@@ -3,3 +3,17 @@ language:
   ui:
     chapter_name: "Chapter "
 output_dir: "docs"
+delete_merged_file: true
+
+rmd_files: [
+  'index.Rmd',
+  'intro.Rmd',
+  'string-theory.Rmd',
+  'part-of-speech-tagging.Rmd',
+  'topic-modeling.Rmd',
+  'word-embeddings.Rmd',
+  'summary.Rmd',
+  'shakespeare.Rmd',
+  'appendix.Rmd',
+  #'references.Rmd'
+]

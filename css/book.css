@@ -1,38 +1,81 @@
-@import url("https://fonts.googleapis.com/css?family=Roboto");
+@import url("https://fonts.googleapis.com/css?family=Roboto|Roboto+Mono|Roboto+Condensed|Stalemate|Lato|Lora|Fira+Sans");
 
 /* title page */
-.title {
-  font-size: 125%;
-  font-family: Roboto;
+.book .book-body .page-wrapper .page-inner section.normal h1.title {
+  font-size: 250%;
+  font-family: 'Fira Sans', Karla, 'Roboto Condensed', Lora, Lato, Roboto, sans;
   font-style: normal;
+  font-weight: 100;
 }
 
 .book .book-body .page-wrapper .page-inner section.normal h3.subtitle {
   font-size: 250%;
-  font-family: Stalemate;
+  font-family: 'Stalemate', 'Fira Sans', Karla, 'Roboto Condensed', Lora, Lato, Roboto, sans;
   font-style: normal;
+  font-weight: 100;
 }
 
-.author {
+.book .book-body .page-wrapper .page-inner section.normal .author .noem {
+  display: block;
+  margin: 0 0 10px 0;
   font-size:  125%;
-  font-style:  normal;       /* ignored thanks to bootstrap random enforecement of em*/
+  font-style:  normal;
   font-variant:  small-caps;
-  font-family:  'Open Sans';
+  font-weight: 200;
+  font-family: 'Roboto Condensed', 'Fira Sans', Roboto, 'Open Sans', sans;
 }
 
-.date {
+.book .book-body .page-wrapper .page-inner section.normal .author a {
+  display: block;
+  margin: 0 0 10px 0;
+  font-size:  100%;
+  font-style:  normal;
+  /*font-variant:  small-caps;*/
+  font-weight: 200;
+  font-family: 'Roboto Condensed', 'Fira Sans', Roboto, 'Open Sans', sans;
+}
+
+
+.book .book-body .page-wrapper .page-inner section.normal a.uri {
+  display: block;
+  margin: 0 0 10px 0;
+  font-size:  75%;
+  font-style:  normal;       /* ignored thanks to bootstrap random enforcement of em*/
+  font-variant:  small-caps;
+  font-family:  Roboto, 'Open Sans', sans;
+}
+
+.book .book-body .page-wrapper .page-inner section.normal h4.date {
   font-style: normal;
-  font-family: 'Open Sans';
+  font-size:  100%;
+  font-family: 'Open Sans', sans;
 }
-
 
 /* main */
+
 .book  {
   background-color: #fffff8;
 }
 
 .section {
   background-color: #fffff8;
+}
+
+
+
+.book .book-body .page-wrapper .page-inner section.normal {
+    display: block;
+    background-color: #fffff8;
+    color: #585858;
+    padding: 5px 15px;
+    font-family: Roboto, 'Helvetica Neue', sans-serif;
+    word-wrap: break-word;
+    overflow: hidden;
+    line-height: 1.7;
+    text-size-adjust: 100%;
+    -ms-text-size-adjust: 100%;
+    -webkit-text-size-adjust: 100%;
+    -moz-text-size-adjust: 100%;
 }
 
 .book .book-body {
@@ -57,27 +100,12 @@
     transition: background-size .4s ease;
     border-bottom: 0px solid;
 }
+
 .book .book-body .page-wrapper .page-inner section.normal a:hover {
   text-decoration: none;
     background-size: 100% 100%;
     cursor: pointer;
 }
-
-.book .book-body .page-wrapper .page-inner section.normal {
-    display: block;
-    background-color: #fffff8;
-    color: #585858;
-    padding: 5px 15px;
-    font-family: Roboto;
-    word-wrap: break-word;
-    overflow: hidden;
-    line-height: 1.7;
-    text-size-adjust: 100%;
-    -ms-text-size-adjust: 100%;
-    -webkit-text-size-adjust: 100%;
-    -moz-text-size-adjust: 100%;
-}
-
 
 .body-inner {
     background-color: #fffff8;
@@ -97,7 +125,7 @@
 
 .book .book-header {
     overflow: visible;
-    height: 48px;
+    height: 48px;    /* adjust to match title space*/
     padding: 0 8px;
     z-index: 2;
     font-family: Roboto sans-serif;
@@ -107,13 +135,15 @@
     /* background: 0 0; */
 }
 
-element .style {
+/* only way to set bgcolor of top bar?*/
+.book-body.fixed {
   background-color: #fffff8;
 }
 
 /* Rather than resize the header, just get rid of line */
 .book.with-summary .book-header.fixed {
   background-color: #fffff8;
+  font-variant: small-caps;
   /*font-family: Stalemate Roboto Sans; ignored as all it is doing is taking from index title*/
   border-bottom: 0 solid rgba(0,0,0,.07);  /*just remove it; this makes height in .book-header above moot*/
   border-bottom-width: 0;
@@ -121,21 +151,21 @@ element .style {
   border-bottom-color: rgba(0, 0, 0, 0.07);
 }
 
-
 i {
   background-color: #fffff8;
 }
 
+/* toc area general */
 .book .book-summary {
     position: absolute;
-    font-family: "Open Sans", Roboto, sans-serif;
+    font-family: "Open Sans", 'Helvetica Neue', Roboto, sans-serif;
     top: 0;
     left: -300px;
     bottom: 0;
     z-index: 1;
     width: 300px;
     color: #364149;  /**/
-    background: #eaf5fb; /*#d9edf7#bdcadb #3572D9 #fafafa*/
+    background: #f5f5f540; /* #eaf5fb;  #d9edf7#bdcadb #3572D9 #fafafa*/
     border-right: 1px solid rgba(0,0,0,.07);
     -webkit-transition: left 250ms ease;
     -moz-transition: left 250ms ease;
@@ -146,7 +176,7 @@ i {
 /* nav/menu area */
 .book .book-summary ul.summary li a, .book .book-summary ul.summary li span {
     display: block;
-    padding: 10px 15px;
+    padding: 10px 25px;
     border-bottom: none;
     color: #364149; /**/
     background: 0 0;
@@ -154,6 +184,8 @@ i {
     overflow: hidden;
     white-space: nowrap;
     position: relative;
+    font-family: Lato,'Roboto Condensed', sans;
+    /* font-variant: small-caps; */
 }
 
 
@@ -168,8 +200,8 @@ i {
   text-decoration: none;
   font-size: 125%;
   font-variant: small-caps;
-  font-family: 'Helvetica Neue', 'Open Sans', Roboto, sans-serif;
-  font-weight: 800;
+  font-family: 'Roboto Condensed', 'Helvetica Neue', 'Open Sans', Roboto, sans-serif;
+  font-weight: 500;
 }
 
 
@@ -184,6 +216,13 @@ i {
   background-color: transparent;
 }
 
+/* divider line for the title before and other stuff  after toc */
+.book .book-summary ul.summary li.divider{
+    height:1px;
+    margin:7px 0;
+    overflow:hidden;
+    background:rgba(0,0,0,.07)
+}
 
 .book .book-body .page-wrapper .page-inner section.normal pre {
     overflow: auto;
@@ -193,6 +232,7 @@ i {
     background: #fafafa;
 }
 
+
 .book .book-body .page-wrapper .page-inner section.normal code,
 .book .book-body .page-wrapper .page-inner section.normal pre {
     font-family: 'Roboto Mono', Monaco, Consolas, "Liberation Mono", Menlo, 'Courier New', monospace;
@@ -201,11 +241,11 @@ i {
     color: inherit;
 }
 
-
 .book .book-body .page-wrapper .page-inner section.normal .note {
   background-color: #fafafa;
   /*background-image: url('../img/R.ico');*/
   font-size: 80% ;
+  margin: auto;
   font-weight: 500;
   max-width: 75%;
   border-width: 10px;
@@ -213,6 +253,49 @@ i {
   box-shadow: 10px 10px 5px #EBEBEB; /*#888888*/
   padding: 1em;
 }
+
+/* headers */
+
+h1, h2, h3, h4, h5 {
+  color:#990024;
+  font-family: 'Roboto Condensed';
+}
+
+/* notes */
+
+.img-note {
+  vertical-align: central;
+  width: 2em;
+}
+
+.footnotes {
+  color: #00000080;
+}
+
+
+
+/* marginnotes */
+.book .book-body .page-wrapper .page-inner section.normal .marginnote span.mjx-chtml, span.mjx-block {
+    display: block;
+    font-size: 80%;
+}
+
+.book .book-body .page-wrapper .page-inner section.normal .marginnote {
+  float: right;
+  clear: right;
+  margin-right: -45%;
+  width: 40%;
+  margin-top: 0;
+  margin-bottom: 0;
+  font-size: 75%;
+  line-height: 1;
+  vertical-align: baseline;
+  position: relative;
+}
+
+
+
+/* code */
 
 /* logical NA */
 .ot {
@@ -222,6 +305,11 @@ i {
 /* char/string */
 .ch, .st {
  color: #aa5500;
+}
+
+/* args */
+.dt {
+
 }
 
 /* package */
@@ -239,13 +327,107 @@ code span.st {
   color: #585858;
 }
 
+/* img */
+
+img {
+  display: block;
+  margin: 0 auto;
+}
+
+.arc {
+  display: block;
+  width:30%;
+  padding:5px 0;
+  margin: 0 0 10px 0;
+}
+
+.cscar {
+  display: block;
+  width:21%;
+  padding:5px 0;
+  margin: 0 0 10px 0;
+}
 
 /* zoom for img*/
 .zoom {
     transition: all .3s;
 }
 
-
 .zoom:hover {
     transform: scale(1.5); /* (150% zoom - Note: if the zoom is too large, it will go outside of the viewport) */
+}
+
+
+/* creative commons, github icons */
+.fab .fa-creative-commons, .fa-creative-commons-sa, .fa-creative-commons-by, .fa-github, .fa-lg {
+  color: #990024;
+  background-color: transparent;
+}
+
+/* text highlights */
+.emph {
+  color: #E32D00 ;  /*#ff5500 #D14300*/
+  font-weight: 500;
+}
+
+/* pack func and objclass colors initially come from hcl(seq(90,360, length.out=4), c=80, l=80); redone for contrast*/
+.pack {
+  color: #990071; /*#AC9CFF #e41a1c*/
+  font-weight: 500;
+}
+
+.func {
+  color: #007020;   /*#007199 #00CBB6; #984ea3; can just use `` instead*/
+  font-weight: bold;
+}
+
+.objclass {
+  color:  #947100;  /*#AAB400 #4daf4a; #FFC5D0*/
+  font-weight: 500;
+}
+
+
+/* miscellaneous */
+
+.col2 {
+  columns: 2 200px;         /* number of columns and width in pixels*/
+  -webkit-columns: 2 200px; /* chrome, safari */
+  -moz-columns: 2 200px;    /* firefox */
+}
+.col3 {
+  columns: 3 100px;
+  -webkit-columns: 3 100px;
+  -moz-columns: 3 100px;
+}
+
+.plotly {
++
+  margin-left: 5%;
+  margin-right: 5%;
+}
+
+/*.plotly html-widget {
+  width: 100%;
+}*/
+
+.d3heatmap {
+  margin-left: 5%;
+  margin-right: 5%;
+  width: 75%;
+}
+
+
+/* tables */
+
+table {
+  margin: auto;
+}
+
+.book .book-body .page-wrapper .page-inner section.normal table tr:nth-child(2n) {
+    background-color: white;
+}
+
+div.datatables {
+    margin-left: auto;     /* to center them when full is not necessary. */
+    margin-right: auto;
 }
