@@ -19,7 +19,7 @@ With <span class="emph">part-of-speech</span> tagging, we classify a word with i
 ```{r pos_example, echo=FALSE}
 rbind(c('JJ', 'JJ', 'NNS', 'VBP', 'RB'),
       c('Colorless', 'green', 'ideas', 'sleep', 'furiously.')) %>% 
-  pander(justify='center')
+  kable_df()
 ```
 
 We have two adjectives (JJ), a plural noun (NNS), a verb (VBP), and an adverb (RB).
@@ -185,7 +185,7 @@ Let's take a look. I've also done the other Barthelme texts as well for comparis
 
 ```{r examine_baby_pos, echo=F}
 load('data/POS_results.RData')
-pander(barthelme_pos %>% head(15))
+kable_df(barthelme_pos %>% head(15))
 ```
 
 As we can see, we have quite a few more POS to deal with here.  They come from the [Penn Treebank](https://en.wikipedia.org/wiki/Treebank). The following table notes what the acronyms stand for. I don't pretend to know all the facets to this.

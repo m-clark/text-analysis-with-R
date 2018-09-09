@@ -24,7 +24,7 @@
 
 
 
-<meta name="date" content="2018-09-07">
+<meta name="date" content="2018-09-09">
 
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta name="apple-mobile-web-app-capable" content="yes">
@@ -46,15 +46,19 @@
 
 
 
-<script src="libs/htmlwidgets-1.0/htmlwidgets.js"></script>
-<script src="libs/datatables-binding-0.2/datatables.js"></script>
-<link href="libs/dt-core-1.10.12/css/jquery.dataTables.min.css" rel="stylesheet" />
-<link href="libs/dt-core-1.10.12/css/jquery.dataTables.extra.css" rel="stylesheet" />
-<script src="libs/dt-core-1.10.12/js/jquery.dataTables.min.js"></script>
-<script src="libs/plotly-binding-4.7.1/plotly.js"></script>
+<script src="libs/kePrint-0.0.1/kePrint.js"></script>
+<script src="libs/htmlwidgets-1.2/htmlwidgets.js"></script>
+<script src="libs/datatables-binding-0.4/datatables.js"></script>
+<link href="libs/dt-core-1.10.16/css/jquery.dataTables.min.css" rel="stylesheet" />
+<link href="libs/dt-core-1.10.16/css/jquery.dataTables.extra.css" rel="stylesheet" />
+<script src="libs/dt-core-1.10.16/js/jquery.dataTables.min.js"></script>
+<script src="libs/plotly-binding-4.8.0/plotly.js"></script>
 <script src="libs/typedarray-0.1/typedarray.min.js"></script>
 <link href="libs/crosstalk-1.0.0/css/crosstalk.css" rel="stylesheet" />
 <script src="libs/crosstalk-1.0.0/js/crosstalk.min.js"></script>
+<link href="libs/plotly-htmlwidgets-css-1.39.2/plotly-htmlwidgets.css" rel="stylesheet" />
+<script src="libs/plotly-main-1.39.2/plotly-latest.min.js"></script>
+<link href="libs/datatables-css-0.0.0/datatables-crosstalk.css" rel="stylesheet" />
 <link href="libs/plotlyjs-1.29.2/plotly-htmlwidgets.css" rel="stylesheet" />
 <script src="libs/plotlyjs-1.29.2/plotly-latest.min.js"></script>
 <script src="libs/d3-3.5.3/./d3.min.js"></script>
@@ -131,7 +135,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 </style>
 
 <link rel="stylesheet" href="css/book.css" type="text/css" />
-<link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.0.13/css/all.css" type="text/css" />
+<link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.3.1/css/all.css" type="text/css" />
 </head>
 
 <body>
@@ -178,8 +182,27 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 </ul></li>
 <li class="chapter" data-level="" data-path="string-theory.html"><a href="string-theory.html#exercises"><i class="fa fa-check"></i>Exercises</a></li>
 </ul></li>
+<li class="chapter" data-level="" data-path="sentiment-analysis.html"><a href="sentiment-analysis.html"><i class="fa fa-check"></i>Sentiment Analysis</a><ul>
+<li class="chapter" data-level="" data-path="sentiment-analysis.html"><a href="sentiment-analysis.html#basic-idea"><i class="fa fa-check"></i>Basic idea</a></li>
+<li class="chapter" data-level="" data-path="sentiment-analysis.html"><a href="sentiment-analysis.html#issues"><i class="fa fa-check"></i>Issues</a><ul>
+<li class="chapter" data-level="" data-path="sentiment-analysis.html"><a href="sentiment-analysis.html#context-sarcasm-etc."><i class="fa fa-check"></i>Context, sarcasm, etc.</a></li>
+<li class="chapter" data-level="" data-path="sentiment-analysis.html"><a href="sentiment-analysis.html#lexicons"><i class="fa fa-check"></i>Lexicons</a></li>
+</ul></li>
+<li class="chapter" data-level="" data-path="sentiment-analysis.html"><a href="sentiment-analysis.html#sentiment-analysis-examples"><i class="fa fa-check"></i>Sentiment Analysis Examples</a><ul>
+<li class="chapter" data-level="" data-path="sentiment-analysis.html"><a href="sentiment-analysis.html#the-first-thing-the-baby-did-wrong"><i class="fa fa-check"></i>The first thing the baby did wrong</a></li>
+<li class="chapter" data-level="" data-path="sentiment-analysis.html"><a href="sentiment-analysis.html#romeo-juliet"><i class="fa fa-check"></i>Romeo &amp; Juliet</a></li>
+</ul></li>
+<li class="chapter" data-level="" data-path="sentiment-analysis.html"><a href="sentiment-analysis.html#sentiment-analysis-summary"><i class="fa fa-check"></i>Sentiment Analysis Summary</a></li>
+<li class="chapter" data-level="" data-path="sentiment-analysis.html"><a href="sentiment-analysis.html#exercise"><i class="fa fa-check"></i>Exercise</a><ul>
+<li class="chapter" data-level="" data-path="sentiment-analysis.html"><a href="sentiment-analysis.html#step-0-install-the-packages"><i class="fa fa-check"></i>Step 0: Install the packages</a></li>
+<li class="chapter" data-level="" data-path="sentiment-analysis.html"><a href="sentiment-analysis.html#step-1-initial-inspection"><i class="fa fa-check"></i>Step 1: Initial inspection</a></li>
+<li class="chapter" data-level="" data-path="sentiment-analysis.html"><a href="sentiment-analysis.html#step-2-data-prep"><i class="fa fa-check"></i>Step 2: Data prep</a></li>
+<li class="chapter" data-level="" data-path="sentiment-analysis.html"><a href="sentiment-analysis.html#step-3-get-sentiment"><i class="fa fa-check"></i>Step 3: Get sentiment</a></li>
+<li class="chapter" data-level="" data-path="sentiment-analysis.html"><a href="sentiment-analysis.html#step-4-visualize"><i class="fa fa-check"></i>Step 4: Visualize</a></li>
+</ul></li>
+</ul></li>
 <li class="chapter" data-level="" data-path="part-of-speech-tagging.html"><a href="part-of-speech-tagging.html"><i class="fa fa-check"></i>Part of Speech Tagging</a><ul>
-<li class="chapter" data-level="" data-path="part-of-speech-tagging.html"><a href="part-of-speech-tagging.html#basic-idea"><i class="fa fa-check"></i>Basic idea</a></li>
+<li class="chapter" data-level="" data-path="part-of-speech-tagging.html"><a href="part-of-speech-tagging.html#basic-idea-1"><i class="fa fa-check"></i>Basic idea</a></li>
 <li class="chapter" data-level="" data-path="part-of-speech-tagging.html"><a href="part-of-speech-tagging.html#pos-examples"><i class="fa fa-check"></i>POS Examples</a><ul>
 <li class="chapter" data-level="" data-path="part-of-speech-tagging.html"><a href="part-of-speech-tagging.html#barthelme-carver"><i class="fa fa-check"></i>Barthelme &amp; Carver</a></li>
 <li class="chapter" data-level="" data-path="part-of-speech-tagging.html"><a href="part-of-speech-tagging.html#more-taggin"><i class="fa fa-check"></i>More taggin’</a></li>
@@ -188,7 +211,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <li class="chapter" data-level="" data-path="part-of-speech-tagging.html"><a href="part-of-speech-tagging.html#pos-exercise"><i class="fa fa-check"></i>POS Exercise</a></li>
 </ul></li>
 <li class="chapter" data-level="" data-path="topic-modeling.html"><a href="topic-modeling.html"><i class="fa fa-check"></i>Topic modeling</a><ul>
-<li class="chapter" data-level="" data-path="topic-modeling.html"><a href="topic-modeling.html#basic-idea-1"><i class="fa fa-check"></i>Basic idea</a></li>
+<li class="chapter" data-level="" data-path="topic-modeling.html"><a href="topic-modeling.html#basic-idea-2"><i class="fa fa-check"></i>Basic idea</a></li>
 <li class="chapter" data-level="" data-path="topic-modeling.html"><a href="topic-modeling.html#steps"><i class="fa fa-check"></i>Steps</a></li>
 <li class="chapter" data-level="" data-path="topic-modeling.html"><a href="topic-modeling.html#topic-model-example"><i class="fa fa-check"></i>Topic Model Example</a><ul>
 <li class="chapter" data-level="" data-path="topic-modeling.html"><a href="topic-modeling.html#shakespeare"><i class="fa fa-check"></i>Shakespeare</a></li>
@@ -297,7 +320,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 “You may not be interested in absurdity, but absurdity is interested in you.”
 </p>
 </blockquote>
-<div id="the-first-thing-the-baby-did-wrong" class="section level4">
+<div id="the-first-thing-the-baby-did-wrong-1" class="section level4">
 <h4>The First Thing the Baby Did Wrong</h4>
 <p>This short story is essentially a how-to on parenting.</p>
 <p><a href="http://jessamyn.com/barth/baby.html">link</a></p>
@@ -364,22 +387,22 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <h2>A Faster LDA</h2>
 <p>We noted in the Shakespeare start to finish example that there are faster alternatives than the standard LDA in <span class="pack">topicmodels</span>. In particular, the powerful <span class="pack">text2vec</span> package contains a faster and less memory intensive implementation of LDA and dealing with text generally. Both of which are very important if you’re wanting to use R for text analysis. The other nice thing is that it works with <span class="pack">LDAvis</span> for visualization.</p>
 <p>For the following, we’ll use one of the partially cleaned document term matrix for the Shakespeare texts. One of the things to get used to is that <span class="pack">text2vec</span> uses the newer R6 classes of R objects, hence the <code>$</code> approach you see to using specific methods.</p>
-<div class="sourceCode" id="cb117"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb117-1" data-line-number="1"><span class="kw">library</span>(text2vec)</a>
-<a class="sourceLine" id="cb117-2" data-line-number="2"><span class="kw">load</span>(<span class="st">&#39;data/shakes_dtm_stemmed.RData&#39;</span>)</a>
-<a class="sourceLine" id="cb117-3" data-line-number="3"><span class="co"># load(&#39;data/shakes_words_df.RData&#39;) # non-stemmed</span></a>
-<a class="sourceLine" id="cb117-4" data-line-number="4"></a>
-<a class="sourceLine" id="cb117-5" data-line-number="5"><span class="co"># convert to the sparse matrix representation using Matrix package</span></a>
-<a class="sourceLine" id="cb117-6" data-line-number="6">shakes_dtm =<span class="st"> </span><span class="kw">as</span>(shakes_dtm, <span class="st">&#39;CsparseMatrix&#39;</span>)</a>
-<a class="sourceLine" id="cb117-7" data-line-number="7"></a>
-<a class="sourceLine" id="cb117-8" data-line-number="8"><span class="co"># setup the model</span></a>
-<a class="sourceLine" id="cb117-9" data-line-number="9">lda_model =<span class="st"> </span>LDA<span class="op">$</span><span class="kw">new</span>(<span class="dt">n_topics =</span> <span class="dv">10</span>, <span class="dt">doc_topic_prior =</span> <span class="fl">0.1</span>, <span class="dt">topic_word_prior =</span> <span class="fl">0.01</span>)</a>
-<a class="sourceLine" id="cb117-10" data-line-number="10"></a>
-<a class="sourceLine" id="cb117-11" data-line-number="11"><span class="co"># fit the model</span></a>
-<a class="sourceLine" id="cb117-12" data-line-number="12">doc_topic_distr =<span class="st">   </span>lda_model<span class="op">$</span><span class="kw">fit_transform</span>(<span class="dt">x =</span> shakes_dtm, </a>
-<a class="sourceLine" id="cb117-13" data-line-number="13">                                            <span class="dt">n_iter =</span> <span class="dv">1000</span>,</a>
-<a class="sourceLine" id="cb117-14" data-line-number="14">                                            <span class="dt">convergence_tol =</span> <span class="fl">0.0001</span>, </a>
-<a class="sourceLine" id="cb117-15" data-line-number="15">                                            <span class="dt">n_check_convergence =</span> <span class="dv">25</span>,</a>
-<a class="sourceLine" id="cb117-16" data-line-number="16">                                            <span class="dt">progressbar =</span> <span class="ot">FALSE</span>)</a></code></pre></div>
+<div class="sourceCode" id="cb155"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb155-1" data-line-number="1"><span class="kw">library</span>(text2vec)</a>
+<a class="sourceLine" id="cb155-2" data-line-number="2"><span class="kw">load</span>(<span class="st">&#39;data/shakes_dtm_stemmed.RData&#39;</span>)</a>
+<a class="sourceLine" id="cb155-3" data-line-number="3"><span class="co"># load(&#39;data/shakes_words_df.RData&#39;) # non-stemmed</span></a>
+<a class="sourceLine" id="cb155-4" data-line-number="4"></a>
+<a class="sourceLine" id="cb155-5" data-line-number="5"><span class="co"># convert to the sparse matrix representation using Matrix package</span></a>
+<a class="sourceLine" id="cb155-6" data-line-number="6">shakes_dtm =<span class="st"> </span><span class="kw">as</span>(shakes_dtm, <span class="st">&#39;CsparseMatrix&#39;</span>)</a>
+<a class="sourceLine" id="cb155-7" data-line-number="7"></a>
+<a class="sourceLine" id="cb155-8" data-line-number="8"><span class="co"># setup the model</span></a>
+<a class="sourceLine" id="cb155-9" data-line-number="9">lda_model =<span class="st"> </span>LDA<span class="op">$</span><span class="kw">new</span>(<span class="dt">n_topics =</span> <span class="dv">10</span>, <span class="dt">doc_topic_prior =</span> <span class="fl">0.1</span>, <span class="dt">topic_word_prior =</span> <span class="fl">0.01</span>)</a>
+<a class="sourceLine" id="cb155-10" data-line-number="10"></a>
+<a class="sourceLine" id="cb155-11" data-line-number="11"><span class="co"># fit the model</span></a>
+<a class="sourceLine" id="cb155-12" data-line-number="12">doc_topic_distr =<span class="st">   </span>lda_model<span class="op">$</span><span class="kw">fit_transform</span>(<span class="dt">x =</span> shakes_dtm, </a>
+<a class="sourceLine" id="cb155-13" data-line-number="13">                                            <span class="dt">n_iter =</span> <span class="dv">1000</span>,</a>
+<a class="sourceLine" id="cb155-14" data-line-number="14">                                            <span class="dt">convergence_tol =</span> <span class="fl">0.0001</span>, </a>
+<a class="sourceLine" id="cb155-15" data-line-number="15">                                            <span class="dt">n_check_convergence =</span> <span class="dv">25</span>,</a>
+<a class="sourceLine" id="cb155-16" data-line-number="16">                                            <span class="dt">progressbar =</span> <span class="ot">FALSE</span>)</a></code></pre></div>
 <pre><code>INFO [2018-03-06 19:16:15] iter 25 loglikelihood = -1746173.024
 INFO [2018-03-06 19:16:16] iter 50 loglikelihood = -1683541.903
 INFO [2018-03-06 19:16:17] iter 75 loglikelihood = -1660985.396
@@ -390,7 +413,7 @@ INFO [2018-03-06 19:16:20] iter 175 loglikelihood = -1636730.733
 INFO [2018-03-06 19:16:20] iter 200 loglikelihood = -1636356.883
 INFO [2018-03-06 19:16:21] iter 225 loglikelihood = -1636487.222
 INFO [2018-03-06 19:16:21] early stopping at 225 iteration</code></pre>
-<div class="sourceCode" id="cb119"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb119-1" data-line-number="1">lda_model<span class="op">$</span><span class="kw">get_top_words</span>(<span class="dt">n =</span> <span class="dv">10</span>, <span class="dt">topic_number =</span> <span class="dv">1</span><span class="op">:</span><span class="dv">10</span>, <span class="dt">lambda =</span> <span class="dv">1</span>)</a></code></pre></div>
+<div class="sourceCode" id="cb157"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb157-1" data-line-number="1">lda_model<span class="op">$</span><span class="kw">get_top_words</span>(<span class="dt">n =</span> <span class="dv">10</span>, <span class="dt">topic_number =</span> <span class="dv">1</span><span class="op">:</span><span class="dv">10</span>, <span class="dt">lambda =</span> <span class="dv">1</span>)</a></code></pre></div>
 <pre><code>      [,1]     [,2]     [,3]     [,4]    [,5]      [,6]      [,7]    [,8]      [,9]     [,10]   
  [1,] &quot;prai&quot;   &quot;hear&quot;   &quot;ey&quot;     &quot;love&quot;  &quot;word&quot;    &quot;natur&quot;   &quot;night&quot; &quot;god&quot;     &quot;friend&quot; &quot;death&quot; 
  [2,] &quot;honor&quot;  &quot;madam&quot;  &quot;sweet&quot;  &quot;dai&quot;   &quot;letter&quot;  &quot;fortun&quot;  &quot;fear&quot;  &quot;dai&quot;     &quot;hand&quot;   &quot;grace&quot; 
@@ -402,11 +425,11 @@ INFO [2018-03-06 19:16:21] early stopping at 225 iteration</code></pre>
  [8,] &quot;hear&quot;   &quot;lose&quot;   &quot;black&quot;  &quot;heart&quot; &quot;reason&quot;  &quot;truth&quot;   &quot;bed&quot;   &quot;fight&quot;   &quot;leav&quot;   &quot;hope&quot;  
  [9,] &quot;heart&quot;  &quot;strang&quot; &quot;kiss&quot;   &quot;marri&quot; &quot;hand&quot;    &quot;leav&quot;    &quot;mad&quot;   &quot;sword&quot;   &quot;deed&quot;   &quot;heaven&quot;
 [10,] &quot;friend&quot; &quot;sister&quot; &quot;sun&quot;    &quot;night&quot; &quot;talk&quot;    &quot;command&quot; &quot;hand&quot;  &quot;heart&quot;   &quot;tear&quot;   &quot;die&quot;   </code></pre>
-<div class="sourceCode" id="cb121"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb121-1" data-line-number="1"><span class="kw">which.max</span>(doc_topic_distr[<span class="st">&#39;Hamlet&#39;</span>, ])</a></code></pre></div>
+<div class="sourceCode" id="cb159"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb159-1" data-line-number="1"><span class="kw">which.max</span>(doc_topic_distr[<span class="st">&#39;Hamlet&#39;</span>, ])</a></code></pre></div>
 <pre><code>[1] 7</code></pre>
-<div class="sourceCode" id="cb123"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb123-1" data-line-number="1"><span class="co"># top-words could be sorted by “relevance” which also takes into account</span></a>
-<a class="sourceLine" id="cb123-2" data-line-number="2"><span class="co"># frequency of word in the corpus (0 &lt; lambda &lt; 1)</span></a>
-<a class="sourceLine" id="cb123-3" data-line-number="3">lda_model<span class="op">$</span><span class="kw">get_top_words</span>(<span class="dt">n =</span> <span class="dv">10</span>, <span class="dt">topic_number =</span> <span class="dv">1</span><span class="op">:</span><span class="dv">10</span>, <span class="dt">lambda =</span> <span class="fl">0.2</span>)</a></code></pre></div>
+<div class="sourceCode" id="cb161"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb161-1" data-line-number="1"><span class="co"># top-words could be sorted by “relevance” which also takes into account</span></a>
+<a class="sourceLine" id="cb161-2" data-line-number="2"><span class="co"># frequency of word in the corpus (0 &lt; lambda &lt; 1)</span></a>
+<a class="sourceLine" id="cb161-3" data-line-number="3">lda_model<span class="op">$</span><span class="kw">get_top_words</span>(<span class="dt">n =</span> <span class="dv">10</span>, <span class="dt">topic_number =</span> <span class="dv">1</span><span class="op">:</span><span class="dv">10</span>, <span class="dt">lambda =</span> <span class="fl">0.2</span>)</a></code></pre></div>
 <pre><code>      [,1]      [,2]      [,3]     [,4]      [,5]     [,6]       [,7]     [,8]      [,9]      [,10]      
  [1,] &quot;honest&quot;  &quot;madam&quot;   &quot;ey&quot;     &quot;love&quot;    &quot;letter&quot; &quot;natur&quot;    &quot;ear&quot;    &quot;england&quot; &quot;rome&quot;    &quot;bloodi&quot;   
  [2,] &quot;beseech&quot; &quot;sea&quot;     &quot;cheek&quot;  &quot;youth&quot;   &quot;merri&quot;  &quot;report&quot;   &quot;sleep&quot;  &quot;majesti&quot; &quot;deed&quot;    &quot;royal&quot;    
@@ -418,12 +441,16 @@ INFO [2018-03-06 19:16:21] early stopping at 225 iteration</code></pre>
  [8,] &quot;matter&quot;  &quot;entreat&quot; &quot;mortal&quot; &quot;song&quot;    &quot;horn&quot;   &quot;virgin&quot;   &quot;poison&quot; &quot;battl&quot;   &quot;kneel&quot;   &quot;flourish&quot; 
  [9,] &quot;fellow&quot;  &quot;seek&quot;    &quot;wing&quot;   &quot;paint&quot;   &quot;bond&quot;   &quot;wine&quot;     &quot;shake&quot;  &quot;harri&quot;   &quot;fly&quot;     &quot;king&quot;     
 [10,] &quot;walk&quot;    &quot;passion&quot; &quot;short&quot;  &quot;wed&quot;     &quot;troth&quot;  &quot;direct&quot;   &quot;move&quot;   &quot;crown&quot;   &quot;wert&quot;    &quot;tide&quot;     </code></pre>
-<div class="sourceCode" id="cb125"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb125-1" data-line-number="1"><span class="co"># ldavis not shown</span></a>
-<a class="sourceLine" id="cb125-2" data-line-number="2"><span class="co"># lda_model$plot()</span></a></code></pre></div>
+<div class="sourceCode" id="cb163"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb163-1" data-line-number="1"><span class="co"># ldavis not shown</span></a>
+<a class="sourceLine" id="cb163-2" data-line-number="2"><span class="co"># lda_model$plot()</span></a></code></pre></div>
 <p>Given that most text analysis can be very time consuming for a model, consider any approach that might give you more efficiency.</p>
 
 </div>
 </div>
+
+
+
+
 
 
 

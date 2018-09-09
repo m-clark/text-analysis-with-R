@@ -29,7 +29,17 @@ knitr::opts_chunk$set(echo = TRUE, message=F, warning=F, error=F, comment=NA, R.
 ```
 
 ```{r packages, include=FALSE, cache=FALSE}
-library(magrittr); library(tidyverse); library(stringr); library(pander); library(plotly); library(lazerhawk)
+library(magrittr) 
+library(tidyverse)
+library(stringr) 
+library(pander) 
+library(plotly) 
+library(visibly)
+library(kableExtra)
+kable_styling_df = function(...) kableExtra::kable_styling(..., 
+                                                           full_width = F, 
+                                                           bootstrap_options = c("hover", "condensed", "responsive"))
+kable_df = function(...) kable(...) %>% kable_styling_df()
 ```
 
 ```{r setup_heat, echo=FALSE, cache=FALSE}

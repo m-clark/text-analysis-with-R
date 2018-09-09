@@ -24,7 +24,7 @@
 
 
 
-<meta name="date" content="2018-09-07">
+<meta name="date" content="2018-09-09">
 
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta name="apple-mobile-web-app-capable" content="yes">
@@ -32,7 +32,7 @@
   
   <link rel="shortcut icon" href="img/R.ico" type="image/x-icon">
 <link rel="prev" href="intro.html">
-<link rel="next" href="part-of-speech-tagging.html">
+<link rel="next" href="sentiment-analysis.html">
 <script src="libs/jquery-2.2.3/jquery.min.js"></script>
 <link href="libs/gitbook-2.6.7/css/style.css" rel="stylesheet" />
 <link href="libs/gitbook-2.6.7/css/plugin-bookdown.css" rel="stylesheet" />
@@ -46,15 +46,19 @@
 
 
 
-<script src="libs/htmlwidgets-1.0/htmlwidgets.js"></script>
-<script src="libs/datatables-binding-0.2/datatables.js"></script>
-<link href="libs/dt-core-1.10.12/css/jquery.dataTables.min.css" rel="stylesheet" />
-<link href="libs/dt-core-1.10.12/css/jquery.dataTables.extra.css" rel="stylesheet" />
-<script src="libs/dt-core-1.10.12/js/jquery.dataTables.min.js"></script>
-<script src="libs/plotly-binding-4.7.1/plotly.js"></script>
+<script src="libs/kePrint-0.0.1/kePrint.js"></script>
+<script src="libs/htmlwidgets-1.2/htmlwidgets.js"></script>
+<script src="libs/datatables-binding-0.4/datatables.js"></script>
+<link href="libs/dt-core-1.10.16/css/jquery.dataTables.min.css" rel="stylesheet" />
+<link href="libs/dt-core-1.10.16/css/jquery.dataTables.extra.css" rel="stylesheet" />
+<script src="libs/dt-core-1.10.16/js/jquery.dataTables.min.js"></script>
+<script src="libs/plotly-binding-4.8.0/plotly.js"></script>
 <script src="libs/typedarray-0.1/typedarray.min.js"></script>
 <link href="libs/crosstalk-1.0.0/css/crosstalk.css" rel="stylesheet" />
 <script src="libs/crosstalk-1.0.0/js/crosstalk.min.js"></script>
+<link href="libs/plotly-htmlwidgets-css-1.39.2/plotly-htmlwidgets.css" rel="stylesheet" />
+<script src="libs/plotly-main-1.39.2/plotly-latest.min.js"></script>
+<link href="libs/datatables-css-0.0.0/datatables-crosstalk.css" rel="stylesheet" />
 <link href="libs/plotlyjs-1.29.2/plotly-htmlwidgets.css" rel="stylesheet" />
 <script src="libs/plotlyjs-1.29.2/plotly-latest.min.js"></script>
 <script src="libs/d3-3.5.3/./d3.min.js"></script>
@@ -131,7 +135,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 </style>
 
 <link rel="stylesheet" href="css/book.css" type="text/css" />
-<link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.0.13/css/all.css" type="text/css" />
+<link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.3.1/css/all.css" type="text/css" />
 </head>
 
 <body>
@@ -178,8 +182,27 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 </ul></li>
 <li class="chapter" data-level="" data-path="string-theory.html"><a href="string-theory.html#exercises"><i class="fa fa-check"></i>Exercises</a></li>
 </ul></li>
+<li class="chapter" data-level="" data-path="sentiment-analysis.html"><a href="sentiment-analysis.html"><i class="fa fa-check"></i>Sentiment Analysis</a><ul>
+<li class="chapter" data-level="" data-path="sentiment-analysis.html"><a href="sentiment-analysis.html#basic-idea"><i class="fa fa-check"></i>Basic idea</a></li>
+<li class="chapter" data-level="" data-path="sentiment-analysis.html"><a href="sentiment-analysis.html#issues"><i class="fa fa-check"></i>Issues</a><ul>
+<li class="chapter" data-level="" data-path="sentiment-analysis.html"><a href="sentiment-analysis.html#context-sarcasm-etc."><i class="fa fa-check"></i>Context, sarcasm, etc.</a></li>
+<li class="chapter" data-level="" data-path="sentiment-analysis.html"><a href="sentiment-analysis.html#lexicons"><i class="fa fa-check"></i>Lexicons</a></li>
+</ul></li>
+<li class="chapter" data-level="" data-path="sentiment-analysis.html"><a href="sentiment-analysis.html#sentiment-analysis-examples"><i class="fa fa-check"></i>Sentiment Analysis Examples</a><ul>
+<li class="chapter" data-level="" data-path="sentiment-analysis.html"><a href="sentiment-analysis.html#the-first-thing-the-baby-did-wrong"><i class="fa fa-check"></i>The first thing the baby did wrong</a></li>
+<li class="chapter" data-level="" data-path="sentiment-analysis.html"><a href="sentiment-analysis.html#romeo-juliet"><i class="fa fa-check"></i>Romeo &amp; Juliet</a></li>
+</ul></li>
+<li class="chapter" data-level="" data-path="sentiment-analysis.html"><a href="sentiment-analysis.html#sentiment-analysis-summary"><i class="fa fa-check"></i>Sentiment Analysis Summary</a></li>
+<li class="chapter" data-level="" data-path="sentiment-analysis.html"><a href="sentiment-analysis.html#exercise"><i class="fa fa-check"></i>Exercise</a><ul>
+<li class="chapter" data-level="" data-path="sentiment-analysis.html"><a href="sentiment-analysis.html#step-0-install-the-packages"><i class="fa fa-check"></i>Step 0: Install the packages</a></li>
+<li class="chapter" data-level="" data-path="sentiment-analysis.html"><a href="sentiment-analysis.html#step-1-initial-inspection"><i class="fa fa-check"></i>Step 1: Initial inspection</a></li>
+<li class="chapter" data-level="" data-path="sentiment-analysis.html"><a href="sentiment-analysis.html#step-2-data-prep"><i class="fa fa-check"></i>Step 2: Data prep</a></li>
+<li class="chapter" data-level="" data-path="sentiment-analysis.html"><a href="sentiment-analysis.html#step-3-get-sentiment"><i class="fa fa-check"></i>Step 3: Get sentiment</a></li>
+<li class="chapter" data-level="" data-path="sentiment-analysis.html"><a href="sentiment-analysis.html#step-4-visualize"><i class="fa fa-check"></i>Step 4: Visualize</a></li>
+</ul></li>
+</ul></li>
 <li class="chapter" data-level="" data-path="part-of-speech-tagging.html"><a href="part-of-speech-tagging.html"><i class="fa fa-check"></i>Part of Speech Tagging</a><ul>
-<li class="chapter" data-level="" data-path="part-of-speech-tagging.html"><a href="part-of-speech-tagging.html#basic-idea"><i class="fa fa-check"></i>Basic idea</a></li>
+<li class="chapter" data-level="" data-path="part-of-speech-tagging.html"><a href="part-of-speech-tagging.html#basic-idea-1"><i class="fa fa-check"></i>Basic idea</a></li>
 <li class="chapter" data-level="" data-path="part-of-speech-tagging.html"><a href="part-of-speech-tagging.html#pos-examples"><i class="fa fa-check"></i>POS Examples</a><ul>
 <li class="chapter" data-level="" data-path="part-of-speech-tagging.html"><a href="part-of-speech-tagging.html#barthelme-carver"><i class="fa fa-check"></i>Barthelme &amp; Carver</a></li>
 <li class="chapter" data-level="" data-path="part-of-speech-tagging.html"><a href="part-of-speech-tagging.html#more-taggin"><i class="fa fa-check"></i>More taggin’</a></li>
@@ -188,7 +211,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <li class="chapter" data-level="" data-path="part-of-speech-tagging.html"><a href="part-of-speech-tagging.html#pos-exercise"><i class="fa fa-check"></i>POS Exercise</a></li>
 </ul></li>
 <li class="chapter" data-level="" data-path="topic-modeling.html"><a href="topic-modeling.html"><i class="fa fa-check"></i>Topic modeling</a><ul>
-<li class="chapter" data-level="" data-path="topic-modeling.html"><a href="topic-modeling.html#basic-idea-1"><i class="fa fa-check"></i>Basic idea</a></li>
+<li class="chapter" data-level="" data-path="topic-modeling.html"><a href="topic-modeling.html#basic-idea-2"><i class="fa fa-check"></i>Basic idea</a></li>
 <li class="chapter" data-level="" data-path="topic-modeling.html"><a href="topic-modeling.html#steps"><i class="fa fa-check"></i>Steps</a></li>
 <li class="chapter" data-level="" data-path="topic-modeling.html"><a href="topic-modeling.html#topic-model-example"><i class="fa fa-check"></i>Topic Model Example</a><ul>
 <li class="chapter" data-level="" data-path="topic-modeling.html"><a href="topic-modeling.html#shakespeare"><i class="fa fa-check"></i>Shakespeare</a></li>
@@ -355,65 +378,128 @@ $class
 5 B        Q         0.905 -0.809
 6 B        X         1.18  -1.92 </code></pre>
 <div class="sourceCode" id="cb17"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb17-1" data-line-number="1">## model.matrix(lm(y ~ x + factor_1 + factor_2, data=df))</a></code></pre></div>
-<table style="width:83%;">
-<colgroup>
-<col width="19%" />
-<col width="13%" />
-<col width="16%" />
-<col width="16%" />
-<col width="16%" />
-</colgroup>
+<table class="table" style="width: auto !important; margin-left: auto; margin-right: auto;">
 <thead>
-<tr class="header">
-<th align="center">(Intercept)</th>
-<th align="center">x</th>
-<th align="center">factor_1B</th>
-<th align="center">factor_2Q</th>
-<th align="center">factor_2X</th>
+<tr>
+<th style="text-align:right;">
+(Intercept)
+</th>
+<th style="text-align:right;">
+x
+</th>
+<th style="text-align:right;">
+factor_1B
+</th>
+<th style="text-align:right;">
+factor_2Q
+</th>
+<th style="text-align:right;">
+factor_2X
+</th>
 </tr>
 </thead>
 <tbody>
-<tr class="odd">
-<td align="center">1</td>
-<td align="center">0.7969</td>
-<td align="center">0</td>
-<td align="center">0</td>
-<td align="center">0</td>
+<tr>
+<td style="text-align:right;">
+1
+</td>
+<td style="text-align:right;">
+0.7968603
+</td>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:right;">
+0
+</td>
 </tr>
-<tr class="even">
-<td align="center">1</td>
-<td align="center">-0.9999</td>
-<td align="center">0</td>
-<td align="center">1</td>
-<td align="center">0</td>
+<tr>
+<td style="text-align:right;">
+1
+</td>
+<td style="text-align:right;">
+-0.9999264
+</td>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:right;">
+1
+</td>
+<td style="text-align:right;">
+0
+</td>
 </tr>
-<tr class="odd">
-<td align="center">1</td>
-<td align="center">1.052</td>
-<td align="center">0</td>
-<td align="center">0</td>
-<td align="center">1</td>
+<tr>
+<td style="text-align:right;">
+1
+</td>
+<td style="text-align:right;">
+1.0522363
+</td>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:right;">
+1
+</td>
 </tr>
-<tr class="even">
-<td align="center">1</td>
-<td align="center">-0.3292</td>
-<td align="center">1</td>
-<td align="center">0</td>
-<td align="center">0</td>
+<tr>
+<td style="text-align:right;">
+1
+</td>
+<td style="text-align:right;">
+-0.3291774
+</td>
+<td style="text-align:right;">
+1
+</td>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:right;">
+0
+</td>
 </tr>
-<tr class="odd">
-<td align="center">1</td>
-<td align="center">0.9049</td>
-<td align="center">1</td>
-<td align="center">1</td>
-<td align="center">0</td>
+<tr>
+<td style="text-align:right;">
+1
+</td>
+<td style="text-align:right;">
+0.9049071
+</td>
+<td style="text-align:right;">
+1
+</td>
+<td style="text-align:right;">
+1
+</td>
+<td style="text-align:right;">
+0
+</td>
 </tr>
-<tr class="even">
-<td align="center">1</td>
-<td align="center">1.175</td>
-<td align="center">1</td>
-<td align="center">0</td>
-<td align="center">1</td>
+<tr>
+<td style="text-align:right;">
+1
+</td>
+<td style="text-align:right;">
+1.1754300
+</td>
+<td style="text-align:right;">
+1
+</td>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:right;">
+1
+</td>
 </tr>
 </tbody>
 </table>
@@ -585,36 +671,73 @@ $class
 <p><br></p>
 <p>It might seem okay until…</p>
 <div class="sourceCode" id="cb43"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb43-1" data-line-number="1">## table(df$region)</a></code></pre></div>
-<table style="width:78%;">
-<colgroup>
-<col width="11%" />
-<col width="11%" />
-<col width="11%" />
-<col width="11%" />
-<col width="11%" />
-<col width="11%" />
-<col width="11%" />
-</colgroup>
+<table class="table" style="width: auto !important; margin-left: auto; margin-right: auto;">
 <thead>
-<tr class="header">
-<th align="center">South</th>
-<th align="center">north</th>
-<th align="center">North</th>
-<th align="center">north</th>
-<th align="center">North</th>
-<th align="center">south</th>
-<th align="center">South</th>
+<tr>
+<th style="text-align:left;">
+Var1
+</th>
+<th style="text-align:right;">
+Freq
+</th>
 </tr>
 </thead>
 <tbody>
-<tr class="odd">
-<td align="center">76</td>
-<td align="center">68</td>
-<td align="center">75</td>
-<td align="center">70</td>
-<td align="center">70</td>
-<td align="center">65</td>
-<td align="center">76</td>
+<tr>
+<td style="text-align:left;">
+South
+</td>
+<td style="text-align:right;">
+76
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+north
+</td>
+<td style="text-align:right;">
+68
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+North
+</td>
+<td style="text-align:right;">
+75
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+north
+</td>
+<td style="text-align:right;">
+70
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+North
+</td>
+<td style="text-align:right;">
+70
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+south
+</td>
+<td style="text-align:right;">
+65
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+South
+</td>
+<td style="text-align:right;">
+76
+</td>
 </tr>
 </tbody>
 </table>
@@ -624,10 +747,37 @@ $class
 <a class="sourceLine" id="cb44-3" data-line-number="3"><span class="st">  </span><span class="kw">mutate</span>(<span class="dt">region =</span> <span class="kw">str_trim</span>(region),</a>
 <a class="sourceLine" id="cb44-4" data-line-number="4">         <span class="dt">region =</span> <span class="kw">str_to_title</span>(region))</a></code></pre></div>
 <p>The <span class="func">str_trim</span> function trims white space from either side (or both), while <span class="func">str_to_title</span> converts everything to first letter capitalized.</p>
-<div class="sourceCode" id="cb45"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb45-1" data-line-number="1"><span class="kw">table</span>(df_corrected<span class="op">$</span>region)</a></code></pre></div>
-<pre><code>
-North South 
-  283   217 </code></pre>
+<div class="sourceCode" id="cb45"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb45-1" data-line-number="1">## table(df_corrected$region)</a></code></pre></div>
+<table class="table table-hover table-condensed table-responsive" style="width: auto !important; margin-left: auto; margin-right: auto;">
+<thead>
+<tr>
+<th style="text-align:left;">
+Var1
+</th>
+<th style="text-align:right;">
+Freq
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left;">
+North
+</td>
+<td style="text-align:right;">
+283
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+South
+</td>
+<td style="text-align:right;">
+217
+</td>
+</tr>
+</tbody>
+</table>
 <p>Compare that to how you would have done it before knowing how to use text processing tools. One might have spent several minutes with some find and replace approach in a spreadsheet, or maybe even several <code>if... else</code> statements in R until all problematic cases were taken care of. Not very efficient.</p>
 </div>
 <div id="example-2" class="section level3">
@@ -637,15 +787,15 @@ North South
 <script type="application/json" data-for="htmlwidget-473eba0a55a88ffed860">{"x":{"filter":"none","data":[[1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20],[1.18,0.34,-0.32,-0.57,0.64,-0.59,0.61,-0.42,0.15,1.03,-0.22,2.01,1.38,-1.72,0.56,0.19,0.55,0.65,-0.71,1.01],[-2.04,-1.34,-0.97,1.36,0.73,0.16,1.21,-0.73,0.84,-0.17,0.98,-0.64,-1.55,-2.02,0.1,1.33,-1.2,-0.77,0.25,0.02],[-0.03,-0.3,1.03,1.29,-0.16,-1.28,-0.43,-1.78,0.13,-0.93,-0.18,0.71,0.51,-0.24,-0.33,-1.62,-0.22,0.89,0.86,0.21],[-0.36,-0.15,0.2,-0,-1.29,0.55,-0.14,1.63,1.02,-1.71,0.16,-1.62,0.55,0.39,-1.44,0.97,0.67,-0.34,-0.6,-1.79],[0.43,0.47,0.97,0.32,-0.79,0.75,-0.54,1.64,-0.18,-1.4,1.07,1.14,0.69,-1.14,0.95,0.21,-0.42,0.08,-1.11,0.18]],"container":"<table class=\"display\">\n  <thead>\n    <tr>\n      <th>id<\/th>\n      <th>X1<\/th>\n      <th>X2<\/th>\n      <th>X3<\/th>\n      <th>X4<\/th>\n      <th>X5<\/th>\n    <\/tr>\n  <\/thead>\n<\/table>","options":{"dom":"tp","autoWidth":true,"columnDefs":[{"width":"50px","targets":0},{"className":"dt-center","targets":1},{"className":"dt-right","targets":[0,1,2,3,4,5]}],"order":[],"orderClasses":false}},"evals":[],"jsHooks":[]}</script>
 <p><br></p>
 <p>So, the problem now is to change the names to be Year_1, Year_2, etc. You might think you might have to use <span class="func">colnames</span> and manually create a string of names to replace the current ones.</p>
-<div class="sourceCode" id="cb47"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb47-1" data-line-number="1"><span class="kw">colnames</span>(df)[<span class="op">-</span><span class="dv">1</span>] =<span class="st"> </span><span class="kw">c</span>(<span class="st">&#39;Year_1&#39;</span>, <span class="st">&#39;Year_2&#39;</span>, <span class="st">&#39;Year_3&#39;</span>, <span class="st">&#39;Year_4&#39;</span>, <span class="st">&#39;Year_5&#39;</span>)</a></code></pre></div>
+<div class="sourceCode" id="cb46"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb46-1" data-line-number="1"><span class="kw">colnames</span>(df)[<span class="op">-</span><span class="dv">1</span>] =<span class="st"> </span><span class="kw">c</span>(<span class="st">&#39;Year_1&#39;</span>, <span class="st">&#39;Year_2&#39;</span>, <span class="st">&#39;Year_3&#39;</span>, <span class="st">&#39;Year_4&#39;</span>, <span class="st">&#39;Year_5&#39;</span>)</a></code></pre></div>
 <p>Or perhaps you’re thinking of the paste0 function, which works fine and saves some typing.</p>
-<div class="sourceCode" id="cb48"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb48-1" data-line-number="1"><span class="kw">colnames</span>(df)[<span class="op">-</span><span class="dv">1</span>] =<span class="st"> </span><span class="kw">paste0</span>(<span class="st">&#39;Year_&#39;</span>, <span class="dv">1</span><span class="op">:</span><span class="dv">5</span>)</a></code></pre></div>
+<div class="sourceCode" id="cb47"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb47-1" data-line-number="1"><span class="kw">colnames</span>(df)[<span class="op">-</span><span class="dv">1</span>] =<span class="st"> </span><span class="kw">paste0</span>(<span class="st">&#39;Year_&#39;</span>, <span class="dv">1</span><span class="op">:</span><span class="dv">5</span>)</a></code></pre></div>
 <p>However, data sets may be hundreds of columns, and the columns of data may have the same pattern but not be next to one another. For example, the first few dozen columns are all data that belongs to the first wave, etc. It is tedious to figure out which columns you don’t want, but even then you’re resulting to using magic numbers with the above approach, and one column change to data will mean that redoing the name change will fail.</p>
 <p>However, the following accomplishes what we want, and is reproducible regardless of where the columns are in the data set.</p>
-<div class="sourceCode" id="cb49"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb49-1" data-line-number="1">df <span class="op">%&gt;%</span><span class="st"> </span></a>
-<a class="sourceLine" id="cb49-2" data-line-number="2"><span class="st">  </span><span class="kw">rename_at</span>(<span class="kw">vars</span>(<span class="kw">num_range</span>(<span class="st">&#39;X&#39;</span>, <span class="dv">1</span><span class="op">:</span><span class="dv">5</span>)), </a>
-<a class="sourceLine" id="cb49-3" data-line-number="3">            str_replace, <span class="dt">pattern=</span><span class="st">&#39;X&#39;</span>, <span class="dt">replacement=</span><span class="st">&#39;Year_&#39;</span>) <span class="op">%&gt;%</span><span class="st"> </span></a>
-<a class="sourceLine" id="cb49-4" data-line-number="4"><span class="st">  </span>head</a></code></pre></div>
+<div class="sourceCode" id="cb48"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb48-1" data-line-number="1">df <span class="op">%&gt;%</span><span class="st"> </span></a>
+<a class="sourceLine" id="cb48-2" data-line-number="2"><span class="st">  </span><span class="kw">rename_at</span>(<span class="kw">vars</span>(<span class="kw">num_range</span>(<span class="st">&#39;X&#39;</span>, <span class="dv">1</span><span class="op">:</span><span class="dv">5</span>)), </a>
+<a class="sourceLine" id="cb48-3" data-line-number="3">            str_replace, <span class="dt">pattern=</span><span class="st">&#39;X&#39;</span>, <span class="dt">replacement=</span><span class="st">&#39;Year_&#39;</span>) <span class="op">%&gt;%</span><span class="st"> </span></a>
+<a class="sourceLine" id="cb48-4" data-line-number="4"><span class="st">  </span><span class="kw">head</span>()</a></code></pre></div>
 <pre><code>  id Year_1 Year_2 Year_3 Year_4 Year_5
 1  1   1.18  -2.04  -0.03  -0.36   0.43
 2  2   0.34  -1.34  -0.30  -0.15   0.47
@@ -671,25 +821,25 @@ North South
 <br></p></li>
 <li><p>Consider the following character vector.</p></li>
 </ol>
-<div class="sourceCode" id="cb51"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb51-1" data-line-number="1">x =<span class="st"> </span><span class="kw">c</span>(<span class="st">&#39;A&#39;</span>, <span class="st">&#39;1&#39;</span>, <span class="st">&#39;Q&#39;</span>)</a></code></pre></div>
+<div class="sourceCode" id="cb50"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb50-1" data-line-number="1">x =<span class="st"> </span><span class="kw">c</span>(<span class="st">&#39;A&#39;</span>, <span class="st">&#39;1&#39;</span>, <span class="st">&#39;Q&#39;</span>)</a></code></pre></div>
 <p>How might you paste the elements together so that there is an underscore <code>_</code> between characters and no space (“A_1_Q”)? If you highlight the next line you’ll see the hint.</p>
 <p><span style="color:#fffff8">Revisit how we used the collapse argument within paste. <code>paste(..., collapse=?)</code></span></p>
 <p>Paste Part 2: The following application of paste produces this result.</p>
-<div class="sourceCode" id="cb52"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb52-1" data-line-number="1"><span class="kw">paste</span>(<span class="kw">c</span>(<span class="st">&#39;A&#39;</span>, <span class="st">&#39;1&#39;</span>, <span class="st">&#39;Q&#39;</span>), <span class="kw">c</span>(<span class="st">&#39;B&#39;</span>, <span class="st">&#39;2&#39;</span>, <span class="st">&#39;z&#39;</span>))</a></code></pre></div>
+<div class="sourceCode" id="cb51"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb51-1" data-line-number="1"><span class="kw">paste</span>(<span class="kw">c</span>(<span class="st">&#39;A&#39;</span>, <span class="st">&#39;1&#39;</span>, <span class="st">&#39;Q&#39;</span>), <span class="kw">c</span>(<span class="st">&#39;B&#39;</span>, <span class="st">&#39;2&#39;</span>, <span class="st">&#39;z&#39;</span>))</a></code></pre></div>
 <pre><code>[1] &quot;A B&quot; &quot;1 2&quot; &quot;Q z&quot;</code></pre>
 <p>Now try to produce <code>&quot;A - B&quot; &quot;1 - 2&quot; &quot;Q - z&quot;</code>. To do this, note that one can paste any number of things together (i.e. more than two). So try adding ’ - ’ to it.
 <br></p>
 <ol start="3" style="list-style-type: decimal">
 <li>Use regex to grab the Star Wars names that have a number. Use both <span class="func">grep</span> and <span class="func">grepl</span> and compare the results</li>
 </ol>
-<div class="sourceCode" id="cb54"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb54-1" data-line-number="1"><span class="kw">grep</span>(starwars<span class="op">$</span>name, <span class="dt">pattern =</span> ?)</a></code></pre></div>
+<div class="sourceCode" id="cb53"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb53-1" data-line-number="1"><span class="kw">grep</span>(starwars<span class="op">$</span>name, <span class="dt">pattern =</span> ?)</a></code></pre></div>
 <p>Now use your hacking skills to determine which one is the tallest.
 <br></p>
 <ol start="4" style="list-style-type: decimal">
 <li>Load the <span class="pack">dplyr</span> package, and use the its <a href="string-theory.html#dplyr-helper-functions">helper functions</a> to grab all the columns in the <span class="objclass">starwars</span> data set (comes with the package) with <code>color</code> in the name but without referring to them directly. The following shows a generic example. There are several ways to do this. Try two if you can.</li>
 </ol>
-<div class="sourceCode" id="cb55"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb55-1" data-line-number="1">starwars <span class="op">%&gt;%</span><span class="st"> </span></a>
-<a class="sourceLine" id="cb55-2" data-line-number="2"><span class="st">  </span><span class="kw">select</span>(<span class="kw">helper_function</span>(<span class="st">&#39;pattern&#39;</span>))</a></code></pre></div>
+<div class="sourceCode" id="cb54"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb54-1" data-line-number="1">starwars <span class="op">%&gt;%</span><span class="st"> </span></a>
+<a class="sourceLine" id="cb54-2" data-line-number="2"><span class="st">  </span><span class="kw">select</span>(<span class="kw">helper_function</span>(<span class="st">&#39;pattern&#39;</span>))</a></code></pre></div>
 
 </div>
 </div>
@@ -708,7 +858,7 @@ North South
         </div>
       </div>
 <a href="intro.html" class="navigation navigation-prev " aria-label="Previous page"><i class="fa fa-angle-left"></i></a>
-<a href="part-of-speech-tagging.html" class="navigation navigation-next " aria-label="Next page"><i class="fa fa-angle-right"></i></a>
+<a href="sentiment-analysis.html" class="navigation navigation-next " aria-label="Next page"><i class="fa fa-angle-right"></i></a>
     </div>
   </div>
 <script src="libs/gitbook-2.6.7/js/app.min.js"></script>

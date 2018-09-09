@@ -1,5 +1,14 @@
 # Sentiment Analysis
 
+```{r setup_sentiment, echo=FALSE}
+knitr::opts_chunk$set(cache.rebuild=T, cache=T) 
+```
+
+<div style='text-align:center; font-size: 10rem; color:#990024CC'>
+<i class="far fa-smile-beam fa-10x"></i> 
+<i class="far fa-meh-blank fa-10x"></i> 
+<i class="far fa-angry fa-10x"></i>
+</div>
 
 ## Basic idea
 
@@ -60,7 +69,7 @@ But I digress.  We start with the raw text, reading it in line by line.  In what
 ```{r baby_sentiment_importraw, echo=T}
 library(tidytext)
 barth0 = 
-  data_frame(file = dir('data/texts_raw/barthelme/', full.names = TRUE)) %>%
+  data_frame(file = dir('data/texts_raw/barthelme', full.names = TRUE)) %>%
   mutate(text = map(file, read_lines)) %>%
   transmute(work = basename(file), text) %>%
   unnest(text) 
@@ -74,8 +83,20 @@ One of the things stressed in this document is the iterative nature of text anal
 ```{r barth_fix_encoding, echo=1:2, eval=1:2}
 # Fix encoding, convert to sentences; you may get a warning message
 barth = barth0 %>% 
-  mutate(text = sapply(text, stringi::stri_enc_toutf8, is_unknown_8bit=TRUE, validate=T)) %>% 
-  unnest_tokens(output=sentence, input=text, token='sentences')
+  mutate(
+    text = 
+      sapply(
+        text, 
+        stringi::stri_enc_toutf8, 
+        is_unknown_8bit = TRUE,
+        validate = TRUE
+        )
+  ) %>%
+  unnest_tokens(
+    output = sentence,
+    input = text,
+    token = 'sentences'
+  )
 
 save(barth, file='data/barth_sentences.RData')
 ```
@@ -88,9 +109,14 @@ The next step is to drill down to just the document we want, and subsequently to
 # get baby doc, convert to words
 baby = barth %>% 
   filter(work=='baby.txt') %>% 
-  mutate(sentence_id = 1:n()) %>% 
-  unnest_tokens(output=word, input=sentence, token='words', drop=F) %>% 
-  ungroup 
+  mutate(sentence_id = 1:n()) %>%
+  unnest_tokens(
+    output = word,
+    input = sentence,
+    token = 'words',
+    drop = FALSE
+  ) %>%
+  ungroup()
 ```
 
 #### Get sentiments
@@ -103,16 +129,30 @@ Now that the data has been prepped, getting the sentiments is ridiculously easy.
 baby_sentiment = baby %>% 
   inner_join(get_sentiments("afinn")) %>% 
   group_by(sentence_id, sentence) %>% 
-  summarise(score=sum(score)) %>% 
-  ungroup
+  summarise(sentiment = sum(score)) %>%
+  ungroup()
 ```
+
+#### Alternative approach
+
+As we are interested in the sentence level, it turns out that the <span class="pack">sentimentr</span> package has built-in functionality for this, and includes a more nuanced sentiment scores that takes into account <span class="emph">valence shifters</span>, e.g. words that would negate something with positive or negative sentiment ('I do ***not*** like it').
+
+```{r sentimentr, eval=FALSE}
+baby_sentiment = barth0 %>%
+  filter(work=='baby.txt') %>% 
+  get_sentences(text) %>% 
+  sentiment() %>% 
+  drop_na() %>%   # empty lines
+  mutate(sentence_id = row_number())
+```
+
 
 The following visualizes sentiment over the progression of sentences (note that not every sentence will receive a sentiment score). You can read the sentence by hovering over the dot. The <span style="color:#5500ff">&#9644;</span> is the running average.
 
 ```{r plot_sentiment, echo=FALSE}
 # plot sentiment over sentences
 baby_sentiment %>%
-  mutate(running_avg = cumsum(score)/row_number()) %>% 
+  mutate(running_avg = cumsum(sentiment)/row_number()) %>% 
   plot_ly(width='50%') %>% 
   add_lines(x=~sentence_id, y=~running_avg,
             color=I('#5500ff'), 
@@ -120,19 +160,45 @@ baby_sentiment %>%
             opacity=.5,
             name='running average',
             showlegend=T) %>%
-  add_lines(x=~sentence_id, y=~score,
+  add_lines(x=~sentence_id, y=~sentiment,
             color=I('#00aaff'), 
             line = list(shape = "spline"),
             showlegend=F) %>%
-  add_markers(x=~sentence_id, y=~score, 
+  add_markers(x=~sentence_id, y=~sentiment, 
               color=I('#ff5500'),
-              size=I(15),
+              marker = list(size=15),
               hoverinfo=~ 'text', 
               text=~str_wrap(sentence),
               showlegend=F) %>% 
-  theme_plotly() %>% 
-  config(displayModeBar = F)
+  theme_plotly() 
+
+# baby_sentiment %>%
+#   mutate(running_avg = cumsum(sentiment)/row_number()) %>% 
+#   filter(sentiment != 0) %>%
+#   plot_ly(width='50%') %>% 
+#   add_lines(
+#     x =  ~ sentence_id,
+#     y =  ~ running_avg,
+#     color = I('#5500ff'),
+#     line = list(shape = "spline"),
+#     opacity = .5,
+#     name = 'running average',
+#     showlegend = T
+#   ) %>% 
+#   add_lines(x=~sentence_id, y=~sentiment,
+#             color=I('#00aaff'), 
+#             line = list(shape = "spline"),
+#             showlegend=F) %>% 
+#   add_markers(x=~sentence_id, y=~sentiment,
+#               color=I('#ff5500'),
+#               marker = list(size=15),
+#               hoverinfo=~ 'text',
+#               text=~str_wrap(text),
+#               showlegend=F) %>%
+#   theme_plotly()
 ```
+
+<br>
 
 In general, the sentiment starts out negative as the problem is explained. It bounces back and forth a bit but ends on a positive note.  You'll see that some sentences' context are not captured.  For example, sentence 16 is 'But it didn't do any good'.  However *good* is going to be marked as a positive sentiment in any lexicon by default. In addition, the token length will matter.  Longer sentences are more likely to have some sentiment, for example.
 
@@ -213,26 +279,98 @@ table(rnj_sentiment_bing$sentiment)
 ```
 
 
+```{r sentimentr_rng, eval=FALSE, echo=FALSE, cache=FALSE}
+# appears to give more (too much?) weight to postiive
+library(sentimentr)
+test = rnj %>% 
+  slice(-(1:49)) %>% 
+  filter(!text==str_to_upper(text),            # will remove THE PROLOGUE etc.
+         !text==str_to_title(text),            # will remove names/single word lines
+         !str_detect(text, pattern='^(Scene|SCENE)|^(Act|ACT)|^\\[')) %>% 
+  select(-gutenberg_id) %>% 
+  pull(text) %>% 
+  paste(collapse = ' ') %>% 
+  get_sentences() %>% 
+  sentiment()
 
-Looks like this one is going to be a downer. The following visualizes the positive and negative sentiment scores as one progresses sentence by sentence through the work. It uses the <span class="pack">plotly</span> package (note the theme is my own function, you'd need to supply your own).
 
-```{r rnj_sentiment_as_game}
+ay <- list(
+  tickfont = list(color = "green"),
+  overlaying = "y",
+  side = "right",
+  title = "raw sentiment",
+  titlefont = list(textangle=45),
+  zeroline = F
+)
+test %>% 
+  mutate(positivity = cumsum(if_else(sentiment>0, sentiment, 0)),
+         negativity = cumsum(abs(if_else(sentiment<0, sentiment, 0)))) %>% 
+  plot_ly() %>% 
+  add_lines(x=~sentence_id, y=~positivity, name='positive') %>% 
+  add_lines(x=~sentence_id, y=~negativity, name='negative') %>% 
+  layout() %>% 
+  add_lines(x=~sentence_id, y=~sentiment, name='sentiment', yaxis = "y2", opacity=.1) %>%
+  # plotly by default has the second axis title backwards, but provides no fix
+  # other than to use annotate, which won't work because it extends the plot x's
+  # range; 'shift' does nothing but add or subtract to the x value, making it
+  # pointless
+  # add_annotations(text = 'plotly strikes again', x = 1440, xshift=100, y = 75, textangle=90, showarrow = F) %>% 
+  theme_plotly() %>% 
+  layout(
+    yaxis = list(title='absolute cumulative sentiment'),
+    yaxis2 = ay,
+    xaxis = list(title="sentence ID")
+  )
+test %>% 
+  mutate(positivity = cumsum(if_else(sentiment>0, sentiment, 0)),
+         negativity = cumsum(abs(if_else(sentiment<0, sentiment, 0)))) %>% 
+  plot_ly() %>% 
+  add_lines(x=~sentence_id, y=~positivity - negativity) %>% 
+  layout(yaxis = list(title='sentiment')) %>% 
+  theme_plotly()
+```
+
+
+
+
+Looks like this one is going to be a downer. The following visualizes the positive and negative sentiment scores as one progresses sentence by sentence through the work using the <span class="pack">plotly</span> package. I also show same information expressed as a difference (opaque line).
+
+
+```{r rnj_sentiment_as_game, echo=FALSE}
+# Note that plotly will start disappearing with ANY change, whether this has to
+# do with the code, text or whatever, so you'll need to rebuild the cache for
+# this page one last time to ensure it will be displayed.
+ay <- list(
+  tickfont = list(color = "#2ca02c40"),
+  overlaying = "y",
+  side = "right",
+  # title = "sentiment difference",
+  titlefont = list(textangle=45),
+  zeroline = F
+)
+
 rnj_sentiment_bing %>% 
   arrange(sentenceID) %>% 
   mutate(positivity = cumsum(sentiment=='positive'),
          negativity = cumsum(sentiment=='negative')) %>% 
   plot_ly() %>% 
   add_lines(x=~sentenceID, y=~positivity, name='positive') %>% 
-  add_lines(x=~sentenceID, y=~negativity, name='negative') %>% 
-  layout(yaxis = list(title='sentiment')) %>% 
+  add_lines(x=~sentenceID, y=~negativity, name='negative') %>%
+  add_lines(x=~sentenceID, y=~positivity-negativity, name='difference',
+            yaxis = "y2", 
+            opacity=.25) %>% 
+  layout(
+    xaxis = list(dtick = 200),
+    yaxis = list(title='absolute cumulative sentiment'),
+    yaxis2 = ay
+  ) %>% 
   theme_plotly()
 ```
 
-<br>
 
-Here is the same information expressed as a difference.
 
-```{r rnj_sentiment_diff, echo=F}
+
+```{r rnj_sentiment_diff, echo=F, eval=FALSE}
 rnj_sentiment_bing %>% 
   arrange(sentenceID) %>% 
   mutate(positivity = cumsum(sentiment=='positive'),
@@ -444,3 +582,8 @@ plot_data %>%
 [^lazy]: This exercise is more or less taken directly from the [tidytext book](http://tidytextmining.com/sentiment.html).
 
 [^badplot]: This depiction goes against many of my visualization principles. I like it anyway.
+
+
+```{r setup_sentiment_return, echo=FALSE}
+knitr::opts_chunk$set(cache.rebuild=F, cache=T) 
+```

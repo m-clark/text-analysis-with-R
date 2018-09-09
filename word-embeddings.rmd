@@ -99,7 +99,7 @@ head(cos_sim_rom[order(cos_sim_rom, decreasing = T),1], 10) %>%
   round(2) %>% 
   t %>% 
   data.frame() %>% 
-  pander(split.tables=Inf, split.cells=Inf)
+  kable_df()
 ```
 
 Obviously Romeo is most like Romeo, but after that comes the rest of the crew in the play.  As this text is somewhat raw, it is likely due to names associated with lines in the play. As such, one may want to narrow the window[^romeo5].  Let's try **love**.
@@ -109,7 +109,8 @@ love = shakes_word_vectors["love", , drop = F]
 
 cos_sim_rom = sim2(x = shakes_word_vectors, y = love, method = "cosine", norm = "l2")
 # head(sort(cos_sim_rom[,1], decreasing = T), 10)
-head(sort(cos_sim_rom[,1], decreasing = T), 10) %>% round(2) %>% pander(split.tables=Inf, split.cells=Inf)
+head(sort(cos_sim_rom[,1], decreasing = T), 10) %>% 
+  kable_df(digits=2)
 ```
 
 The issue here is that love is so commonly used in Shakespeare, it's most like other very common words.  What if we take Romeo, subtract his friend Mercutio, and add Nurse?  This is similar to the analogy example we had at the start.
@@ -121,7 +122,8 @@ test = shakes_word_vectors["romeo", , drop = F] -
 
 cos_sim_test = sim2(x = shakes_word_vectors, y = test, method = "cosine", norm = "l2")
 # head(sort(cos_sim_test[,1], decreasing = T), 10)
-head(sort(cos_sim_test[,1], decreasing = T), 3) %>% round(2) %>% pander(split.tables=Inf, split.cells=Inf)
+head(sort(cos_sim_test[,1], decreasing = T), 3) %>% 
+  kable_df(digits=2)
 ```
 
 It looks like we get Juliet as the most likely word (after the ones we actually used), just as we might have expected.  Again, we can think of this as Romeo is to Mercutio as Juliet is to the Nurse. Let's try another like that.  
@@ -134,7 +136,8 @@ test = shakes_word_vectors["romeo", , drop = F] -
 
 cos_sim_test = sim2(x = shakes_word_vectors, y = test, method = "cosine", norm = "l2")
 # head(sort(cos_sim_test[,1], decreasing = T), 3)
-head(sort(cos_sim_test[,1], decreasing = T), 3) %>% round(2) %>% pander(split.tables=Inf, split.cells=Inf)
+head(sort(cos_sim_test[,1], decreasing = T), 3) %>% 
+  kable_df(digits=2)
 ```
 
 One can play with stuff like this all day.  For example, you may find that a Romeo without love is a Tybalt!  

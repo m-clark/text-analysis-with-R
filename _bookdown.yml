@@ -9,6 +9,7 @@ rmd_files: [
   'index.Rmd',
   'intro.Rmd',
   'string-theory.Rmd',
+  'sentiment-analysis.Rmd',
   'part-of-speech-tagging.Rmd',
   'topic-modeling.Rmd',
   'word-embeddings.Rmd',
